@@ -13,6 +13,7 @@ import (
 	"github.com/velenac/ordination/internal/db"
 	"github.com/velenac/ordination/internal/env"
 	"github.com/velenac/ordination/internal/server"
+	"github.com/velenac/ordination/internal/store"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -72,7 +73,9 @@ func main() {
 	}
 	defer db.Close()
 
-	server := server.NewServer(cfg, db)
+	store := store.New(db)
+
+	server := server.NewServer(cfg, store)
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)

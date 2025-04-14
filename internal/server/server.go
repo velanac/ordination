@@ -1,9 +1,10 @@
 package server
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
+
+	"github.com/velenac/ordination/internal/store"
 )
 
 type DbConfig struct {
@@ -23,14 +24,14 @@ type Config struct {
 
 type Server struct {
 	port   string
-	db     *sql.DB
+	store  *store.Storage
 	config Config
 }
 
-func NewServer(cfg Config, db *sql.DB) *http.Server {
+func NewServer(cfg Config, store *store.Storage) *http.Server {
 	NewServer := &Server{
 		port:   cfg.Addr,
-		db:     db,
+		store:  store,
 		config: cfg,
 	}
 
