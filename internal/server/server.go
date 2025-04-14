@@ -1,23 +1,41 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 )
 
-type Server struct {
-	port int
-	db   any
+type DbConfig struct {
+	DbServer     string
+	Catalog      string
+	MaxOpenConns int
+	MaxIdleConns int
+	MaxIdleTime  string
 }
 
-func NewServer() *http.Server {
+type Config struct {
+	Addr        string
+	DB          DbConfig
+	AppEnv      string
+	FrontendURL string
+}
+
+type Server struct {
+	port   string
+	db     *sql.DB
+	config Config
+}
+
+func NewServer(cfg Config, db *sql.DB) *http.Server {
 	NewServer := &Server{
-		port: 8080,
-		db:   nil,
+		port:   cfg.Addr,
+		db:     db,
+		config: cfg,
 	}
 
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         NewServer.port,
 		Handler:      NewServer.RegisterRoutes(),
 		IdleTimeout:  time.Minute,
 		ReadTimeout:  10 * time.Second,

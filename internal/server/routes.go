@@ -24,9 +24,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	api := e.Group("/api")
 	v1 := api.Group("/v1")
-	v1.GET("/health", func(c echo.Context) error {
-		return c.String(http.StatusOK, "OK")
-	})
+	v1.GET("/health", s.healthCheckHandler)
 
 	return e
 }
