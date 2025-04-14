@@ -25,6 +25,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	api := e.Group("/api")
 	v1 := api.Group("/v1")
 	v1.GET("/health", s.healthCheckHandler)
+	v1.GET("/init", s.isSuperAdminOpenHandler)
 
 	return e
 }
