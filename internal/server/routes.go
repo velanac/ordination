@@ -13,7 +13,7 @@ type CustomValidator struct {
 	validator *validator.Validate
 }
 
-func (cv *CustomValidator) Validate(i interface{}) error {
+func (cv *CustomValidator) Validate(i any) error {
 	if err := cv.validator.Struct(i); err != nil {
 		// Optionally, you could return the error to give each route more control over the status code
 		return echo.NewHTTPError(http.StatusBadRequest, err.Error())
@@ -23,7 +23,8 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
-	e.Validator = &CustomValidator{validator: validator.New()}
+
+	e.HTTPErrorHandler = customErrorHandler
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -33,6 +34,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 		AllowCredentials: true,
 		MaxAge:           300,
 	}))
+	e.Validator = &CustomValidator{validator: validator.New()}
 
 	frontend.RegisterFrondEndHandlers(e)
 

@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserStorage struct {
@@ -11,10 +13,26 @@ type UserStorage struct {
 }
 
 type User struct {
-	ID       int    `json:"id"`
-	Email    string `json:"email"`
-	FullName string `json:"full_name"`
-	Password string `json:"password"`
+	ID       int      `json:"id"`
+	Email    string   `json:"email"`
+	FullName string   `json:"full_name"`
+	Password password `json:"-"`
+}
+
+type password struct {
+	text *string
+	hash []byte
+}
+
+func (p *password) Set(rawPassword string) error {
+	hash, err := bcrypt.GenerateFromPassword([]byte(rawPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return err
+	}
+	p.text = &rawPassword
+	p.hash = hash
+
+	return nil
 }
 
 func (s *UserStorage) IsSuperAdminOpen(ctx context.Context) (bool, error) {
@@ -41,7 +59,7 @@ func (s *UserStorage) OpenSuperAdmin(ctx context.Context, user *User) error {
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := s.db.ExecContext(ctx, query, user.Email, user.FullName, user.Password, time.Now())
+	_, err := s.db.ExecContext(ctx, query, user.Email, user.FullName, user.Password.hash, time.Now())
 	if err != nil {
 		return err
 	}
