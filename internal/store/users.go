@@ -1,17 +1,31 @@
 package store
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+	"time"
+)
 
 type UserStorage struct {
 	db *sql.DB
 }
 
-func (s *UserStorage) IsSuperAdminOpen() (bool, error) {
+type User struct {
+	ID       int    `json:"id"`
+	Email    string `json:"email"`
+	FullName string `json:"full_name"`
+	Password string `json:"password"`
+}
+
+func (s *UserStorage) IsSuperAdminOpen(ctx context.Context) (bool, error) {
 	query := `SELECT COUNT(*) FROM users 
 				LEFT JOIN roles ON users.role_id = roles.id 
 				WHERE roles.name = 'SuperAdmin'`
 
-	row := s.db.QueryRow(query)
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	row := s.db.QueryRowContext(ctx, query)
 
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -19,4 +33,18 @@ func (s *UserStorage) IsSuperAdminOpen() (bool, error) {
 	}
 
 	return count > 0, nil
+}
+
+func (s *UserStorage) OpenSuperAdmin(ctx context.Context, user *User) error {
+	query := `INSERT INTO users (email, full_name, password, email_verified, role_id) VALUES ($1, $2, $3, $4, (SELECT id FROM roles WHERE name = 'SuperAdmin'))`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := s.db.ExecContext(ctx, query, user.Email, user.FullName, user.Password, time.Now())
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

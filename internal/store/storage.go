@@ -1,13 +1,25 @@
 package store
 
-import "database/sql"
+import (
+	"context"
+	"database/sql"
+	"errors"
+	"time"
+)
+
+var (
+	ErrNotFound          = errors.New("resource not found")
+	ErrConflict          = errors.New("resource conflict")
+	QueryTimeoutDuration = time.Second * 5 // 5 minutes
+)
 
 type Storage struct {
 	UtilsStorage interface {
 		Ping() error
 	}
 	UsersStorage interface {
-		IsSuperAdminOpen() (bool, error)
+		IsSuperAdminOpen(c context.Context) (bool, error)
+		OpenSuperAdmin(c context.Context, user *User) error
 	}
 }
 

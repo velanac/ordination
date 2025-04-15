@@ -32,11 +32,25 @@ const SignUpForm = () => {
     },
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+  const onSubmit = (values: z.infer<typeof formSchema>) =>
+    fetch('http://localhost:8080/api/v1/opensuperadmin', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email: values.email,
+        fullName: values.fullName,
+        password: values.password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
 
   return (
     <CardContent>
