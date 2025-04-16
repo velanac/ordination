@@ -13,10 +13,7 @@ import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { CardContent } from '@/components/ui/card';
 import { usePostSuperAdmin } from './hooks/use-post-superadmin';
-import {
-  SuperUserFormPayload,
-  SuperUserFormSchema,
-} from '@/types/payload/super-user-palyoad';
+import { SuperUserFormPayload, SuperUserFormSchema } from '@/module/auth/types';
 
 const SignUpForm = () => {
   const form = useForm<SuperUserFormPayload>({

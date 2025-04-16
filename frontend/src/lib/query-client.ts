@@ -1,10 +1,12 @@
 import { QueryClient } from '@tanstack/react-query';
 
-export const queryKeys = {};
+export const queryKeys = {
+  init: 'init',
+};
 
 function queryErrorHandler(error: Error): void {
   if (error instanceof Error) {
-    console.error(error.message);
+    alert(error.message);
   }
 
   if (error.name === 'AbortError') {

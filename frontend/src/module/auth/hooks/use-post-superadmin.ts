@@ -1,9 +1,10 @@
-import { SuperUserFormPayload } from '@/types/payload/super-user-palyoad';
+import { queryClient, queryKeys } from '@/lib/query-client';
+import { SuperUserFormPayload } from '@/module/auth/types';
 
 export const usePostSuperAdmin = () => {
   const postAdmin = async (palyoad: SuperUserFormPayload) => {
     try {
-      const res = await fetch('http://localhost:8080/api/v1/opensuperadmin', {
+      const res = await fetch('/api/v1/opensuperadmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,6 +20,10 @@ export const usePostSuperAdmin = () => {
         const err = await res.json();
         throw new Error(err.message);
       } else {
+        queryClient.invalidateQueries({
+          queryKey: [queryKeys.init],
+          type: 'all',
+        });
         alert('Super admin created successfully');
       }
     } catch (error) {
