@@ -44,6 +44,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1.GET("/init", s.isSuperAdminOpenHandler)
 	v1.POST("/opensuperadmin", s.openSuperAdminHandler)
 	v1.POST("/auth/signin", s.signInHandler)
+	apiAuth := e.Group("/api")
+	v1Auth := apiAuth.Group("/v1")
+	v1Auth.Use(JWTFromCookie("secret"))
+	v1Auth.GET("/users/profile", s.getUserProfile)
 
 	return e
 }

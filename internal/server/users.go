@@ -1,6 +1,9 @@
 package server
 
 import (
+	"net/http"
+
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordination/internal/store"
 )
@@ -53,4 +56,15 @@ func (s *Server) openSuperAdminHandler(c echo.Context) error {
 	}
 
 	return RespondNoContent(c)
+}
+
+func (s *Server) getUserProfile(c echo.Context) error {
+	claims := c.Get("user").(jwt.Claims)
+	userClaims := claims.(jwt.MapClaims)
+
+	sub := userClaims["sub"].(string)
+
+	return c.JSON(http.StatusOK, map[string]string{
+		"sub": sub,
+	})
 }
