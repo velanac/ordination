@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/velenac/ordination/internal/auth"
 	"github.com/velenac/ordination/internal/store"
 )
 
@@ -23,16 +24,18 @@ type Config struct {
 }
 
 type Server struct {
-	port   string
-	store  *store.Storage
-	config Config
+	port           string
+	store          *store.Storage
+	config         Config
+	authentication *auth.JWTAuthenticator
 }
 
-func NewServer(cfg Config, store *store.Storage) *http.Server {
+func NewServer(cfg Config, store *store.Storage, auth *auth.JWTAuthenticator) *http.Server {
 	NewServer := &Server{
-		port:   cfg.Addr,
-		store:  store,
-		config: cfg,
+		port:           cfg.Addr,
+		store:          store,
+		config:         cfg,
+		authentication: auth,
 	}
 
 	server := &http.Server{

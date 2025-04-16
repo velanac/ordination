@@ -1,6 +1,8 @@
-import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
 
+import { Button } from '@/components/ui/button';
+import { CardContent } from '@/components/ui/card';
 import {
   Form,
   FormControl,
@@ -10,23 +12,21 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { CardContent } from '@/components/ui/card';
-import { usePostSuperAdmin } from './hooks/use-post-superadmin';
-import { SuperUserFormPayload, SuperUserFormSchema } from '@/module/auth/types';
+import { useSignIn } from '@/module/auth/hooks/use-signin';
+import { SignInFormPayload, SignInFormSchema } from '@/module/auth/types';
 
 const SignInForm = () => {
-  const form = useForm<SuperUserFormPayload>({
-    resolver: zodResolver(SuperUserFormSchema),
+  const form = useForm<SignInFormPayload>({
+    resolver: zodResolver(SignInFormSchema),
     defaultValues: {
       email: '',
       password: '',
     },
   });
 
-  const postAdmin = usePostSuperAdmin();
+  const signin = useSignIn();
 
-  const onSubmit = () => postAdmin(form.getValues());
+  const onSubmit = () => signin(form.getValues());
 
   return (
     <CardContent>

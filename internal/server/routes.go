@@ -43,6 +43,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1.GET("/health", s.healthCheckHandler)
 	v1.GET("/init", s.isSuperAdminOpenHandler)
 	v1.POST("/opensuperadmin", s.openSuperAdminHandler)
+	v1.POST("/auth/signin", s.signInHandler)
 
 	return e
 }

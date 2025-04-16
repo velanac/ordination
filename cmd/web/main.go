@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/joho/godotenv"
+	"github.com/velenac/ordination/internal/auth"
 	"github.com/velenac/ordination/internal/db"
 	"github.com/velenac/ordination/internal/env"
 	"github.com/velenac/ordination/internal/server"
@@ -74,8 +75,8 @@ func main() {
 	defer db.Close()
 
 	store := store.New(db)
-
-	server := server.NewServer(cfg, store)
+	JWTAuthenticator := auth.NewJWTAuthenticator("secret", "http//ord.rs", "http//ord.rs")
+	server := server.NewServer(cfg, store, JWTAuthenticator)
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)

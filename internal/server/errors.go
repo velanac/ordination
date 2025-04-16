@@ -66,3 +66,10 @@ func NewInternalServerError(msg string) *ApiError {
 		Message: msg,
 	}
 }
+
+func NewUnautorize(msg string) *ApiError {
+	return &ApiError{
+		Code:    http.StatusUnauthorized,
+		Message: msg,
+	}
+}

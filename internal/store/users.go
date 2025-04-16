@@ -13,7 +13,7 @@ type UserStorage struct {
 }
 
 type User struct {
-	ID       int      `json:"id"`
+	ID       string   `json:"id"`
 	Email    string   `json:"email"`
 	FullName string   `json:"full_name"`
 	Password password `json:"-"`
@@ -33,6 +33,10 @@ func (p *password) Set(rawPassword string) error {
 	p.hash = hash
 
 	return nil
+}
+
+func (p *password) Compare(text string) error {
+	return bcrypt.CompareHashAndPassword(p.hash, []byte(text))
 }
 
 func (s *UserStorage) IsSuperAdminOpen(ctx context.Context) (bool, error) {
@@ -65,4 +69,23 @@ func (s *UserStorage) OpenSuperAdmin(ctx context.Context, user *User) error {
 	}
 
 	return nil
+}
+
+func (s *UserStorage) GetUserByEmail(ctx context.Context, email string) (*User, error) {
+	query := `SELECT id, email, full_name, password FROM users WHERE email = $1`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	row := s.db.QueryRowContext(ctx, query, email)
+
+	user := &User{}
+	if err := row.Scan(&user.ID, &user.Email, &user.FullName, &user.Password.hash); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, ErrNotFound
+		}
+		return nil, err
+	}
+
+	return user, nil
 }

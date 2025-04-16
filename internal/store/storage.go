@@ -20,6 +20,7 @@ type Storage struct {
 	UsersStorage interface {
 		IsSuperAdminOpen(c context.Context) (bool, error)
 		OpenSuperAdmin(c context.Context, user *User) error
+		GetUserByEmail(c context.Context, email string) (*User, error)
 	}
 }
 
