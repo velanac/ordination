@@ -5,6 +5,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
+	"github.com/velenac/ordination/internal/models"
 )
 
 func JWTFromCookie(secret string) echo.MiddlewareFunc {
@@ -28,8 +29,14 @@ func JWTFromCookie(secret string) echo.MiddlewareFunc {
 				return c.JSON(http.StatusUnauthorized, map[string]string{"message": "Invalid token"})
 			}
 
-			// Postavi token u context ako želiš
-			c.Set("user", token.Claims)
+			userClaims := token.Claims.(jwt.MapClaims)
+			userProfile := &models.UserProfile{
+				Id:    userClaims["sub"].(string),
+				Email: userClaims["email"].(string),
+				Role:  userClaims["role"].(string),
+			}
+
+			c.Set("user", userProfile)
 
 			return next(c)
 		}

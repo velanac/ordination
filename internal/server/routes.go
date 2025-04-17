@@ -7,6 +7,8 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/velenac/ordination/frontend"
+	"github.com/velenac/ordination/internal/handlers"
+	"github.com/velenac/ordination/internal/service"
 )
 
 type CustomValidator struct {
@@ -24,7 +26,6 @@ func (cv *CustomValidator) Validate(i any) error {
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
 
-	e.HTTPErrorHandler = customErrorHandler
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
@@ -35,19 +36,29 @@ func (s *Server) RegisterRoutes() http.Handler {
 		MaxAge:           300,
 	}))
 	e.Validator = &CustomValidator{validator: validator.New()}
-
+	e.HTTPErrorHandler = handlers.CustomErrorHandler
 	frontend.RegisterFrondEndHandlers(e)
+
+	// Initialize the store and other services here
+	healtService := service.NewHealthService(s.store.Utils)
+	authService := service.NewAuthService(s.store.Auth, s.authentication)
+
+	// Initialize the handlers with the store and other services
+	healthHandler := handlers.NewHealthHandler(healtService)
+	authHandler := handlers.NewAuthHandler(authService)
 
 	api := e.Group("/api")
 	v1 := api.Group("/v1")
-	v1.GET("/health", s.healthCheckHandler)
-	v1.GET("/init", s.isSuperAdminOpenHandler)
-	v1.POST("/opensuperadmin", s.openSuperAdminHandler)
-	v1.POST("/auth/signin", s.signInHandler)
+	v1.GET("/health", healthHandler.HealthCheck)
+
+	v1.POST("/auth/signin", authHandler.SignIn)
+	v1.GET("/auth/isopen", authHandler.IsSuperAdminOpen)
+	v1.POST("/auth/opensuperadmin", authHandler.OpenSuperAdmin)
+
 	apiAuth := e.Group("/api")
 	v1Auth := apiAuth.Group("/v1")
 	v1Auth.Use(JWTFromCookie("secret"))
-	v1Auth.GET("/users/profile", s.getUserProfile)
+	v1Auth.GET("/auth/profile", authHandler.GetUserProfile)
 
 	return e
 }
