@@ -9,12 +9,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/joho/godotenv"
-	"github.com/velenac/ordination/internal/auth"
+	"github.com/velenac/ordination/internal/config"
 	"github.com/velenac/ordination/internal/db"
-	"github.com/velenac/ordination/internal/env"
 	"github.com/velenac/ordination/internal/server"
-	"github.com/velenac/ordination/internal/store"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -43,23 +40,7 @@ func gracefulShutdown(apiServer *http.Server, done chan bool) {
 }
 
 func main() {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	cfg := server.Config{
-		Addr: ":8080",
-		DB: server.DbConfig{
-			DbServer:     env.GetString("DB_SERVER", "postgres://postgres:Predator170@localhost:5432/"),
-			Catalog:      env.GetString("DB_CATALOG", "ordination"),
-			MaxOpenConns: env.GetInt("DB_MAX_OPEN_CONNS", 30),
-			MaxIdleConns: env.GetInt("DB_MAX_IDLE_CONNS", 30),
-			MaxIdleTime:  env.GetString("DB_MAX_IDLE_TIME", "15m"),
-		},
-		AppEnv:      env.GetString("APP_ENV", "development"),
-		FrontendURL: env.GetString("FRONTEND_URL", "http://localhost:3000"),
-	}
+	cfg := config.NewConfig()
 
 	db, err := db.New(
 		cfg.DB.DbServer,
@@ -74,9 +55,7 @@ func main() {
 	}
 	defer db.Close()
 
-	store := store.New(db)
-	JWTAuthenticator := auth.NewJWTAuthenticator("secret", "http//ord.rs", "http//ord.rs")
-	server := server.NewServer(cfg, store, JWTAuthenticator)
+	server := server.NewServer(cfg, db)
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)

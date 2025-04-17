@@ -1,41 +1,27 @@
 package server
 
 import (
+	"database/sql"
 	"net/http"
 	"time"
 
-	"github.com/velenac/ordination/internal/auth"
+	"github.com/velenac/ordination/internal/config"
 	"github.com/velenac/ordination/internal/store"
 )
 
-type DbConfig struct {
-	DbServer     string
-	Catalog      string
-	MaxOpenConns int
-	MaxIdleConns int
-	MaxIdleTime  string
-}
-
-type Config struct {
-	Addr        string
-	DB          DbConfig
-	AppEnv      string
-	FrontendURL string
-}
-
 type Server struct {
-	port           string
-	store          *store.Storage
-	config         Config
-	authentication *auth.JWTAuthenticator
+	port   string
+	store  *store.Store
+	config *config.Config
 }
 
-func NewServer(cfg Config, store *store.Storage, auth *auth.JWTAuthenticator) *http.Server {
+func NewServer(cfg *config.Config, db *sql.DB) *http.Server {
+	store := store.New(db)
+
 	NewServer := &Server{
-		port:           cfg.Addr,
-		store:          store,
-		config:         cfg,
-		authentication: auth,
+		port:   cfg.Addr,
+		store:  store,
+		config: cfg,
 	}
 
 	server := &http.Server{

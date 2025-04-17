@@ -1,4 +1,4 @@
-package env
+package config
 
 import (
 	"os"
@@ -43,4 +43,19 @@ func GetBool(key string, fallback bool) bool {
 	}
 
 	return boolVal
+}
+
+func GetDuration(key string, fallback string) string {
+	val, ok := os.LookupEnv(key)
+
+	if !ok {
+		return fallback
+	}
+
+	durationVal, err := strconv.Atoi(val)
+	if err != nil {
+		return fallback
+	}
+
+	return strconv.Itoa(durationVal)
 }

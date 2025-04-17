@@ -2,21 +2,19 @@ package store
 
 import (
 	"context"
-	"database/sql"
 )
 
-type UtilsRepository interface {
-	Ping(c context.Context) error
+type UtilsRepository struct {
+	store *Store
 }
 
-func NewUtilsRepository(db *sql.DB) UtilsRepository {
-	return &utilsRepository{db: db}
+func NewUtilsRepository(store *Store) *UtilsRepository {
+	return &UtilsRepository{store: store}
 }
 
-type utilsRepository struct {
-	db *sql.DB
-}
+func (s *UtilsRepository) Ping(c context.Context) error {
+	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
+	defer cancel()
 
-func (s *utilsRepository) Ping(c context.Context) error {
-	return s.db.Ping()
+	return s.store.DB().PingContext(ctx)
 }

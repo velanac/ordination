@@ -11,20 +11,22 @@ import (
 )
 
 type AuthService struct {
-	store         store.AuthRepository
+	store         *store.Store
+	auth          *store.AuthRepository
 	authenticator *auth.JWTAuthenticator
 }
 
-func NewAuthService(s store.AuthRepository, a *auth.JWTAuthenticator) *AuthService {
+func NewAuthService(s *store.Store, a *auth.JWTAuthenticator) *AuthService {
 	return &AuthService{
 		store:         s,
+		auth:          store.NewAuthRepository(),
 		authenticator: a,
 	}
 }
 
 // CheckCredentials checks if the provided email and password are valid credentials for a user.
 func (s *AuthService) CheckCredentials(c context.Context, email string, password string) (*models.User, error) {
-	user, err := s.store.GetUserByEmail(c, email)
+	user, err := s.auth.GetUserByEmail(c, s.store.Q(), email)
 	if err != nil {
 		return nil, err
 	}
@@ -56,17 +58,17 @@ func (s *AuthService) GenerateToken(user *models.User) (string, error) {
 	return token, nil
 }
 
-func (s *AuthService) IsSuperAdminOpen(c context.Context) (map[string]bool, error) {
-	isOpen, err := s.store.IsSuperAdminOpen(c)
+func (s *AuthService) IsSuperAdminOpen(c context.Context) (bool, error) {
+	isOpen, err := s.auth.IsSuperAdminOpen(c, s.store.Q())
 	if err != nil {
-		return nil, err
+		return true, err
 	}
 
-	return map[string]bool{"isOpen": isOpen}, nil
+	return isOpen, nil
 }
 
 func (s *AuthService) OpenSuperAdmin(c context.Context, payload *models.OpenSuperAdminPayload) error {
-	isExists, err := s.store.IsSuperAdminOpen(c)
+	isExists, err := s.auth.IsSuperAdminOpen(c, s.store.Q())
 	if err != nil {
 		return err
 	}
@@ -84,7 +86,7 @@ func (s *AuthService) OpenSuperAdmin(c context.Context, payload *models.OpenSupe
 		return err
 	}
 
-	if err := s.store.OpenSuperAdmin(c, user); err != nil {
+	if err := s.auth.OpenSuperAdmin(c, s.store.Q(), user); err != nil {
 		return err
 	}
 

@@ -8,30 +8,20 @@ import (
 	"github.com/velenac/ordination/internal/models"
 )
 
-type AuthRepository interface {
-	GetUserByEmail(c context.Context, email string) (*models.User, error)
-	IsSuperAdminOpen(c context.Context) (bool, error)
-	OpenSuperAdmin(c context.Context, user *models.User) error
+type AuthRepository struct{}
+
+func NewAuthRepository() *AuthRepository {
+	return &AuthRepository{}
 }
 
-type authRepository struct {
-	db *sql.DB
-}
-
-func NewAuthRepository(db *sql.DB) AuthRepository {
-	return &authRepository{
-		db: db,
-	}
-}
-
-func (r *authRepository) GetUserByEmail(c context.Context, email string) (*models.User, error) {
+func (r *AuthRepository) GetUserByEmail(c context.Context, q Querier, email string) (*models.User, error) {
 	query := `SELECT users.id, email, password, roles.name FROM users 
 			JOIN roles ON users.role_id = roles.id WHERE email = $1`
 
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	row := r.db.QueryRowContext(ctx, query, email)
+	row := q.QueryRowContext(ctx, query, email)
 
 	user := &models.User{}
 	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Role); err != nil {
@@ -44,7 +34,7 @@ func (r *authRepository) GetUserByEmail(c context.Context, email string) (*model
 	return user, nil
 }
 
-func (r *authRepository) IsSuperAdminOpen(c context.Context) (bool, error) {
+func (r *AuthRepository) IsSuperAdminOpen(c context.Context, q Querier) (bool, error) {
 	query := `SELECT COUNT(*) FROM users 
 				LEFT JOIN roles ON users.role_id = roles.id 
 				WHERE roles.name = 'SuperAdmin'`
@@ -52,7 +42,7 @@ func (r *authRepository) IsSuperAdminOpen(c context.Context) (bool, error) {
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	row := r.db.QueryRowContext(ctx, query)
+	row := q.QueryRowContext(ctx, query)
 
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -62,13 +52,13 @@ func (r *authRepository) IsSuperAdminOpen(c context.Context) (bool, error) {
 	return count > 0, nil
 }
 
-func (r *authRepository) OpenSuperAdmin(ctx context.Context, user *models.User) error {
+func (r *AuthRepository) OpenSuperAdmin(ctx context.Context, q Querier, user *models.User) error {
 	query := `INSERT INTO users (email, full_name, password, email_verified, role_id) VALUES ($1, $2, $3, $4, (SELECT id FROM roles WHERE name = 'SuperAdmin'))`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := r.db.ExecContext(ctx, query, user.Email, user.FullName, user.Password.Hash, time.Now())
+	_, err := q.ExecContext(ctx, query, user.Email, user.FullName, user.Password.Hash, time.Now())
 	if err != nil {
 		return err
 	}

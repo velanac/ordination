@@ -7,13 +7,13 @@ import (
 )
 
 type HealthService struct {
-	store store.UtilsRepository
+	utils *store.UtilsRepository
 }
 
-func NewHealthService(store store.UtilsRepository) *HealthService {
-	return &HealthService{store: store}
+func NewHealthService(s *store.Store) *HealthService {
+	return &HealthService{utils: store.NewUtilsRepository(s)}
 }
 
 func (s *HealthService) HealthCheck(c context.Context) error {
-	return s.store.Ping(c)
+	return s.utils.Ping(c)
 }

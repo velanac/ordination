@@ -52,7 +52,7 @@ func (h *AuthHandler) IsSuperAdminOpen(c echo.Context) error {
 		return NewInternalServerError("Failed to check admin status")
 	}
 
-	return RespondOK(c, map[string]bool{"isOpen": isOpen["isOpen"]})
+	return RespondOK(c, map[string]bool{"isOpen": isOpen})
 }
 
 func (h *AuthHandler) OpenSuperAdmin(c echo.Context) error {
