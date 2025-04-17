@@ -63,3 +63,10 @@ func NewUnauthorized(msg string) *ApiError {
 		Message: msg,
 	}
 }
+
+func NewForbidden(msg string) *ApiError {
+	return &ApiError{
+		Code:    http.StatusForbidden,
+		Message: msg,
+	}
+}

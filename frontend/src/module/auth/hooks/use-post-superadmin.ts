@@ -4,7 +4,7 @@ import { SuperUserFormPayload } from '@/module/auth/types';
 export const usePostSuperAdmin = () => {
   const postAdmin = async (palyoad: SuperUserFormPayload) => {
     try {
-      const res = await fetch('/api/v1/opensuperadmin', {
+      const res = await fetch('/api/v1/auth/opensuperadmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

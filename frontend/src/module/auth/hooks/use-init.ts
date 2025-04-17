@@ -6,7 +6,7 @@ const useInit = () =>
   useQuery<{ data: { isOpen: boolean } }>({
     queryKey: [queryKeys.init],
     queryFn: async () => {
-      const response = await fetchResource('/api/v1/init');
+      const response = await fetchResource('/api/v1/auth/isopen');
 
       if (!response.ok) {
         throw new Error('Network response was not ok');

@@ -66,6 +66,10 @@ func (h *AuthHandler) OpenSuperAdmin(c echo.Context) error {
 	}
 
 	if err := h.service.OpenSuperAdmin(c.Request().Context(), &payload); err != nil {
+		if err == models.ErrSuperAdminAlreadyExists {
+			return NewForbidden("Forbidden")
+		}
+
 		return NewInternalServerError("Failed to open super admin")
 	}
 
