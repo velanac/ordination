@@ -7,20 +7,21 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type DbConfig struct {
-	DbServer     string
-	Catalog      string
-	MaxOpenConns int
-	MaxIdleConns int
-	MaxIdleTime  string
-}
-
 type Config struct {
 	Addr        string
 	DB          DbConfig
 	AppEnv      string
 	FrontendURL string
 	Auth        AuthConfig
+	FileStore   FileStoreConfig
+}
+
+type DbConfig struct {
+	DbServer     string
+	Catalog      string
+	MaxOpenConns int
+	MaxIdleConns int
+	MaxIdleTime  string
 }
 
 type AuthConfig struct {
@@ -37,6 +38,10 @@ type TokenConfig struct {
 	Secret string
 	Exp    time.Duration
 	Iss    string
+}
+
+type FileStoreConfig struct {
+	BasePath string
 }
 
 func NewConfig() *Config {
@@ -66,6 +71,9 @@ func NewConfig() *Config {
 				Exp:    time.Hour * 24 * 7,
 				Iss:    GetString("ISSUER", "issuer.rs"), // 7 days
 			},
+		},
+		FileStore: FileStoreConfig{
+			BasePath: GetString("FILE_STORE_BASE_PATH", "storage"),
 		},
 	}
 }

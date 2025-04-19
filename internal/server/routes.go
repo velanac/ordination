@@ -7,9 +7,9 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/velenac/ordination/frontend"
-	"github.com/velenac/ordination/internal/auth"
 	"github.com/velenac/ordination/internal/handlers"
 	"github.com/velenac/ordination/internal/service"
+	"github.com/velenac/ordination/pkg/auth"
 )
 
 type CustomValidator struct {
@@ -39,6 +39,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	e.Validator = &CustomValidator{validator: validator.New()}
 	e.HTTPErrorHandler = handlers.CustomErrorHandler
 	frontend.RegisterFrondEndHandlers(e)
+
 	authenticator := auth.NewJWTAuthenticator(s.config.Auth.Token.Secret, s.config.Auth.Token.Iss, s.config.Auth.Token.Iss)
 
 	// Initialize the store and other services here
@@ -48,6 +49,8 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
 	authHandler := handlers.NewAuthHandler(authService)
+	// Initialize the file store and pass it to the handlers
+	e.Static("/files", "storage")
 
 	api := e.Group("/api")
 	v1 := api.Group("/v1")

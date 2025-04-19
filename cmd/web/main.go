@@ -9,9 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/velenac/ordination/internal/config"
 	"github.com/velenac/ordination/internal/db"
 	"github.com/velenac/ordination/internal/server"
+	"github.com/velenac/ordination/pkg/config"
+	"github.com/velenac/ordination/pkg/filestore"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {
@@ -54,8 +55,9 @@ func main() {
 		log.Fatal("Error connecting to the database:", err)
 	}
 	defer db.Close()
-
-	server := server.NewServer(cfg, db)
+	fs := filestore.New(cfg.FileStore.BasePath)
+	fs.SaveTestFile()
+	server := server.NewServer(cfg, db, fs)
 
 	// Create a done channel to signal when the shutdown is complete
 	done := make(chan bool, 1)

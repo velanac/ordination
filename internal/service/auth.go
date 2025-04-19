@@ -5,9 +5,9 @@ import (
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/velenac/ordination/internal/auth"
 	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/store"
+	"github.com/velenac/ordination/pkg/auth"
 )
 
 type AuthService struct {
