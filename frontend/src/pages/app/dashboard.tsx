@@ -6,7 +6,9 @@ const Dashboard = () => {
       <div className='flex-grow'>
         <h1 className='text-2xl font-bold mb-4'>Dashboard</h1>
         <div className='flex justify-center items-center'>
-          <SignOut />
+          <div className='w-sm'>
+            <SignOut />
+          </div>
         </div>
       </div>
     </div>

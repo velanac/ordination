@@ -1,5 +1,6 @@
-import { queryClient } from '@/lib/query-client';
 import { useNavigate } from 'react-router';
+
+import { queryClient } from '@/lib/query-client';
 
 export const useSignOut = () => {
   const navigate = useNavigate();
