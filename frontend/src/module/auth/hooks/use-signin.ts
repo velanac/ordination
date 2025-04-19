@@ -1,3 +1,4 @@
+import { queryClient, queryKeys } from '@/lib/query-client';
 import { SignInFormPayload } from '@/module/auth/types';
 
 export const useSignIn = () => {
@@ -19,6 +20,10 @@ export const useSignIn = () => {
         throw new Error(err.message);
       } else {
         alert('Sign in successfully');
+        queryClient.invalidateQueries({
+          queryKey: [queryKeys.profile],
+          type: 'all',
+        });
       }
     } catch (error) {
       if (error instanceof Error) {

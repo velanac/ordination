@@ -1,13 +1,11 @@
-import { Outlet } from 'react-router';
-
-const DashboardLayout = () => {
+const Dashboard = () => {
   return (
     <div className='flex flex-col h-full'>
       <div className='flex-grow'>
-        <Outlet />
+        <h1 className='text-2xl font-bold mb-4'>Dashboard</h1>
       </div>
     </div>
   );
 };
 
-export { DashboardLayout };
+export { Dashboard };
