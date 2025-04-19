@@ -61,6 +61,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth := apiAuth.Group("/v1")
 	v1Auth.Use(JWTFromCookie("secret"))
 	v1Auth.GET("/auth/profile", authHandler.GetUserProfile)
+	v1Auth.POST("/auth/signout", authHandler.SignOut)
 
 	return e
 }

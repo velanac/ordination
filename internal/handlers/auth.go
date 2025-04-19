@@ -84,3 +84,13 @@ func (h *AuthHandler) GetUserProfile(c echo.Context) error {
 
 	return RespondOK(c, user)
 }
+
+func (h *AuthHandler) SignOut(c echo.Context) error {
+	cookie := new(http.Cookie)
+	cookie.Name = "auth"
+	cookie.Value = ""
+	cookie.Expires = time.Now().Add(-time.Hour)
+	c.SetCookie(cookie)
+
+	return RespondOK(c, map[string]string{"message": "Signed out successfully"})
+}
