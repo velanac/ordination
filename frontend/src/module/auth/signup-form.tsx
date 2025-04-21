@@ -20,7 +20,6 @@ const SignUpForm = () => {
     resolver: zodResolver(SuperUserFormSchema),
     defaultValues: {
       email: '',
-      fullName: '',
       password: '',
       confirmPassword: '',
     },
@@ -42,19 +41,6 @@ const SignUpForm = () => {
                 <FormLabel>Username (email)</FormLabel>
                 <FormControl>
                   <Input placeholder='Email' {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name='fullName'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Full name</FormLabel>
-                <FormControl>
-                  <Input placeholder='Jon Smit' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>

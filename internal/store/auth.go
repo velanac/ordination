@@ -53,7 +53,7 @@ func (r *AuthRepository) IsSuperAdminOpen(c context.Context, q Querier) (bool, e
 }
 
 func (r *AuthRepository) OpenSuperAdmin(ctx context.Context, q Querier, user *models.User) error {
-	query := `INSERT INTO users (email, password, email_verified, role_id) VALUES ($1, $2, $3, $4, (SELECT id FROM roles WHERE name = 'SuperAdmin'))`
+	query := `INSERT INTO users (email, password, email_verified, role_id) VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = 'SuperAdmin'))`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
