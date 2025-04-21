@@ -78,8 +78,7 @@ func (s *AuthService) OpenSuperAdmin(c context.Context, payload *models.OpenSupe
 	}
 
 	user := &models.User{
-		Email:    payload.Email,
-		FullName: payload.FullName,
+		Email: payload.Email,
 	}
 
 	if err := user.Password.Set(payload.Password); err != nil {

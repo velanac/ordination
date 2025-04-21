@@ -11,7 +11,6 @@ type UserProfile struct {
 type User struct {
 	ID       string   `json:"id"`
 	Email    string   `json:"email"`
-	FullName string   `json:"full_name"`
 	Password password `json:"-"`
 	Role     string   `json:"role"`
 }
