@@ -92,7 +92,9 @@ func (h *AuthHandler) SignOut(c echo.Context) error {
 	cookie := new(http.Cookie)
 	cookie.Name = "auth"
 	cookie.Value = ""
+	cookie.Path = "/"
 	cookie.Expires = time.Now().Add(-time.Hour)
+	cookie.HttpOnly = true
 	c.SetCookie(cookie)
 
 	return RespondOK(c, map[string]string{"message": "Signed out successfully"})

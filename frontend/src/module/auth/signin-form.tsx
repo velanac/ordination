@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
@@ -14,8 +15,10 @@ import {
 import { Input } from '@/components/ui/input';
 import { useSignIn } from '@/module/auth/hooks/use-signin';
 import { SignInFormPayload, SignInFormSchema } from '@/module/auth/types';
+import { PasswordInput } from '@/components/ui/password-input';
 
 const SignInForm = () => {
+  const { t } = useTranslation('auth');
   const form = useForm<SignInFormPayload>({
     resolver: zodResolver(SignInFormSchema),
     defaultValues: {
@@ -37,9 +40,9 @@ const SignInForm = () => {
             name='email'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Username (email)</FormLabel>
+                <FormLabel>{t('signin.email')}</FormLabel>
                 <FormControl>
-                  <Input placeholder='Email' {...field} />
+                  <Input placeholder='example@mail.com' {...field} />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -50,16 +53,19 @@ const SignInForm = () => {
             name='password'
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Password</FormLabel>
+                <FormLabel>{t('signin.password')}</FormLabel>
                 <FormControl>
-                  <Input type='password' placeholder='Password' {...field} />
+                  <PasswordInput
+                    placeholder={t('signin.password')}
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
           <Button type='submit' className='w-full'>
-            Submit
+            {t('signin.submitButton')}
           </Button>
         </form>
       </Form>

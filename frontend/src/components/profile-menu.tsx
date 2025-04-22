@@ -44,7 +44,7 @@ const ProfileMenu = () => {
         <DropdownMenuItem onClick={() => navigate('/app/personal')}>
           Profile
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={signout}>Signout</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signout()}>Signout</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
