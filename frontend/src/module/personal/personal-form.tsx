@@ -15,12 +15,17 @@ import {
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Personal } from '@/types';
+import { usePostPersonal } from './hooks/use-post-personal';
+import { usePathPersonal } from './hooks/use-path-personal.';
 
 interface PersonalFormProps {
   personal?: Personal | null;
 }
 
 const PersonalForm = ({ personal }: PersonalFormProps) => {
+  const create = usePostPersonal();
+  const path = usePathPersonal();
+
   const form = useForm<PersonalFormPayload>({
     resolver: zodResolver(PersonalFormSchema),
     defaultValues: {
@@ -37,7 +42,11 @@ const PersonalForm = ({ personal }: PersonalFormProps) => {
   });
 
   const onSubmit = (data: PersonalFormPayload) => {
-    console.log(data);
+    if (personal) {
+      path.mutate(data);
+    } else {
+      create.mutate(data);
+    }
   };
 
   return (

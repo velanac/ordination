@@ -70,7 +70,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.POST("/auth/signout", authHandler.SignOut)
 	v1Auth.GET("/personal", personalHandler.GetPersonal)
 	v1Auth.POST("/personal", personalHandler.CreatePersonal)
-	v1Auth.PUT("/personal", personalHandler.UpdatePersonal)
+	v1Auth.PATCH("/personal", personalHandler.UpdatePersonal)
 
 	return e
 }

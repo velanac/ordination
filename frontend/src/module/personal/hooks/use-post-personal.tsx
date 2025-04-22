@@ -5,7 +5,7 @@ import { queryClient, queryKeys } from '@/lib/query-client';
 export const usePostPersonal = () =>
   useMutation({
     mutationFn: async (data: PersonalFormPayload) => {
-      const response = await fetch('/api/personal', {
+      const response = await fetch('/api/v1/personal', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

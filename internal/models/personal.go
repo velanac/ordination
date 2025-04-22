@@ -2,6 +2,7 @@ package models
 
 type Personal struct {
 	UserId     string `json:"userId"`
+	Titles     string `json:"titles"`
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
 	Phone      string `json:"phone"`
@@ -13,6 +14,7 @@ type Personal struct {
 }
 
 type PersonalPayload struct {
+	Titles     string `json:"titles"`
 	FirstName  string `json:"firstName"`
 	LastName   string `json:"lastName"`
 	Phone      string `json:"phone"`

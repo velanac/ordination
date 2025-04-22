@@ -34,6 +34,7 @@ func (s *PersonalService) GetPersonalByUserId(c context.Context, userId string) 
 func (s *PersonalService) CreatePersonal(c context.Context, userId string, payload *models.PersonalPayload) error {
 	personal := &models.Personal{
 		UserId:     userId,
+		Titles:     payload.Titles,
 		FirstName:  payload.FirstName,
 		LastName:   payload.LastName,
 		Phone:      payload.Phone,
@@ -55,6 +56,7 @@ func (s *PersonalService) CreatePersonal(c context.Context, userId string, paylo
 func (s *PersonalService) UpdatePersonal(c context.Context, userId string, payload *models.PersonalPayload) error {
 	personal := &models.Personal{
 		UserId:     userId,
+		Titles:     payload.Titles,
 		FirstName:  payload.FirstName,
 		LastName:   payload.LastName,
 		Phone:      payload.Phone,

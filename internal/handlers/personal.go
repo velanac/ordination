@@ -22,7 +22,7 @@ func (h *PersonalHandler) GetPersonal(c echo.Context) error {
 
 	personal, err := h.service.GetPersonalByUserId(c.Request().Context(), user.Id)
 	if err != nil {
-		return RespondOK(c, models.Personal{})
+		return RespondNoContent(c)
 	}
 
 	return RespondOK(c, personal)
