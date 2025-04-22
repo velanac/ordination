@@ -5,7 +5,7 @@ import { queryClient, queryKeys } from '@/lib/query-client';
 export const usePathPersonal = () =>
   useMutation({
     mutationFn: async (data: PersonalFormPayload) => {
-      const response = await fetch('/api/users/personal', {
+      const response = await fetch('/api/personal', {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',

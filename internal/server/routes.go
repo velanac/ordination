@@ -45,10 +45,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Initialize the store and other services here
 	healtService := service.NewHealthService(s.store)
 	authService := service.NewAuthService(s.store, authenticator)
+	personalService := service.NewPersonalService(s.store)
 
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
 	authHandler := handlers.NewAuthHandler(authService)
+	personalHandler := handlers.NewPersonalHandler(personalService)
+
 	// Initialize the file store and pass it to the handlers
 	e.Static("/files", "storage")
 
@@ -65,6 +68,9 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.Use(JWTFromCookie("secret"))
 	v1Auth.GET("/auth/profile", authHandler.GetUserProfile)
 	v1Auth.POST("/auth/signout", authHandler.SignOut)
+	v1Auth.GET("/personal", personalHandler.GetPersonal)
+	v1Auth.POST("/personal", personalHandler.CreatePersonal)
+	v1Auth.PUT("/personal", personalHandler.UpdatePersonal)
 
 	return e
 }

@@ -39,8 +39,11 @@ func (h *AuthHandler) SignIn(c echo.Context) error {
 
 	cookie := new(http.Cookie)
 	cookie.Name = "auth"
+	cookie.Path = "/"
 	cookie.Value = token
 	cookie.Expires = time.Now().Add(time.Hour * 24 * 3)
+	cookie.HttpOnly = true
+
 	c.SetCookie(cookie)
 
 	return RespondOK(c, map[string]string{"token": token})
