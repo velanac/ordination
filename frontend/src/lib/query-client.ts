@@ -3,6 +3,7 @@ import { QueryClient } from '@tanstack/react-query';
 export const queryKeys = {
   init: 'init',
   profile: 'profile',
+  personal: 'personal',
 };
 
 function queryErrorHandler(error: Error): void {
