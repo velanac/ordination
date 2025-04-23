@@ -1,5 +1,6 @@
-import { queryClient, queryKeys } from '@/lib/query-client';
+import { ToastService } from '@/lib/toast-service';
 import { SignInFormPayload } from '@/module/auth/types';
+import { queryClient, queryKeys } from '@/lib/query-client';
 
 export const useSignIn = () => {
   const signin = async (palyoad: SignInFormPayload) => {
@@ -19,7 +20,7 @@ export const useSignIn = () => {
         const err = await res.json();
         throw new Error(err.message);
       } else {
-        alert('Sign in successfully');
+        ToastService.success('Sign in successfully!');
         queryClient.invalidateQueries({
           queryKey: [queryKeys.profile],
           type: 'all',
@@ -27,7 +28,7 @@ export const useSignIn = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        ToastService.error(error.message);
       }
     }
   };

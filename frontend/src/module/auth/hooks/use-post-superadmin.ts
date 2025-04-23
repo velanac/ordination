@@ -1,4 +1,5 @@
 import { queryClient, queryKeys } from '@/lib/query-client';
+import { ToastService } from '@/lib/toast-service';
 import { SuperUserFormPayload } from '@/module/auth/types';
 
 export const usePostSuperAdmin = () => {
@@ -11,7 +12,6 @@ export const usePostSuperAdmin = () => {
         },
         body: JSON.stringify({
           email: palyoad.email,
-          fullName: palyoad.fullName,
           password: palyoad.password,
         }),
       });
@@ -24,11 +24,11 @@ export const usePostSuperAdmin = () => {
           queryKey: [queryKeys.init],
           type: 'all',
         });
-        alert('Super admin created successfully');
+        ToastService.success('Super admin created successfully!');
       }
     } catch (error) {
       if (error instanceof Error) {
-        alert(error.message);
+        ToastService.error(error.message);
       }
     }
   };
