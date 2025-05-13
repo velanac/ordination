@@ -1,3 +1,4 @@
+import { Separator } from '@/components/ui/separator';
 import { usePersonal } from '@/module/personal/hooks/use-personal';
 import { PersonalForm } from '@/module/personal/personal-form';
 
@@ -15,7 +16,15 @@ export default function PersonalPage() {
   const personal = data?.data ?? null;
 
   return (
-    <div className='flex flex-col gap-4 p-4 w-md mx-auto'>
+    <div className='container mx-auto'>
+      <div className='p-4 mx-auto'>
+        <h1 className='text-2xl font-bold'>Personal Information</h1>
+        <p className='text-sm text-muted-foreground'>
+          This information will be used to generate your resume. Please fill in
+          all the fields.
+        </p>
+        <Separator className='my-4' />
+      </div>
       <PersonalForm personal={personal} />
     </div>
   );

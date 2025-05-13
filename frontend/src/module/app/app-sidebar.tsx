@@ -12,6 +12,7 @@ const AppSidebar = () => {
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup />
+        Tekst
         <SidebarGroup />
       </SidebarContent>
       <SidebarFooter />

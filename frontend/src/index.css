@@ -125,3 +125,8 @@ body,
     @apply bg-background text-foreground;
   }
 }
+
+.outlet-container {
+  overflow-y: scroll;
+  height: 100%;
+}

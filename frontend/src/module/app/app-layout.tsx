@@ -20,12 +20,18 @@ const AppLayout = () => {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main className='flex flex-col w-full'>
+      <main className='flex w-full flex-col overflow-hidden'>
         <Header>
           <SidebarTrigger />
           <ProfileMenu />
         </Header>
-        <Outlet />
+        <div className='flex w-full h-full'>
+          <div className='flex w-full h-full'>
+            <div className='flex w-full h-fit overflow-auto'>
+              <Outlet />
+            </div>
+          </div>
+        </div>
       </main>
     </SidebarProvider>
   );
