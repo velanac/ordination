@@ -1,0 +1,11 @@
+{
+  "title": "Patients",
+  "description": "Manage your patients",
+  "addPatient": "Add Patient",
+  "editPatient": "Edit Patient",
+  "deletePatient": "Delete Patient",
+  "patientDetails": "Patient Details",
+  "patientName": "Patient Name",
+  "patientAge": "Patient Age",
+  "patientGender": "Patient"
+}

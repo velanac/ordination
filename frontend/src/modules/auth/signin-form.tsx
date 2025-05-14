@@ -13,8 +13,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useSignIn } from '@/module/auth/hooks/use-signin';
-import { SignInFormPayload, SignInFormSchema } from '@/module/auth/types';
+import { useSignIn } from '@/modules/auth/hooks/use-signin';
+import { SignInFormPayload, SignInFormSchema } from '@/modules/auth/types';
 import { PasswordInput } from '@/components/ui/password-input';
 
 const SignInForm = () => {

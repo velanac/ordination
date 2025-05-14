@@ -2,7 +2,6 @@ import React from 'react';
 
 import {
   ColumnDef,
-  ColumnFiltersState,
   flexRender,
   getCoreRowModel,
   useReactTable,
@@ -13,6 +12,7 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFacetedMinMaxValues,
+  FilterFn,
 } from '@tanstack/react-table';
 
 import {
@@ -25,41 +25,67 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { DataTablePagination } from './data-table-pagination';
+import { rankItem } from '@tanstack/match-sorter-utils';
+import { DebouncedInput } from './debounced-input';
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
+  // Rank the item
+  const itemRank = rankItem(row.getValue(columnId), value);
+
+  // Store the itemRank info
+  addMeta({
+    itemRank,
+  });
+
+  // Return if the item should be filtered in/out
+  return itemRank.passed;
+};
 
 export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  );
+  const [globalFilter, setGlobalFilter] = React.useState('');
 
   const table = useReactTable({
     data,
+    filterFns: {
+      fuzzy: fuzzyFilter,
+    },
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-    onColumnFiltersChange: setColumnFilters,
     getFilteredRowModel: getFilteredRowModel(),
     getFacetedRowModel: getFacetedRowModel(), // client-side faceting
     getFacetedUniqueValues: getFacetedUniqueValues(), // generate unique values for select filter/autocomplete
-    getFacetedMinMaxValues: getFacetedMinMaxValues(), // generate min/max values for range filter
+    getFacetedMinMaxValues: getFacetedMinMaxValues(),
+    globalFilterFn: fuzzyFilter, // generate min/max values for range filter
     state: {
       sorting,
-      columnFilters,
+      globalFilter,
     },
     debugTable: false,
   });
 
   return (
-    <div>
+    <div className='w-full'>
+      <div className='flex items-center py-4'>
+        <DebouncedInput
+          placeholder='Search...'
+          value={globalFilter ?? ''}
+          onChange={(value) => setGlobalFilter(String(value))}
+          className='max-w-sm'
+        />
+      </div>
       <div className='rounded-md border'>
         <Table>
           <TableHeader>

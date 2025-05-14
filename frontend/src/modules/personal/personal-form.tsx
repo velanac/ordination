@@ -1,3 +1,5 @@
+import { Grid2 } from '@/components/layout/girid2';
+import { Grid3 } from '@/components/layout/girid3';
 import { Button } from '@/components/ui/button';
 import {
   Form,
@@ -11,22 +13,18 @@ import { Input } from '@/components/ui/input';
 import {
   PersonalFormPayload,
   PersonalFormSchema,
-} from '@/module/personal/types';
+} from '@/modules/personal/types';
 import { Personal } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router';
 import { usePathPersonal } from './hooks/use-path-personal.';
 import { usePostPersonal } from './hooks/use-post-personal';
-import { Grid2 } from '@/components/layout/girid2';
-import { Grid3 } from '@/components/layout/girid3';
 
 interface PersonalFormProps {
   personal?: Personal | null;
 }
 
 const PersonalForm = ({ personal }: PersonalFormProps) => {
-  const navigate = useNavigate();
   const create = usePostPersonal();
   const path = usePathPersonal();
 
@@ -183,9 +181,6 @@ const PersonalForm = ({ personal }: PersonalFormProps) => {
             />
           </Grid3>
           <div className='flex w-full items-center justify-end space-x-4'>
-            <Button type='button' onClick={() => navigate(-1)}>
-              Cancel
-            </Button>
             <Button type='submit'>Submit</Button>
           </div>
         </form>

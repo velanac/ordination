@@ -1,9 +1,12 @@
-import { Separator } from '@/components/ui/separator';
-import { usePersonal } from '@/module/personal/hooks/use-personal';
-import { PersonalForm } from '@/module/personal/personal-form';
+import { useNavigate } from 'react-router';
+
+import { FormContainer } from '@/components/form-container';
+import { PersonalForm } from '@/modules/personal/personal-form';
+import { usePersonal } from '@/modules/personal/hooks/use-personal';
 
 export default function PersonalPage() {
   const { data, isLoading } = usePersonal();
+  const navidate = useNavigate();
 
   if (isLoading) {
     return (
@@ -16,16 +19,12 @@ export default function PersonalPage() {
   const personal = data?.data ?? null;
 
   return (
-    <div className='container mx-auto'>
-      <div className='p-4 mx-auto'>
-        <h1 className='text-2xl font-bold'>Personal Information</h1>
-        <p className='text-sm text-muted-foreground'>
-          This information will be used to generate your resume. Please fill in
-          all the fields.
-        </p>
-        <Separator className='my-4' />
-      </div>
+    <FormContainer
+      title='Personal Information'
+      description='Update your personal information'
+      onCancelClick={() => navidate(-1)}
+    >
       <PersonalForm personal={personal} />
-    </div>
+    </FormContainer>
   );
 }

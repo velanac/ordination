@@ -1,11 +1,11 @@
-import { ToastService } from '@/lib/toast-service';
-import { SignInFormPayload } from '@/module/auth/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
+import { ToastService } from '@/lib/toast-service';
+import { SuperUserFormPayload } from '@/modules/auth/types';
 
-export const useSignIn = () => {
-  const signin = async (palyoad: SignInFormPayload) => {
+export const usePostSuperAdmin = () => {
+  const postAdmin = async (palyoad: SuperUserFormPayload) => {
     try {
-      const res = await fetch('/api/v1/auth/signin', {
+      const res = await fetch('/api/v1/auth/opensuperadmin', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -16,15 +16,15 @@ export const useSignIn = () => {
         }),
       });
 
-      if (!res.ok) {
+      if (!res.ok && res.status !== 204) {
         const err = await res.json();
         throw new Error(err.message);
       } else {
-        ToastService.success('Sign in successfully!');
         queryClient.invalidateQueries({
-          queryKey: [queryKeys.profile],
+          queryKey: [queryKeys.init],
           type: 'all',
         });
+        ToastService.success('Super admin created successfully!');
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -33,5 +33,5 @@ export const useSignIn = () => {
     }
   };
 
-  return signin;
+  return postAdmin;
 };
