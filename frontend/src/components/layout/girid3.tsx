@@ -3,7 +3,11 @@ type Props = {
 };
 
 function Grid3({ children }: Props) {
-  return <div className='grid md:grid-cols-3 gap-4'>{children}</div>;
+  return (
+    <div className='grid md:grid-cols-3 h-fit gap-4 items-start'>
+      {children}
+    </div>
+  );
 }
 
 export { Grid3 };

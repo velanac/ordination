@@ -1,3 +1,6 @@
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import { Grid2 } from '@/components/layout/girid2';
 import { Grid3 } from '@/components/layout/girid3';
 import { Button } from '@/components/ui/button';
@@ -15,8 +18,6 @@ import {
   PersonalFormSchema,
 } from '@/modules/personal/types';
 import { Personal } from '@/types';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
 import { usePathPersonal } from './hooks/use-path-personal.';
 import { usePostPersonal } from './hooks/use-post-personal';
 

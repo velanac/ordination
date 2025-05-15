@@ -1,0 +1,11 @@
+{
+  "title": "Pacijenti",
+  "description": "Upravljajte svojim pacijentima",
+  "addPatient": "Dodaj Pacijenta",
+  "editPatient": "Izmeni Pacijenta",
+  "deletePatient": "Obriši Pacijenta",
+  "patientDetails": "Pacijent Detalji",
+  "patientName": "Pacijent Ime",
+  "patientAge": "Pacijent Godine",
+  "patientGender": "Pol Pacijent"
+}

@@ -10,6 +10,7 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import routers from '@/pages/routes.tsx';
 import { Toaster } from '@/components/ui/sonner';
 import { queryClient } from '@/lib/query-client';
+import { ModalProvider } from './components/modals/modal-provider';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -37,6 +38,7 @@ createRoot(document.getElementById('root')!).render(
     >
       <QueryClientProvider client={queryClient}>
         <RouterProvider router={routers} />
+        <ModalProvider />
         <ReactQueryDevtools initialIsOpen={false} />
         <Toaster richColors />
       </QueryClientProvider>

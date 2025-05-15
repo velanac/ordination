@@ -3,7 +3,7 @@ import { useMemo, useTransition } from 'react';
 import { useNavigate } from 'react-router';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { PatientList } from '@/modules/patients/types';
+import { PatientList } from '@/types';
 import { DataTableActions } from '@/components/data-table/data-table-actions';
 import { DataTable } from '@/components/data-table';
 
