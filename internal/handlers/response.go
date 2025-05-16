@@ -70,3 +70,10 @@ func NewForbidden(msg string) *ApiError {
 		Message: msg,
 	}
 }
+
+func NewNotFound(msg string) *ApiError {
+	return &ApiError{
+		Code:    http.StatusNotFound,
+		Message: msg,
+	}
+}
