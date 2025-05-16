@@ -14,6 +14,7 @@ function PatientModal() {
 
   return (
     <Dialog
+      modal={false}
       open={isOpen}
       onOpenChange={() =>
         setState({ isOpen: false, patientId: null, selectedItem: null })

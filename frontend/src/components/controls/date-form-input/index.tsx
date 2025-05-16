@@ -1,6 +1,5 @@
 'use client';
 
-import * as React from 'react';
 import { format, getMonth, getYear, setMonth, setYear } from 'date-fns';
 import { CalendarIcon } from 'lucide-react';
 
@@ -21,113 +20,141 @@ import {
 } from '@/components/ui/select';
 import { TimePicker } from './time-picker';
 import { srLatn } from 'date-fns/locale';
+import { Control, FieldValues, Path } from 'react-hook-form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
 
-interface DatePickerProps {
+interface Props<T extends FieldValues> {
+  name: Path<T>;
+  label: string;
+  control: Control<T>;
   startYear?: number;
   endYear?: number;
+  useTimePicker?: boolean;
 }
 
-function DatePicker(props: DatePickerProps) {
+function DateFormInput<T extends FieldValues>(props: Props<T>) {
   const {
+    name,
+    label,
+    control,
     startYear = getYear(new Date()) - 100,
     endYear = getYear(new Date()) + 100,
+    useTimePicker = false,
   } = props;
-
-  const [date, setDate] = React.useState<Date>(new Date());
 
   const months = Array.from({ length: 12 }, (_, i) =>
     format(new Date(2000, i, 1), 'LLLL', { locale: srLatn })
   );
-
   const years = Array.from(
     { length: endYear - startYear + 1 },
     (_, i) => startYear + i
   );
-
-  const handleMonthChange = (month: string) => {
-    const newDate = setMonth(date, months.indexOf(month));
-    setDate(newDate);
-  };
-
-  const handleYearChange = (year: string) => {
-    const newDate = setYear(date, parseInt(year));
-    setDate(newDate);
-  };
-
-  const handleSelect = (newDate: Date | undefined) => {
-    if (newDate) {
-      setDate(newDate);
-    }
-  };
-
-  console.log('date', date);
+  const stringFormat = useTimePicker ? 'PPP HH:mm:ss' : 'PPP';
 
   return (
-    <Popover>
-      <PopoverTrigger asChild>
-        <Button
-          variant={'outline'}
-          className={cn(
-            'w-[240px] justify-start text-left font-normal',
-            !date && 'text-muted-foreground'
-          )}
-        >
-          <CalendarIcon />
-          {date ? (
-            format(date, 'PPP HH:mm:ss', { locale: srLatn })
-          ) : (
-            <span>Pick a date</span>
-          )}
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className='w-auto p-0' align='start'>
-        <div className='flex justify-between p-2'>
-          <Select
-            onValueChange={handleMonthChange}
-            value={months[getMonth(date)]}
-          >
-            <SelectTrigger className='w-[110px]'>
-              <SelectValue placeholder='Month' />
-            </SelectTrigger>
-            <SelectContent>
-              {months.map((month) => (
-                <SelectItem key={month} value={month}>
-                  {month}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          <Select
-            onValueChange={handleYearChange}
-            value={getYear(date).toString()}
-          >
-            <SelectTrigger className='w-[110px]'>
-              <SelectValue placeholder='Year' />
-            </SelectTrigger>
-            <SelectContent>
-              {years.map((year) => (
-                <SelectItem key={year} value={year.toString()}>
-                  {year}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <Calendar
-          mode='single'
-          selected={date}
-          onSelect={handleSelect}
-          initialFocus
-          month={date}
-          onMonthChange={setDate}
-          locale={srLatn}
-        />
-        <div className='p-3 border-t border-border flex items-center justify-center'>
-          <TimePicker date={date} setDate={handleSelect} />
-        </div>
-      </PopoverContent>
-    </Popover>
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <Popover>
+              <PopoverTrigger asChild>
+                <Button
+                  variant={'outline'}
+                  className={cn(
+                    'w-full justify-start text-left font-normal',
+                    !field.value && 'text-muted-foreground'
+                  )}
+                >
+                  <CalendarIcon />
+                  {field.value ? (
+                    format(field.value, stringFormat, { locale: srLatn })
+                  ) : (
+                    <span>{label}</span>
+                  )}
+                </Button>
+              </PopoverTrigger>
+              <PopoverContent className='w-auto p-0' align='start'>
+                <div className='flex justify-between p-2'>
+                  <Select
+                    onValueChange={(month: string) => {
+                      const newDate = setMonth(
+                        field.value,
+                        months.indexOf(month)
+                      );
+                      field.onChange(newDate);
+                    }}
+                    value={months[getMonth(field.value)]}
+                  >
+                    <SelectTrigger className='w-[110px]'>
+                      <SelectValue placeholder='Month' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {months.map((month) => (
+                        <SelectItem key={month} value={month}>
+                          {month}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <Select
+                    onValueChange={(year: string) => {
+                      const newDate = setYear(field.value, parseInt(year));
+                      field.onChange(newDate);
+                    }}
+                    value={getYear(field.value).toString()}
+                  >
+                    <SelectTrigger className='w-[110px]'>
+                      <SelectValue placeholder='Year' />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {years.map((year) => (
+                        <SelectItem key={year} value={year.toString()}>
+                          {year}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <Calendar
+                  mode='single'
+                  selected={field.value}
+                  onSelect={(newDate: Date | undefined) => {
+                    if (newDate) {
+                      field.onChange(newDate);
+                    }
+                  }}
+                  initialFocus
+                  month={field.value}
+                  onMonthChange={field.onChange}
+                  locale={srLatn}
+                />
+                {useTimePicker && (
+                  <div className='p-3 border-t border-border flex items-center justify-center'>
+                    <TimePicker
+                      date={field.value}
+                      setDate={(newDate: Date | undefined) => {
+                        if (newDate) {
+                          field.onChange(newDate);
+                        }
+                      }}
+                    />
+                  </div>
+                )}
+              </PopoverContent>
+            </Popover>
+          </FormControl>
+        </FormItem>
+      )}
+    />
   );
 }
 
-export { DatePicker };
+export { DateFormInput };

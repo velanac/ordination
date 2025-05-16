@@ -4,7 +4,6 @@ import { PatientsTable } from '@/modules/patients/patients-table';
 import { DataTableContainer } from '@/components/data-table-container';
 import { useSetAtom } from 'jotai';
 import { patientModal } from '@/store/patients';
-import { DatePicker } from '@/components/controls/date-form-input';
 
 function Patients() {
   const navigate = useNavigate();
@@ -22,7 +21,6 @@ function Patients() {
     >
       <div className='flex w-full flex-col gap-4'>
         <PatientsTable patients={[]} />
-        <DatePicker />
       </div>
     </DataTableContainer>
   );

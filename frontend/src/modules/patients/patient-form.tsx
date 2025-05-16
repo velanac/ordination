@@ -14,6 +14,8 @@ import { Input } from '@/components/ui/input';
 import { Grid3 } from '@/components/layout/girid3';
 import { Button } from '@/components/ui/button';
 import { Grid4 } from '@/components/layout/grid4';
+import { getYear } from 'date-fns';
+import { DateFormInput } from '@/components/controls/date-form-input';
 
 type Props = {
   patient?: PatientSchema;
@@ -34,6 +36,7 @@ function PatientForm({ patient }: Props) {
   });
 
   const onSubmit = (data: PatientSchema) => {
+    console.log('Form data:', data);
     if (patient) {
       // path.mutate(data);
     } else {
@@ -62,18 +65,12 @@ function PatientForm({ patient }: Props) {
                 )}
               />
             </div>
-            <FormField
+            <DateFormInput
+              name='dateOfBirth'
+              label='Date of Birth'
               control={form.control}
-              name='fullName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Data of birth</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Data of birth' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              startYear={1900}
+              endYear={getYear(new Date())}
             />
           </Grid3>
           <Grid3>

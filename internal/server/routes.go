@@ -71,6 +71,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.GET("/personal", personalHandler.GetPersonal)
 	v1Auth.POST("/personal", personalHandler.CreatePersonal)
 	v1Auth.PATCH("/personal", personalHandler.UpdatePersonal)
+	v1Auth.GET("/patients", patientHandler.Index)
+	v1Auth.GET("/patients/:id", patientHandler.Show)
+	v1Auth.POST("/patients", patientHandler.Store)
+	v1Auth.PATCH("/patients/:id", patientHandler.Update)
+	v1Auth.DELETE("/patients/:id", patientHandler.Destroy)
 
 	return e
 }
