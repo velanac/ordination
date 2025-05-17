@@ -1,7 +1,7 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS patients (
-    id UUID PRIMARY KEY,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     full_name TEXT NOT NULL,
     gender VARCHAR(10) NOT NULL,
     date_of_birth DATE,
@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS patients (
     address TEXT,
     city TEXT,
     country TEXT,
-    postal_code VARCHAR(20),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )

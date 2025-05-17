@@ -16,12 +16,14 @@ import { Button } from '@/components/ui/button';
 import { Grid4 } from '@/components/layout/grid4';
 import { getYear } from 'date-fns';
 import { DateFormInput } from '@/components/controls/date-form-input';
+import { usePatientPost } from './hooks/use-patient-post';
 
 type Props = {
   patient?: PatientSchema;
 };
 
 function PatientForm({ patient }: Props) {
+  const create = usePatientPost();
   const form = useForm<PatientSchema>({
     resolver: zodResolver(PatientSchema),
     defaultValues: {
@@ -38,9 +40,16 @@ function PatientForm({ patient }: Props) {
   const onSubmit = (data: PatientSchema) => {
     console.log('Form data:', data);
     if (patient) {
-      // path.mutate(data);
+      console.log('Updating patient:', patient.id);
     } else {
-      // create.mutate(data);
+      create.mutate(data, {
+        onSuccess: () => {
+          form.reset();
+        },
+        onError: (error) => {
+          console.error('Error creating patient:', error);
+        },
+      });
     }
   };
 

@@ -16,7 +16,7 @@ func NewPatientsRepository() *PatientsRepository {
 
 func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.Patient, error) {
 	query := `SELECT 
-				id, full_name, gender, date_of_birth, email, phone, address, city, country, created_at 
+				id, full_name, gender, date_of_birth, email, phone, address, city, country 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -79,7 +79,7 @@ func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) 
 func (r *PatientsRepository) Create(ctx context.Context, q Querier, patient *models.Patient) error {
 	query := `INSERT INTO 
 				patients (full_name, gender, date_of_birth, email, phone, address, city, country)
-				VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 

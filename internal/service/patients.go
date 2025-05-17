@@ -69,6 +69,16 @@ func (s *PatientService) Update(c context.Context, id string, payload *models.Pa
 		Country:     payload.Country,
 	}
 
+	// Check if the patient exists
+	existingPatient, err := s.patients.GetById(c, s.store.Q(), id)
+	if err != nil {
+		return err
+	}
+
+	if existingPatient == nil {
+		return ErrNotFound
+	}
+
 	if err := s.patients.Update(c, s.store.Q(), patient); err != nil {
 		return err
 	}
@@ -77,6 +87,16 @@ func (s *PatientService) Update(c context.Context, id string, payload *models.Pa
 }
 
 func (s *PatientService) Delete(c context.Context, id string) error {
+	// Check if the patient exists
+	existingPatient, err := s.patients.GetById(c, s.store.Q(), id)
+	if err != nil {
+		return err
+	}
+
+	if existingPatient == nil {
+		return ErrNotFound
+	}
+	// Delete the patient
 	if err := s.patients.Delete(c, s.store.Q(), id); err != nil {
 		return err
 	}

@@ -4,6 +4,7 @@ export const queryKeys = {
   init: 'init',
   profile: 'profile',
   personal: 'personal',
+  patients: 'patients',
 };
 
 function queryErrorHandler(error: Error): void {
