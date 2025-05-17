@@ -38,16 +38,7 @@ func (s *PatientService) GetById(c context.Context, id string) (*models.Patient,
 }
 
 func (s *PatientService) Create(c context.Context, payload *models.PatientPayload) error {
-	patient := &models.Patient{
-		FullName:    payload.FullName,
-		Gender:      payload.Gender,
-		DateOfBirth: payload.DateOfBirth,
-		Email:       payload.Email,
-		Phone:       payload.Phone,
-		Address:     payload.Address,
-		City:        payload.City,
-		Country:     payload.Country,
-	}
+	patient := payload.GetPatient()
 
 	if err := s.patients.Create(c, s.store.Q(), patient); err != nil {
 		return err
@@ -57,29 +48,19 @@ func (s *PatientService) Create(c context.Context, payload *models.PatientPayloa
 }
 
 func (s *PatientService) Update(c context.Context, id string, payload *models.PatientPayload) error {
-	patient := &models.Patient{
-		ID:          id,
-		FullName:    payload.FullName,
-		Gender:      payload.Gender,
-		DateOfBirth: payload.DateOfBirth,
-		Email:       payload.Email,
-		Phone:       payload.Phone,
-		Address:     payload.Address,
-		City:        payload.City,
-		Country:     payload.Country,
-	}
+	patient := payload.GetPatient()
 
 	// Check if the patient exists
-	existingPatient, err := s.patients.GetById(c, s.store.Q(), id)
+	exist, err := s.patients.IsExists(c, s.store.Q(), id)
 	if err != nil {
 		return err
 	}
 
-	if existingPatient == nil {
+	if !exist {
 		return ErrNotFound
 	}
 
-	if err := s.patients.Update(c, s.store.Q(), patient); err != nil {
+	if err := s.patients.Update(c, s.store.Q(), patient, id); err != nil {
 		return err
 	}
 
@@ -88,12 +69,12 @@ func (s *PatientService) Update(c context.Context, id string, payload *models.Pa
 
 func (s *PatientService) Delete(c context.Context, id string) error {
 	// Check if the patient exists
-	existingPatient, err := s.patients.GetById(c, s.store.Q(), id)
+	exist, err := s.patients.IsExists(c, s.store.Q(), id)
 	if err != nil {
 		return err
 	}
 
-	if existingPatient == nil {
+	if !exist {
 		return ErrNotFound
 	}
 	// Delete the patient

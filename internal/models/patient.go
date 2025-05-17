@@ -1,7 +1,9 @@
 package models
 
 type PatientPayload struct {
-	FullName    string `json:"fullName" validate:"required"`
+	FirstName   string `json:"firstName" validate:"required"`
+	ParentName  string `json:"parentName"`
+	LastName    string `json:"lastName" validate:"required"`
 	Gender      string `json:"gender" validate:"required"`
 	DateOfBirth string `json:"dateOfBirth" validate:"required"`
 	Email       string `json:"email" validate:"required,email"`
@@ -11,9 +13,26 @@ type PatientPayload struct {
 	Country     string `json:"country" validate:"required"`
 }
 
+func (p *PatientPayload) GetPatient() *Patient {
+	return &Patient{
+		FirstName:   p.FirstName,
+		ParentName:  p.ParentName,
+		LastName:    p.LastName,
+		Gender:      p.Gender,
+		DateOfBirth: p.DateOfBirth,
+		Email:       p.Email,
+		Phone:       p.Phone,
+		Address:     p.Address,
+		City:        p.City,
+		Country:     p.Country,
+	}
+}
+
 type Patient struct {
 	ID          string `json:"id"`
-	FullName    string `json:"fullName"`
+	FirstName   string `json:"firstName"`
+	ParentName  string `json:"parentName"`
+	LastName    string `json:"lastName"`
 	Gender      string `json:"gender"`
 	DateOfBirth string `json:"dateOfBirth"`
 	Email       string `json:"email"`

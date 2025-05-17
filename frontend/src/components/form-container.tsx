@@ -19,8 +19,8 @@ function FormContainer({
   className,
 }: Props) {
   return (
-    <div className={cn('container mx-auto', className)}>
-      <div className='py-2 px-4  mx-auto flex items-center justify-between'>
+    <div className={cn('container mx-auto h-full w-full', className)}>
+      <div className='py-2 px-4  mx-auto flex items-center justify-between '>
         <div className=''>
           <h1 className='text-2xl font-bold'>{title}</h1>
           <p className='text-sm text-muted-foreground'>{description}</p>
@@ -29,7 +29,7 @@ function FormContainer({
           <X className='size-6' />
         </Button>
       </div>
-      <Separator className='my-2' />
+      <Separator className='my-2 mb-5' />
       {children}
     </div>
   );

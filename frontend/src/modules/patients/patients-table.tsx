@@ -3,22 +3,34 @@ import { useMemo, useTransition } from 'react';
 import { useNavigate } from 'react-router';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { PatientList } from '@/types';
+import { PatientSchema } from '@/types';
 import { DataTableActions } from '@/components/data-table/data-table-actions';
 import { DataTable } from '@/components/data-table';
+import { useSetAtom } from 'jotai';
+import { patientModal } from '@/store/patients';
 
 type Props = {
-  patients: PatientList[];
+  patients: PatientSchema[];
 };
 
 function PatientsTable({ patients }: Props) {
   const navigate = useNavigate();
+  const setPatientModal = useSetAtom(patientModal);
   const [, startTransition] = useTransition();
-  const columns: ColumnDef<PatientList>[] = useMemo<ColumnDef<PatientList>[]>(
+  const columns: ColumnDef<PatientSchema>[] = useMemo<
+    ColumnDef<PatientSchema>[]
+  >(
     () => [
       {
         header: 'Full Name',
-        accessorKey: 'fullName',
+        cell: ({ row }) => {
+          const item = row.original;
+          return (
+            <div>
+              {item.firstName} {item.parentName} {item.lastName}
+            </div>
+          );
+        },
       },
       {
         header: 'Email',
@@ -39,7 +51,7 @@ function PatientsTable({ patients }: Props) {
           return (
             <DataTableActions
               onDelete={() => {}}
-              onEdit={() => navigate(`/app/patients/${item.id.toString()}`)}
+              onEdit={() => navigate(`/app/patients/${item.id}`)}
             />
           );
         },

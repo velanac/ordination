@@ -16,7 +16,7 @@ func NewPatientsRepository() *PatientsRepository {
 
 func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.Patient, error) {
 	query := `SELECT 
-				id, full_name, gender, date_of_birth, email, phone, address, city, country 
+				id, first_name, parent_name, last_name, gender, date_of_birth, email, phone, address, city, country 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -33,7 +33,9 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 		patient := &models.Patient{}
 		if err := rows.Scan(
 			&patient.ID,
-			&patient.FullName,
+			&patient.FirstName,
+			&patient.ParentName,
+			&patient.LastName,
 			&patient.Gender,
 			&patient.DateOfBirth,
 			&patient.Email,
@@ -51,7 +53,7 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 
 func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) (*models.Patient, error) {
 	query := `SELECT 
-			id, full_name, gender, date_of_birth, email, phone, address, city, country, created_at 
+			id, first_name, parent_name, last_name, gender, date_of_birth, email, phone, address, city, country
 			FROM patients WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -61,7 +63,9 @@ func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) 
 	patient := &models.Patient{}
 	if err := row.Scan(
 		&patient.ID,
-		&patient.FullName,
+		&patient.FirstName,
+		&patient.ParentName,
+		&patient.LastName,
 		&patient.Gender,
 		&patient.DateOfBirth,
 		&patient.Email,
@@ -78,13 +82,15 @@ func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) 
 
 func (r *PatientsRepository) Create(ctx context.Context, q Querier, patient *models.Patient) error {
 	query := `INSERT INTO 
-				patients (full_name, gender, date_of_birth, email, phone, address, city, country)
-				VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id`
+				patients (first_name, parent_name, last_name, gender, date_of_birth, email, phone, address, city, country)
+				VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	err := q.QueryRowContext(ctx, query,
-		patient.FullName,
+		patient.FirstName,
+		patient.ParentName,
+		patient.LastName,
 		patient.Gender,
 		patient.DateOfBirth,
 		patient.Email,
@@ -101,16 +107,18 @@ func (r *PatientsRepository) Create(ctx context.Context, q Querier, patient *mod
 	return nil
 }
 
-func (r *PatientsRepository) Update(ctx context.Context, q Querier, patient *models.Patient) error {
+func (r *PatientsRepository) Update(ctx context.Context, q Querier, patient *models.Patient, id string) error {
 	query := `UPDATE patients SET 
-				full_name = $1, gender = $2, date_of_birth = $3, email = $4, 
-				phone = $5, address = $6, city = $7, country = $7, updated_at = NOW() WHERE id = $8`
+				first_name = $1, parent_name = $2, last_name = $3, gender = $4, date_of_birth = $5, email = $6, 
+				phone = $7, address = $8, city = $9, country = $10, updated_at = NOW() WHERE id = $11`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	_, err := q.ExecContext(ctx, query,
-		patient.FullName,
+		patient.FirstName,
+		patient.ParentName,
+		patient.LastName,
 		patient.Gender,
 		patient.DateOfBirth,
 		patient.Email,
@@ -118,15 +126,11 @@ func (r *PatientsRepository) Update(ctx context.Context, q Querier, patient *mod
 		patient.Address,
 		patient.City,
 		patient.Country,
-		patient.ID,
+		id,
 	)
+
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return ErrNotFound
-		default:
-			return err
-		}
+		return err
 	}
 
 	return nil
@@ -149,4 +153,19 @@ func (r *PatientsRepository) Delete(ctx context.Context, q Querier, id string) e
 	}
 
 	return nil
+}
+
+func (r *PatientsRepository) IsExists(ctx context.Context, q Querier, id string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM patients WHERE id = $1)`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	var exist bool
+	err := q.QueryRowContext(ctx, query, id).Scan(&exist)
+	if err != nil {
+		return false, err
+	}
+
+	return exist, nil
 }

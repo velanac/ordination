@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/service"
@@ -56,6 +58,8 @@ func (h *PatientHandler) Update(c echo.Context) error {
 		return NewBadRequest("Invalid patient ID")
 	}
 
+	log.Println("Updating patient with ID:", patientId)
+
 	var payload models.PatientPayload
 	if err := c.Bind(&payload); err != nil {
 		return NewBadRequest("Invalid request payload")
@@ -69,7 +73,7 @@ func (h *PatientHandler) Update(c echo.Context) error {
 		if err == service.ErrNotFound {
 			return NewNotFound("Patient not found")
 		}
-
+		log.Println("Updating patient with ID:", err)
 		return NewInternalServerError("Failed to update patient")
 	}
 

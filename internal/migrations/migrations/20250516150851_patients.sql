@@ -2,7 +2,9 @@
 -- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS patients (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    full_name TEXT NOT NULL,
+    first_name VARCHAR(254) NOT NULL,
+    parent_name VARCHAR(254),
+    last_name VARCHAR(254) NOT NULL,
     gender VARCHAR(10) NOT NULL,
     date_of_birth DATE,
     email VARCHAR(254),
