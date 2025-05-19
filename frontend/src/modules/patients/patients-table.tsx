@@ -4,10 +4,9 @@ import { useNavigate } from 'react-router';
 import { ColumnDef } from '@tanstack/react-table';
 
 import { PatientSchema } from '@/types';
-import { DataTableActions } from '@/components/data-table/data-table-actions';
 import { DataTable } from '@/components/data-table';
-import { useSetAtom } from 'jotai';
-import { patientModal } from '@/store/patients';
+import { usePatientDelete } from './hooks/use-patient-delete';
+import { DataTableActions } from '@/components/data-table/data-table-actions';
 
 type Props = {
   patients: PatientSchema[];
@@ -15,8 +14,18 @@ type Props = {
 
 function PatientsTable({ patients }: Props) {
   const navigate = useNavigate();
-  const setPatientModal = useSetAtom(patientModal);
   const [, startTransition] = useTransition();
+  const deleteAction = usePatientDelete();
+
+  const deletePatient = useMemo(
+    () => (id: string) => {
+      startTransition(() => {
+        deleteAction.mutate(id);
+      });
+    },
+    [deleteAction]
+  );
+
   const columns: ColumnDef<PatientSchema>[] = useMemo<
     ColumnDef<PatientSchema>[]
   >(
@@ -50,7 +59,7 @@ function PatientsTable({ patients }: Props) {
 
           return (
             <DataTableActions
-              onDelete={() => {}}
+              onDelete={() => deletePatient(item.id!)}
               onEdit={() => navigate(`/app/patients/${item.id}`)}
             />
           );
@@ -59,7 +68,7 @@ function PatientsTable({ patients }: Props) {
         canFilter: false,
       },
     ],
-    [navigate]
+    [navigate, deletePatient]
   );
 
   return <DataTable columns={columns} data={patients} />;

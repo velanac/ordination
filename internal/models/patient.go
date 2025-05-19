@@ -14,6 +14,7 @@ type PatientPayload struct {
 }
 
 func (p *PatientPayload) GetPatient() *Patient {
+
 	return &Patient{
 		FirstName:   p.FirstName,
 		ParentName:  p.ParentName,

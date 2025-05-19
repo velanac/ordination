@@ -9,14 +9,16 @@ function PatientUpdate() {
   const { id } = useParams();
   const { isLoading, data } = usePatient(id);
 
+  const closePage = () => navigate(-1);
+
   return (
     <FormContainer
       title='Update Patient'
       description='Update patient details'
-      onCancelClick={() => navigate(-1)}
+      onCancelClick={closePage}
     >
       {isLoading && <Spinner />}
-      {data && <PatientForm patient={data.data} />}
+      {data && <PatientForm patient={data.data} onSaveSuccess={closePage} />}
     </FormContainer>
   );
 }

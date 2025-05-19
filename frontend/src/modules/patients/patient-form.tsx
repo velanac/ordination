@@ -1,7 +1,7 @@
+import { getYear } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { PatientSchema } from '@/types';
 import {
   Form,
   FormControl,
@@ -10,24 +10,22 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+import { PatientSchema } from '@/types';
 import { Input } from '@/components/ui/input';
-import { Grid3 } from '@/components/layout/girid3';
 import { Button } from '@/components/ui/button';
 import { Grid4 } from '@/components/layout/grid4';
-import { getYear } from 'date-fns';
-import { DateFormInput } from '@/components/controls/date-form-input';
-import { usePatientPost } from './hooks/use-patient-post';
+import { Grid3 } from '@/components/layout/girid3';
 import { ToastService } from '@/lib/toast-service';
-import { useSetAtom } from 'jotai';
-import { patientModal } from '@/store/patients';
 import { usePatientPath } from './hooks/use-patient-path';
+import { usePatientPost } from './hooks/use-patient-post';
+import { DateFormInput } from '@/components/controls/date-form-input';
 
 type Props = {
-  patient: PatientSchema | null;
+  patient?: PatientSchema | null;
+  onSaveSuccess: () => void;
 };
 
-function PatientForm({ patient }: Props) {
-  const setPatientModal = useSetAtom(patientModal);
+function PatientForm({ patient, onSaveSuccess }: Props) {
   const create = usePatientPost();
   const update = usePatientPath();
   const form = useForm<PatientSchema>({
@@ -37,7 +35,9 @@ function PatientForm({ patient }: Props) {
       parentName: patient?.parentName || '',
       lastName: patient?.lastName || '',
       gender: patient?.gender || undefined,
-      dateOfBirth: patient?.dateOfBirth || new Date(),
+      dateOfBirth: patient?.dateOfBirth
+        ? new Date(patient.dateOfBirth)
+        : new Date(),
       email: patient?.email || '',
       phone: patient?.phone || '',
       address: patient?.address || '',
@@ -54,10 +54,7 @@ function PatientForm({ patient }: Props) {
         {
           onSuccess: () => {
             ToastService.success('Patient updated successfully');
-            setPatientModal({
-              isOpen: false,
-              patient: null,
-            });
+            onSaveSuccess();
           },
           onError: (err) => {
             ToastService.error(`Something went wrong: ${err?.message}`);
@@ -68,10 +65,7 @@ function PatientForm({ patient }: Props) {
       create.mutate(data, {
         onSuccess: () => {
           ToastService.success('Patient created successfully');
-          setPatientModal({
-            isOpen: false,
-            patient: null,
-          });
+          onSaveSuccess();
         },
         onError: (err) => {
           ToastService.error(`Something went wrong: ${err?.message}`);

@@ -87,6 +87,7 @@ func (h *PatientHandler) Delete(c echo.Context) error {
 	}
 
 	if err := h.patients.Delete(c.Request().Context(), patientId); err != nil {
+		log.Println("Delete error: ", err)
 		if err == service.ErrNotFound {
 			return NewNotFound("Patient not found")
 		}

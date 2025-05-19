@@ -77,6 +77,7 @@ func (s *PatientService) Delete(c context.Context, id string) error {
 	if !exist {
 		return ErrNotFound
 	}
+
 	// Delete the patient
 	if err := s.patients.Delete(c, s.store.Q(), id); err != nil {
 		return err

@@ -6,7 +6,7 @@ CREATE TABLE IF NOT EXISTS patients (
     parent_name VARCHAR(254),
     last_name VARCHAR(254) NOT NULL,
     gender VARCHAR(10) NOT NULL,
-    date_of_birth DATE,
+    date_of_birth TIMESTAMP WITH TIME ZONE,
     email VARCHAR(254),
     phone VARCHAR(254),
     address TEXT,

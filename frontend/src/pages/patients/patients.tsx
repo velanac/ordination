@@ -1,14 +1,13 @@
-import { useSetAtom } from 'jotai';
+import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import { patientModal } from '@/store/patients';
 import { PatientsTable } from '@/modules/patients/patients-table';
 import { usePatients } from '@/modules/patients/hooks/use-patients';
 import { DataTableContainer } from '@/components/data-table-container';
 
 function Patients() {
   const { t } = useTranslation('patients');
-  const setModal = useSetAtom(patientModal);
+  const navigate = useNavigate();
   const { isLoading, data } = usePatients();
 
   if (isLoading) {
@@ -24,9 +23,7 @@ function Patients() {
       title={t('title')}
       description={t('description')}
       addNewButtonTitle={t('addPatient')}
-      onAddClick={() =>
-        setModal({ isOpen: true, patientId: null, selectedItem: null })
-      }
+      onAddClick={() => navigate('/app/patients/new')}
     >
       <div className='flex w-full flex-col gap-4'>
         <PatientsTable patients={data?.data ?? []} />
