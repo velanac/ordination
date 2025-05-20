@@ -13,11 +13,14 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 import { useSignOut } from '@/hooks/use-signout';
+import { useTranslation } from 'react-i18next';
 
 const ProfileMenu = () => {
-  const navigate = useNavigate();
-  const { data, isLoading } = useProfile();
   const signout = useSignOut();
+  const navigate = useNavigate();
+  const { t } = useTranslation('controls');
+
+  const { data, isLoading } = useProfile();
 
   if (isLoading && !data) {
     return <ProfileMenu.Skeleton />;
@@ -37,14 +40,18 @@ const ProfileMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent className='mr-8'>
         <DropdownMenuLabel className='flex flex-col gap-1 items-start'>
-          <span className='font-normal text-sm'>Sign as {data?.data.role}</span>
+          <span className='font-normal text-sm'>
+            {t('singAs')} {data?.data.role}
+          </span>
           <span>{data?.data.email}</span>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem onClick={() => navigate('/app/personal')}>
-          Profile
+          {t('profile')}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signout()}>Signout</DropdownMenuItem>
+        <DropdownMenuItem onClick={() => signout()}>
+          {t('signOut')}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

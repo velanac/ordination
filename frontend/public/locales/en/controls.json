@@ -6,5 +6,11 @@
   "cancel": "Cancel",
   "edit": "Edit",
   "delete": "Delete",
-  "actions": "Actions"
+  "actions": "Actions",
+  "application": "Application",
+  "daschboard": "Dashboard",
+  "patientsLink": "Patients",
+  "singAs": "Sign as",
+  "signOut": "Sign out",
+  "profile": "Profile"
 }

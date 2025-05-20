@@ -14,9 +14,9 @@ func NewPatientsRepository() *PatientsRepository {
 	return &PatientsRepository{}
 }
 
-func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.Patient, error) {
+func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.PatientListItem, error) {
 	query := `SELECT 
-				id, first_name, parent_name, last_name, gender, date_of_birth, email, phone, address, city, country 
+				id, first_name, parent_name, last_name, email, city, created_at 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -36,19 +36,27 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 			&patient.FirstName,
 			&patient.ParentName,
 			&patient.LastName,
-			&patient.Gender,
-			&patient.DateOfBirth,
 			&patient.Email,
-			&patient.Phone,
-			&patient.Address,
 			&patient.City,
-			&patient.Country); err != nil {
+			&patient.CreatedAt); err != nil {
 			return nil, err
 		}
 		patients = append(patients, patient)
 	}
 
-	return patients, nil
+	patientsList := make([]*models.PatientListItem, len(patients))
+
+	for i, p := range patients {
+		patientsList[i] = &models.PatientListItem{
+			ID:        p.ID,
+			FullName:  p.FirstName + " " + p.ParentName + " " + p.LastName,
+			Email:     p.Email,
+			City:      p.City,
+			CreatedAt: p.CreatedAt,
+		}
+	}
+
+	return patientsList, nil
 }
 
 func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) (*models.Patient, error) {

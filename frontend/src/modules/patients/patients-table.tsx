@@ -1,17 +1,17 @@
 import { useMemo, useTransition } from 'react';
 
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { PatientSchema } from '@/types';
+import { PatientListItem } from '@/types';
 import { DataTable } from '@/components/data-table';
 import { usePatientDelete } from './hooks/use-patient-delete';
-import { DataTableActions } from '@/components/data-table/data-table-actions';
-import { useTranslation } from 'react-i18next';
 import { ActionsColumn } from '@/components/data-table/actions-column';
+import { DataTableActions } from '@/components/data-table/data-table-actions';
 
 type Props = {
-  patients: PatientSchema[];
+  patients: PatientListItem[];
 };
 
 function PatientsTable({ patients }: Props) {
@@ -29,20 +29,13 @@ function PatientsTable({ patients }: Props) {
     [deleteAction]
   );
 
-  const columns: ColumnDef<PatientSchema>[] = useMemo<
-    ColumnDef<PatientSchema>[]
+  const columns: ColumnDef<PatientListItem>[] = useMemo<
+    ColumnDef<PatientListItem>[]
   >(
     () => [
       {
         header: t('fullName'),
-        cell: ({ row }) => {
-          const item = row.original;
-          return (
-            <div>
-              {item.firstName} {item.parentName} {item.lastName}
-            </div>
-          );
-        },
+        accessorKey: 'fullName',
       },
       {
         header: t('email'),

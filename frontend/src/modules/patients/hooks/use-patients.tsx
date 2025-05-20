@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { PatientSchema } from '@/types';
+import { PatientListItem } from '@/types';
 import { queryKeys } from '@/lib/query-client';
 
 const usePatients = () =>
-  useQuery<{ data: PatientSchema[] }>({
+  useQuery<{ data: PatientListItem[] }>({
     queryKey: [queryKeys.patients],
     queryFn: async () => {
       const response = await fetch('/api/v1/patients');

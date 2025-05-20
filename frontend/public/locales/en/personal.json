@@ -1,0 +1,13 @@
+{
+  "title": "Personal Information",
+  "description": "Update your personal information",
+  "titles": "Titles",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "phone": "Phone",
+  "address": "Address",
+  "city": "City",
+  "state": "State",
+  "country": "Country",
+  "postalCode": "Postal Code"
+}

@@ -1,3 +1,9 @@
+import { useMemo } from 'react';
+
+import { useTranslation } from 'react-i18next';
+import { NavLink, useLocation } from 'react-router';
+import { LayoutDashboard, User } from 'lucide-react';
+
 import {
   Sidebar,
   SidebarContent,
@@ -10,33 +16,43 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { LayoutDashboard, User } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router';
-
-// Menu items.
-const items = [
-  {
-    title: 'Dashoard',
-    url: '/app',
-    icon: LayoutDashboard,
-    isActive: (pathname: string) => pathname.endsWith('/app'),
-  },
-  {
-    title: 'Patients',
-    url: '/app/patients',
-    icon: User,
-    isActive: (pathname: string) => pathname.includes('patients'),
-  },
-];
+import Logo from '@/assets/logo.svg';
+import { useSidebar } from '@/components/ui/sidebar';
 
 const AppSidebar = () => {
+  const { open } = useSidebar();
   const { pathname } = useLocation();
+  const { t } = useTranslation('controls');
+
+  const items = useMemo(
+    () => [
+      {
+        title: t('daschboard'),
+        url: '/app',
+        icon: LayoutDashboard,
+        isActive: (pathname: string) => pathname.endsWith('/app'),
+      },
+      {
+        title: t('patientsLink'),
+        url: '/app/patients',
+        icon: User,
+        isActive: (pathname: string) => pathname.includes('patients'),
+      },
+    ],
+    [t]
+  );
+
   return (
     <Sidebar collapsible='icon'>
+      {open && (
+        <div className='p-4'>
+          <img src={Logo} alt='Hero Logo' />
+        </div>
+      )}
       <SidebarHeader />
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel>{t('application')}</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

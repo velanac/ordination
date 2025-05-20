@@ -25,9 +25,9 @@ const AppLayout = () => {
       <main className='flex w-full flex-col overflow-hidden'>
         <Header>
           <SidebarTrigger />
-          <div className='flex items-center'>
-            <ProfileMenu />
+          <div className='flex items-center gap-2'>
             <SelectLocale />
+            <ProfileMenu />
           </div>
         </Header>
         <div className='flex w-full h-full'>

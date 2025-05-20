@@ -6,5 +6,11 @@
   "cancel": "Otkaži",
   "edit": "Izmeni",
   "delete": "Obriši",
-  "actions": "Akcije"
+  "actions": "Akcije",
+  "application": "Aplikacija",
+  "daschboard": "Kontrolna tabla",
+  "patientsLink": "Pacijenti",
+  "singAs": "Ulogovan kao",
+  "signOut": "Odjavi se",
+  "profile": "Profil"
 }

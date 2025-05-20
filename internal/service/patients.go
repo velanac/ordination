@@ -19,7 +19,7 @@ func NewPatientService(s *store.Store) *PatientService {
 	}
 }
 
-func (s *PatientService) GetList(c context.Context) ([]*models.Patient, error) {
+func (s *PatientService) GetList(c context.Context) ([]*models.PatientListItem, error) {
 	patients, err := s.patients.GetList(c, s.store.Q())
 	if err != nil {
 		return nil, err

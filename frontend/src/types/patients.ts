@@ -18,4 +18,12 @@ export const PatientSchema = z.object({
   country: z.string().optional(),
 });
 
+export type PatientListItem = {
+  id: string;
+  fullName: string;
+  email: string | null;
+  city: string | null;
+  createdAt: string;
+};
+
 export type PatientSchema = z.infer<typeof PatientSchema>;

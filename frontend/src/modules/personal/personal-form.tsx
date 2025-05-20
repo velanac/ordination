@@ -1,31 +1,26 @@
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Grid2 } from '@/components/layout/girid2';
-import { Grid3 } from '@/components/layout/girid3';
-import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
 import {
   PersonalFormPayload,
   PersonalFormSchema,
 } from '@/modules/personal/types';
 import { Personal } from '@/types';
-import { usePathPersonal } from './hooks/use-path-personal.';
-import { usePostPersonal } from './hooks/use-post-personal';
+import { Form } from '@/components/ui/form';
+import { Grid2 } from '@/components/layout/girid2';
+import { Grid3 } from '@/components/layout/girid3';
+import { FormText } from '@/components/controls/form-text';
+import { FormSubmit } from '@/components/controls/form-submit';
+import { usePathPersonal } from '@/modules/personal/hooks/use-path-personal.';
+import { usePostPersonal } from '@/modules/personal/hooks/use-post-personal';
 
 interface PersonalFormProps {
   personal?: Personal | null;
 }
 
 const PersonalForm = ({ personal }: PersonalFormProps) => {
+  const { t } = useTranslation('personal');
   const create = usePostPersonal();
   const path = usePathPersonal();
 
@@ -57,133 +52,47 @@ const PersonalForm = ({ personal }: PersonalFormProps) => {
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <div className='w-full md:w-1/6'>
-            <FormField
+            <FormText
               control={form.control}
+              label={t('titles')}
               name='titles'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Titles</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Titles' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
           </div>
           <Grid2>
-            <FormField
+            <FormText
               control={form.control}
               name='firstName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='First Name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t('firstName')}
             />
-            <FormField
+            <FormText
               control={form.control}
               name='lastName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Last name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t('lastName')}
             />
           </Grid2>
           <Grid3>
-            <FormField
-              control={form.control}
-              name='phone'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Phone' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+            <FormText control={form.control} name='phone' label={t('phone')} />
+            <FormText
               control={form.control}
               name='address'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Address</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Address' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t('address')}
             />
-            <FormField
-              control={form.control}
-              name='city'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>City</FormLabel>
-                  <FormControl>
-                    <Input placeholder='City' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+            <FormText control={form.control} name='city' label={t('city')} />
           </Grid3>
           <Grid3>
-            <FormField
-              control={form.control}
-              name='state'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>State</FormLabel>
-                  <FormControl>
-                    <Input placeholder='State' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+            <FormText control={form.control} name='state' label={t('state')} />
+            <FormText
               control={form.control}
               name='country'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Country</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Country' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t('country')}
             />
-            <FormField
+            <FormText
               control={form.control}
               name='postalCode'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Postal Code</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Postal Code' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label={t('postalCode')}
             />
           </Grid3>
-          <div className='flex w-full items-center justify-end space-x-4'>
-            <Button type='submit'>Submit</Button>
-          </div>
+          <FormSubmit />
         </form>
       </Form>
     </div>

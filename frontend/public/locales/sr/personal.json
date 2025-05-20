@@ -1,0 +1,13 @@
+{
+  "title": "Lični podaci",
+  "description": "Ažurirajte svoje lične podatke",
+  "titles": "Titule",
+  "firstName": "Ime",
+  "lastName": "Prezime",
+  "phone": "Telefon",
+  "address": "Adresa",
+  "city": "Mesto",
+  "state": "Pokrajina",
+  "country": "Država",
+  "postalCode": "Poštanski broj"
+}
