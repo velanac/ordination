@@ -34,7 +34,7 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
       dateOfBirth: patient?.dateOfBirth
         ? new Date(patient.dateOfBirth)
         : new Date(),
-      email: patient?.email || '',
+      email: patient?.email || undefined,
       phone: patient?.phone || '',
       address: patient?.address || '',
       city: patient?.city || '',

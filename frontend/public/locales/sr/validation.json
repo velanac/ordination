@@ -1,0 +1,6 @@
+{
+  "required": "Ovo polje je obavezno.",
+  "email": "Molimo unesite važeću email adresu.",
+  "phone": "Molimo unesite važeći broj telefona.",
+  "date": "Molimo unesite važeći datum."
+}

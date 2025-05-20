@@ -1,17 +1,18 @@
 import { HTMLInputTypeAttribute } from 'react';
 
 import { Control } from 'react-hook-form';
-import { Input } from '@/components/ui/input';
+import { FieldValues, Path } from 'react-hook-form';
+
 import {
   FormControl,
   FormDescription,
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
 } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
-import { FieldValues, Path } from 'react-hook-form';
+import { Input } from '@/components/ui/input';
+import { LocalizeFormMessage } from '@/components/localize-form-message';
 
 type Props<T extends FieldValues> = {
   name: Path<T>;
@@ -41,7 +42,7 @@ function FormText<T extends FieldValues>(props: Props<T>) {
             />
           </FormControl>
           {description && <FormDescription>{description}</FormDescription>}
-          <FormMessage />
+          <LocalizeFormMessage />
         </FormItem>
       )}
     />
