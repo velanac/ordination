@@ -32,7 +32,7 @@ function FormSelect<T extends FieldValues>(props: Props<T>) {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className='mt-4'>
+        <FormItem>
           <FormLabel>{label}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>

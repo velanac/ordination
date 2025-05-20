@@ -2,22 +2,16 @@ import { getYear } from 'date-fns';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
 import { PatientSchema } from '@/types';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Grid4 } from '@/components/layout/grid4';
 import { Grid3 } from '@/components/layout/girid3';
 import { ToastService } from '@/lib/toast-service';
-import { usePatientPath } from './hooks/use-patient-path';
 import { usePatientPost } from './hooks/use-patient-post';
+import { usePatientPath } from './hooks/use-patient-path';
+import { FormText } from '@/components/controls/form-text';
+import { FormSelect } from '@/components/controls/form-select';
 import { DateFormInput } from '@/components/controls/date-form-input';
 
 type Props = {
@@ -45,6 +39,11 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
       country: patient?.country || '',
     },
   });
+
+  const genderOptions = [
+    { value: 'famale', label: 'Famale' },
+    { value: 'male', label: 'Male' },
+  ];
 
   const onSubmit = (data: PatientSchema) => {
     console.log('Form data:', data);
@@ -80,44 +79,20 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <div className='w-full md:w-1/6'></div>
           <Grid3>
-            <FormField
+            <FormText
               control={form.control}
               name='firstName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>First Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='First Name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='First Name'
             />
-            <FormField
+            <FormText
               control={form.control}
               name='parentName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Parent Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Parent Name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Parent Name'
             />
-            <FormField
+            <FormText
               control={form.control}
               name='lastName'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Last Name</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Last Name' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
+              label='Last Name'
             />
           </Grid3>
           <Grid4>
@@ -128,91 +103,24 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
               startYear={1900}
               endYear={getYear(new Date())}
             />
-            <FormField
-              control={form.control}
-              name='email'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Email' {...field} type='email' />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
+            <FormText control={form.control} name='email' label='Email' />
+            <FormSelect
               name='gender'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Gender</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Gender' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
+              label='Gender'
+              items={genderOptions}
               control={form.control}
-              name='phone'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Phone</FormLabel>
-                  <FormControl>
-                    <Input placeholder='Phone' {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
             />
+            <FormText control={form.control} name='phone' label='Phone' />
           </Grid4>
           <Grid4>
             <div className='col-span-2'>
-              <FormField
-                control={form.control}
-                name='address'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Address</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Address' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormText control={form.control} name='address' label='Address' />
             </div>
             <div className='col-span-'>
-              <FormField
-                control={form.control}
-                name='city'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>City</FormLabel>
-                    <FormControl>
-                      <Input placeholder='City' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormText control={form.control} name='city' label='City' />
             </div>
             <div className='col-span-1/2'>
-              <FormField
-                control={form.control}
-                name='country'
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Country</FormLabel>
-                    <FormControl>
-                      <Input placeholder='Country' {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <FormText control={form.control} name='country' label='Country' />
             </div>
           </Grid4>
 

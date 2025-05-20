@@ -30,7 +30,7 @@ function FormText<T extends FieldValues>(props: Props<T>) {
       control={control}
       name={name}
       render={({ field }) => (
-        <FormItem className='mt-4' hidden={hidden}>
+        <FormItem hidden={hidden}>
           <FormLabel>{label}</FormLabel>
           <FormControl>
             <Input
