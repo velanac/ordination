@@ -12,6 +12,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
 import { DeleteConfirmationModal } from '@/components/modals/delete-confirmation-modal';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   onEdit: () => void;
@@ -19,6 +20,7 @@ interface Props {
 }
 
 function DataTableActions({ onEdit, onDelete }: Props) {
+  const { t } = useTranslation('controls');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
 
   const openModal = () => setOpenDialog(true);
@@ -41,11 +43,11 @@ function DataTableActions({ onEdit, onDelete }: Props) {
         <DropdownMenuContent align='end'>
           <DropdownMenuLabel>Actions</DropdownMenuLabel>
           <DropdownMenuItem onClick={onEdit} className='flex gap-2'>
-            <Pencil className='w-3 h-3' /> Edit
+            <Pencil className='w-3 h-3' /> {t('edit')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={openModal} className='flex gap-2'>
             <Trash className='w-3 h-3' />
-            Delete
+            {t('delete')}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

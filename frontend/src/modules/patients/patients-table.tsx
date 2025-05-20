@@ -7,6 +7,8 @@ import { PatientSchema } from '@/types';
 import { DataTable } from '@/components/data-table';
 import { usePatientDelete } from './hooks/use-patient-delete';
 import { DataTableActions } from '@/components/data-table/data-table-actions';
+import { useTranslation } from 'react-i18next';
+import { ActionsColumn } from '@/components/data-table/actions-column';
 
 type Props = {
   patients: PatientSchema[];
@@ -14,8 +16,9 @@ type Props = {
 
 function PatientsTable({ patients }: Props) {
   const navigate = useNavigate();
-  const [, startTransition] = useTransition();
   const deleteAction = usePatientDelete();
+  const { t } = useTranslation('patients');
+  const [, startTransition] = useTransition();
 
   const deletePatient = useMemo(
     () => (id: string) => {
@@ -31,7 +34,7 @@ function PatientsTable({ patients }: Props) {
   >(
     () => [
       {
-        header: 'Full Name',
+        header: t('fullName'),
         cell: ({ row }) => {
           const item = row.original;
           return (
@@ -42,17 +45,17 @@ function PatientsTable({ patients }: Props) {
         },
       },
       {
-        header: 'Email',
+        header: t('email'),
         accessorKey: 'email',
       },
       {
-        header: 'City',
+        header: t('city'),
         accessorKey: 'city',
       },
       {
         id: 'actions',
         header: () => {
-          return <div className='w-full text-end'>Actions</div>;
+          return <ActionsColumn />;
         },
         cell: ({ row }) => {
           const item = row.original;
@@ -68,7 +71,7 @@ function PatientsTable({ patients }: Props) {
         canFilter: false,
       },
     ],
-    [navigate, deletePatient]
+    [navigate, deletePatient, t]
   );
 
   return <DataTable columns={columns} data={patients} />;

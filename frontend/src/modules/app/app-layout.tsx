@@ -1,16 +1,18 @@
 import { Navigate, Outlet } from 'react-router';
 
-import { useProfile } from '@/hooks/use-profile';
-import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { AppSidebar } from './app-sidebar';
 import { Header } from '@/components/header';
+import { useProfile } from '@/hooks/use-profile';
+import { AppSidebar } from '@/modules/app/app-sidebar';
 import { ProfileMenu } from '@/components/profile-menu';
+import { SelectLocale } from '@/components/controls/select-locale';
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { Spinner } from '@/components/spinner';
 
 const AppLayout = () => {
   const { isLoading, error } = useProfile();
 
   if (isLoading) {
-    return <div className='flex'>Loading...</div>; // Loading state
+    return <Spinner />; // Loading state
   }
 
   if (error) {
@@ -23,7 +25,10 @@ const AppLayout = () => {
       <main className='flex w-full flex-col overflow-hidden'>
         <Header>
           <SidebarTrigger />
-          <ProfileMenu />
+          <div className='flex items-center'>
+            <ProfileMenu />
+            <SelectLocale />
+          </div>
         </Header>
         <div className='flex w-full h-full'>
           <div className='flex w-full h-full'>

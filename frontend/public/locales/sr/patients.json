@@ -1,11 +1,19 @@
 {
   "title": "Pacijenti",
   "description": "Upravljajte svojim pacijentima",
-  "addPatient": "Dodaj Pacijenta",
-  "editPatient": "Izmeni Pacijenta",
-  "deletePatient": "Obriši Pacijenta",
-  "patientDetails": "Pacijent Detalji",
-  "patientName": "Pacijent Ime",
-  "patientAge": "Pacijent Godine",
-  "patientGender": "Pol Pacijent"
+  "add": "Dodaj pacijenta",
+  "edit": "Izmeni pacijenta",
+  "delete": "Obriši pacijenta",
+  "fullName": "Ime (Ime roditelja) Prezime",
+  "email": "Email",
+  "gender": "Pol",
+  "city": "Grad",
+  "firstName": "Ime",
+  "lastName": "Prezime",
+  "parentName": "Ime roditelja",
+  "phone": "Telefon",
+  "address": "Adresa",
+  "birthDate": "Datum rođenja",
+  "country": "Država",
+  "actions": "Akcije"
 }

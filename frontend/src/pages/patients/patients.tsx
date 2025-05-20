@@ -22,7 +22,7 @@ function Patients() {
     <DataTableContainer
       title={t('title')}
       description={t('description')}
-      addNewButtonTitle={t('addPatient')}
+      addNewButtonTitle={t('add')}
       onAddClick={() => navigate('/app/patients/new')}
     >
       <div className='flex w-full flex-col gap-4'>

@@ -1,11 +1,16 @@
 {
   "title": "Patients",
   "description": "Manage your patients",
-  "addPatient": "Add Patient",
-  "editPatient": "Edit Patient",
-  "deletePatient": "Delete Patient",
-  "patientDetails": "Patient Details",
-  "patientName": "Patient Name",
-  "patientAge": "Patient Age",
-  "patientGender": "Patient"
+  "add": "Add Patient",
+  "fullName": "First name (Parent name) Last name",
+  "email": "Email",
+  "gender": "Gender",
+  "city": "City",
+  "firstName": "First name",
+  "lastName": "Last name",
+  "parentName": "Parent name",
+  "phone": "Phone",
+  "address": "Address",
+  "birthDate": "Birth date",
+  "country": "Country"
 }

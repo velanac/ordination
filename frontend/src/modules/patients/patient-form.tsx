@@ -4,15 +4,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 
 import { PatientSchema } from '@/types';
 import { Form } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
 import { Grid4 } from '@/components/layout/grid4';
 import { Grid3 } from '@/components/layout/girid3';
 import { ToastService } from '@/lib/toast-service';
-import { usePatientPost } from './hooks/use-patient-post';
-import { usePatientPath } from './hooks/use-patient-path';
 import { FormText } from '@/components/controls/form-text';
+import { FormSubmit } from '@/components/controls/form-submit';
 import { FormSelect } from '@/components/controls/form-select';
 import { DateFormInput } from '@/components/controls/date-form-input';
+import { usePatientPath } from '@/modules/patients/hooks/use-patient-path';
+import { usePatientPost } from '@/modules/patients/hooks/use-patient-post';
+import { useTranslation } from 'react-i18next';
 
 type Props = {
   patient?: PatientSchema | null;
@@ -20,6 +21,7 @@ type Props = {
 };
 
 function PatientForm({ patient, onSaveSuccess }: Props) {
+  const { t } = useTranslation('patients');
   const create = usePatientPost();
   const update = usePatientPath();
   const form = useForm<PatientSchema>({
@@ -82,51 +84,57 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
             <FormText
               control={form.control}
               name='firstName'
-              label='First Name'
+              label={t('firstName')}
             />
             <FormText
               control={form.control}
               name='parentName'
-              label='Parent Name'
+              label={t('parentName')}
             />
             <FormText
               control={form.control}
               name='lastName'
-              label='Last Name'
+              label={t('lastName')}
             />
           </Grid3>
           <Grid4>
             <DateFormInput
               name='dateOfBirth'
-              label='Date of Birth'
+              label={t('birthDate')}
               control={form.control}
               startYear={1900}
               endYear={getYear(new Date())}
             />
-            <FormText control={form.control} name='email' label='Email' />
+            <FormText control={form.control} name='email' label={t('email')} />
             <FormSelect
               name='gender'
-              label='Gender'
+              label={t('gender')}
               items={genderOptions}
               control={form.control}
             />
-            <FormText control={form.control} name='phone' label='Phone' />
+            <FormText control={form.control} name='phone' label={t('phone')} />
           </Grid4>
           <Grid4>
             <div className='col-span-2'>
-              <FormText control={form.control} name='address' label='Address' />
+              <FormText
+                control={form.control}
+                name='address'
+                label={t('address')}
+              />
             </div>
             <div className='col-span-'>
-              <FormText control={form.control} name='city' label='City' />
+              <FormText control={form.control} name='city' label={t('city')} />
             </div>
             <div className='col-span-1/2'>
-              <FormText control={form.control} name='country' label='Country' />
+              <FormText
+                control={form.control}
+                name='country'
+                label={t('country')}
+              />
             </div>
           </Grid4>
 
-          <div className='flex w-full items-center justify-end space-x-4'>
-            <Button type='submit'>Submit</Button>
-          </div>
+          <FormSubmit />
         </form>
       </Form>
     </div>

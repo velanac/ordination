@@ -15,14 +15,15 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import { useTranslation } from 'react-i18next';
 
 interface Props {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   table: Table<any>;
 }
 
-const DataTablePagination = (props: Props) => {
-  const { table } = props;
+function DataTablePagination({ table }: Props) {
+  const { t } = useTranslation('controls');
   const { pageSize, pageIndex } = table.getState().pagination;
 
   return (
@@ -30,7 +31,7 @@ const DataTablePagination = (props: Props) => {
       <div className='flex items-center justify-between px-2'>
         <div className='flex items-center space-x-6 lg:space-x-8'>
           <div className='flex items-center space-x-2'>
-            <p className='text-sm font-medium ml-2'>Rows per page</p>
+            <p className='text-sm font-medium ml-2'>{t('paginationRow')}</p>
             <Select
               value={`${pageSize}`}
               onValueChange={(value) => {
@@ -50,7 +51,8 @@ const DataTablePagination = (props: Props) => {
             </Select>
           </div>
           <div className='flex w-[100px] items-center justify-center text-sm font-medium'>
-            Page {pageIndex + 1} of {table.getPageOptions().length}
+            {t('paginationPage')} {pageIndex + 1} {t('paginationOf')}{' '}
+            {table.getPageOptions().length}
           </div>
           <div className='flex items-center space-x-2'>
             <Button
@@ -94,6 +96,6 @@ const DataTablePagination = (props: Props) => {
       </div>
     </div>
   );
-};
+}
 
 export { DataTablePagination };
