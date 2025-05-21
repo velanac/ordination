@@ -6,7 +6,7 @@ type OfficePayload struct {
 }
 
 type Office struct {
-	ID          int    `json:"id"`
+	ID          string `json:"id"`
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }

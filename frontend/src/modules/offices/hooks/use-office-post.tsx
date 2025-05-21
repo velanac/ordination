@@ -6,7 +6,7 @@ import { useMutation } from '@tanstack/react-query';
 export const useOfficePost = () =>
   useMutation({
     mutationFn: async (data: OfficeSchema) => {
-      const response = await fetch('/api/v1/office', {
+      const response = await fetch('/api/v1/offices', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

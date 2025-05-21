@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/store"
@@ -28,7 +29,7 @@ func (s *OfficeService) GetList(c context.Context) ([]*models.Office, error) {
 	return offices, nil
 }
 
-func (s *OfficeService) GetById(c context.Context, id int) (*models.Office, error) {
+func (s *OfficeService) GetById(c context.Context, id string) (*models.Office, error) {
 	office, err := s.offices.GetByID(c, s.store.Q(), id)
 	if err != nil {
 		return nil, err
@@ -50,7 +51,7 @@ func (s *OfficeService) Create(c context.Context, payload *models.OfficePayload)
 	return nil
 }
 
-func (s *OfficeService) Update(c context.Context, id int, payload *models.OfficePayload) error {
+func (s *OfficeService) Update(c context.Context, id string, payload *models.OfficePayload) error {
 	office := &models.Office{
 		ID:          id,
 		Name:        payload.Name,
@@ -68,13 +69,14 @@ func (s *OfficeService) Update(c context.Context, id int, payload *models.Office
 	}
 
 	if err := s.offices.Update(c, s.store.Q(), id, office); err != nil {
+		log.Println("Error updating office:", err)
 		return err
 	}
 
 	return nil
 }
 
-func (s *OfficeService) Delete(c context.Context, id int) error {
+func (s *OfficeService) Delete(c context.Context, id string) error {
 	// Check if the office exists
 	exist, err := s.offices.IsExists(c, s.store.Q(), id)
 	if err != nil {

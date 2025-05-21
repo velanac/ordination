@@ -42,7 +42,7 @@ func (r *OfficesRepository) GetList(ctx context.Context, q Querier) ([]*models.O
 	return offices, nil
 }
 
-func (r *OfficesRepository) GetByID(ctx context.Context, q Querier, id int) (*models.Office, error) {
+func (r *OfficesRepository) GetByID(ctx context.Context, q Querier, id string) (*models.Office, error) {
 	query := `SELECT 
 				id, name, description 
 				FROM offices WHERE id = $1`
@@ -81,7 +81,7 @@ func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *model
 	return nil
 }
 
-func (r *OfficesRepository) Update(ctx context.Context, q Querier, id int, office *models.Office) error {
+func (r *OfficesRepository) Update(ctx context.Context, q Querier, id string, office *models.Office) error {
 	query := `UPDATE offices SET name = $1, description = $2 WHERE id = $3`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -97,7 +97,7 @@ func (r *OfficesRepository) Update(ctx context.Context, q Querier, id int, offic
 	return nil
 }
 
-func (r *OfficesRepository) Delete(ctx context.Context, q Querier, id int) error {
+func (r *OfficesRepository) Delete(ctx context.Context, q Querier, id string) error {
 	query := `DELETE FROM offices WHERE id = $1`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -113,8 +113,8 @@ func (r *OfficesRepository) Delete(ctx context.Context, q Querier, id int) error
 	return nil
 }
 
-func (r *OfficesRepository) IsExists(ctx context.Context, q Querier, id int) (bool, error) {
-	query := `SELECT EXISTS(SELECT 1 FROM office WHERE id = $1)`
+func (r *OfficesRepository) IsExists(ctx context.Context, q Querier, id string) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM offices WHERE id = $1)`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()

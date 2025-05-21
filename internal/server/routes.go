@@ -47,12 +47,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	authService := service.NewAuthService(s.store, authenticator)
 	personalService := service.NewPersonalService(s.store)
 	patientService := service.NewPatientService(s.store)
+	officeService := service.NewOfficeService(s.store)
 
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
 	authHandler := handlers.NewAuthHandler(authService)
 	personalHandler := handlers.NewPersonalHandler(personalService)
 	patientHandler := handlers.NewPatientHandler(patientService)
+	officeHandler := handlers.NewOfficeHandler(officeService)
 
 	// Initialize the file store and pass it to the handlers
 	e.Static("/files", "storage")
@@ -78,6 +80,11 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.POST("/patients", patientHandler.Create)
 	v1Auth.PATCH("/patients/:id", patientHandler.Update)
 	v1Auth.DELETE("/patients/:id", patientHandler.Delete)
+	v1Auth.GET("/offices", officeHandler.Index)
+	v1Auth.GET("/offices/:id", officeHandler.Show)
+	v1Auth.POST("/offices", officeHandler.Create)
+	v1Auth.PATCH("/offices/:id", officeHandler.Update)
+	v1Auth.DELETE("/offices/:id", officeHandler.Delete)
 
 	return e
 }
