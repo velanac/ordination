@@ -1,14 +1,17 @@
 import { createBrowserRouter } from 'react-router';
 
-import { AuthLayout } from '@/modules/auth/auth-layout';
-import { SignInPage } from '@/pages/auth/signin-page';
-import { AppLayout } from '@/modules/app/app-layout';
-import { Dashboard } from '@/pages/app/dashboard';
-import { SettingsPage } from '@/pages/app/settings';
 import PersonalPage from '@/pages/app/personal';
+import { Dashboard } from '@/pages/app/dashboard';
+import { AppLayout } from '@/modules/app/app-layout';
+import { SignInPage } from '@/pages/auth/signin-page';
+import { SettingsPage } from '@/pages/app/settings';
 import { Patients } from '@/pages/patients/patients';
-import { PatientNew } from './patients/patient-new';
-import { PatientUpdate } from './patients/patient-update';
+import { AuthLayout } from '@/modules/auth/auth-layout';
+import { Offices } from '@/pages/offices/offices';
+import { PatientNew } from '@/pages/patients/patient-new';
+import { PatientUpdate } from '@/pages/patients/patient-update';
+import { OfficeNew } from './offices/office-new';
+import { OfficeUpdate } from './offices/office-update';
 
 const routers = createBrowserRouter([
   {
@@ -25,6 +28,18 @@ const routers = createBrowserRouter([
       {
         path: 'patients',
         element: <Patients />,
+      },
+      {
+        path: 'offices',
+        element: <Offices />,
+      },
+      {
+        path: 'offices/new',
+        element: <OfficeNew />,
+      },
+      {
+        path: 'offices/:id',
+        element: <OfficeUpdate />,
       },
       {
         path: 'patients/new',

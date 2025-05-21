@@ -1,24 +1,24 @@
 import { useNavigate } from 'react-router';
-
-import { FormContainer } from '@/components/form-container';
-import { PatientForm } from '@/modules/patients/patient-form';
 import { useTranslation } from 'react-i18next';
 
-function PatientNew() {
+import { OfficeForm } from '@/modules/offices/office-form';
+import { FormContainer } from '@/components/form-container';
+
+function OfficeNew() {
   const navigate = useNavigate();
-  const { t } = useTranslation('patients');
+  const { t } = useTranslation('offices');
 
   const closePage = () => navigate(-1);
 
   return (
     <FormContainer
-      title={t('newPatient')}
+      title={t('new')}
       description={t('newDescription')}
       onCancelClick={closePage}
     >
-      <PatientForm onSaveSuccess={closePage} />
+      <OfficeForm onSaveSuccess={closePage} />
     </FormContainer>
   );
 }
 
-export { PatientNew };
+export { OfficeNew };

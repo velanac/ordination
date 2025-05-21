@@ -12,5 +12,9 @@
   "patientsLink": "Patients",
   "singAs": "Sign as",
   "signOut": "Sign out",
-  "profile": "Profile"
+  "profile": "Profile",
+  "settings": "Settings",
+  "offices": "Offices",
+  "services": "Services",
+  "doctors": "Doctors"
 }

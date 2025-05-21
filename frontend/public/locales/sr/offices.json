@@ -1,0 +1,11 @@
+{
+  "title": "Ordinacije",
+  "subtitle": "Upravljajte ordinacijama",
+  "add": "Dodaj ordinaciju",
+  "name": "Ime",
+  "description": "Opis",
+  "new": "Nova ordinacija",
+  "newDescription": "Dodaj novu ordinaciju",
+  "edit": "Izmeni ordinaciju",
+  "editDescription": "Izmeni informacije o ordinaciji"
+}

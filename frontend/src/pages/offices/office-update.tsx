@@ -5,17 +5,17 @@ import { usePatient } from '@/modules/patients/hooks/use-patient';
 import { PatientForm } from '@/modules/patients/patient-form';
 import { useTranslation } from 'react-i18next';
 
-function PatientUpdate() {
-  const { id } = useParams();
+function OfficeUpdate() {
   const navigate = useNavigate();
-  const { t } = useTranslation('patients');
+  const { t } = useTranslation('offices');
+  const { id } = useParams();
   const { isLoading, data } = usePatient(id);
 
   const closePage = () => navigate(-1);
 
   return (
     <FormContainer
-      title={t('editPatient')}
+      title={t('edit')}
       description={t('editDescription')}
       onCancelClick={closePage}
     >
@@ -25,4 +25,4 @@ function PatientUpdate() {
   );
 }
 
-export { PatientUpdate };
+export { OfficeUpdate };

@@ -5,6 +5,7 @@ export const queryKeys = {
   profile: 'profile',
   personal: 'personal',
   patients: 'patients',
+  offices: 'offices',
 };
 
 function queryErrorHandler(error: Error): void {

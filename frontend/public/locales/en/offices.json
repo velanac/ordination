@@ -1,0 +1,11 @@
+{
+  "title": "Doctor's Offices",
+  "subtitle": "Manage your doctor's offices",
+  "add": "Add Office",
+  "name": "Name",
+  "description": "Description",
+  "new": "New Doctor's Office",
+  "newDescription": "Add a new doctor's office",
+  "edit": "Edit Doctor's Office",
+  "editDescription": "Edit doctor's office information"
+}

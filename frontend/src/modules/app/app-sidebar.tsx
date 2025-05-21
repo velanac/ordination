@@ -1,9 +1,16 @@
 import { useMemo } from 'react';
 
+import {
+  CrossIcon,
+  HouseIcon,
+  LayoutDashboard,
+  StethoscopeIcon,
+  User,
+} from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router';
-import { LayoutDashboard, User } from 'lucide-react';
 
+import Logo from '@/assets/logo.svg';
 import {
   Sidebar,
   SidebarContent,
@@ -15,9 +22,8 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
+  useSidebar,
 } from '@/components/ui/sidebar';
-import Logo from '@/assets/logo.svg';
-import { useSidebar } from '@/components/ui/sidebar';
 
 const AppSidebar = () => {
   const { open } = useSidebar();
@@ -42,6 +48,30 @@ const AppSidebar = () => {
     [t]
   );
 
+  const settingsItems = useMemo(
+    () => [
+      {
+        title: t('offices'),
+        url: '/app/offices',
+        icon: HouseIcon,
+        isActive: (pathname: string) => pathname.includes('offices'),
+      },
+      {
+        title: t('doctors'),
+        url: '/app/doctors',
+        icon: StethoscopeIcon,
+        isActive: (pathname: string) => pathname.includes('services'),
+      },
+      {
+        title: t('services'),
+        url: '/app/services',
+        icon: CrossIcon,
+        isActive: (pathname: string) => pathname.includes('services'),
+      },
+    ],
+    [t]
+  );
+
   return (
     <Sidebar collapsible='icon'>
       {open && (
@@ -56,6 +86,23 @@ const AppSidebar = () => {
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild isActive={item.isActive(pathname)}>
+                    <NavLink to={item.url}>
+                      <item.icon />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+        <SidebarGroup>
+          <SidebarGroupLabel>{t('settings')}</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {settingsItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild isActive={item.isActive(pathname)}>
                     <NavLink to={item.url}>

@@ -12,5 +12,9 @@
   "phone": "Phone",
   "address": "Address",
   "birthDate": "Birth date",
-  "country": "Country"
+  "country": "Country",
+  "newPatient": "New Patient",
+  "newDescription": "Add a new patient",
+  "editPatient": "Edit Patient",
+  "editDescription": "Edit patient information"
 }

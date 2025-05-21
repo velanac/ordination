@@ -15,5 +15,8 @@
   "address": "Adresa",
   "birthDate": "Datum rođenja",
   "country": "Država",
-  "actions": "Akcije"
+  "newPatient": "Novi pacijent",
+  "newDescription": "Dodaj novog pacijenta",
+  "editPatient": "Izmeni pacijenta",
+  "editDescription": "Izmeni informacije o pacijentu"
 }

@@ -48,7 +48,6 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
   ];
 
   const onSubmit = (data: PatientSchema) => {
-    console.log('Form data:', data);
     if (patient) {
       update.mutate(
         { data, id: patient.id! },
