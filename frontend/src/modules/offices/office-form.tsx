@@ -9,6 +9,7 @@ import { FormText } from '@/components/controls/form-text';
 import { FormSubmit } from '@/components/controls/form-submit';
 import { useOfficePath } from '@/modules/offices/hooks/use-office-path';
 import { useOfficePost } from '@/modules/offices/hooks/use-office-post';
+import { FormTextArea } from '@/components/controls/form-textarea';
 
 type Props = {
   office?: OfficeSchema | null;
@@ -60,7 +61,7 @@ function OfficeForm({ office, onSaveSuccess }: Props) {
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
           <div className='w-full md:w-1/6'></div>
           <FormText control={form.control} name='name' label={t('name')} />
-          <FormText
+          <FormTextArea
             control={form.control}
             name='description'
             label={t('description')}
