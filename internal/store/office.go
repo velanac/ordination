@@ -64,7 +64,7 @@ func (r *OfficesRepository) GetByID(ctx context.Context, q Querier, id int) (*mo
 	return office, nil
 }
 
-func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *models.OfficePayload) error {
+func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *models.Office) error {
 	query := `INSERT INTO offices (name, description) VALUES ($1, $2) RETURNING id`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -81,7 +81,7 @@ func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *model
 	return nil
 }
 
-func (r *OfficesRepository) Update(ctx context.Context, q Querier, id int, office *models.OfficePayload) error {
+func (r *OfficesRepository) Update(ctx context.Context, q Querier, id int, office *models.Office) error {
 	query := `UPDATE offices SET name = $1, description = $2 WHERE id = $3`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
