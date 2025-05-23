@@ -13,7 +13,7 @@ func NewServicesRepository() *ServicesRepository {
 	return &ServicesRepository{}
 }
 
-func (r *ServicesRepository) GetAll(ctx context.Context, q Querier) ([]models.Service, error) {
+func (r *ServicesRepository) GetAll(ctx context.Context, q Querier) ([]*models.Service, error) {
 	query := `SELECT
 				id, description, price FROM services ORDER BY created_at DESC`
 
@@ -26,9 +26,9 @@ func (r *ServicesRepository) GetAll(ctx context.Context, q Querier) ([]models.Se
 	}
 	defer rows.Close()
 
-	services := []models.Service{}
+	services := []*models.Service{}
 	for rows.Next() {
-		service := models.Service{}
+		service := &models.Service{}
 		if err := rows.Scan(
 			&service.ID,
 			&service.Description,
@@ -62,7 +62,7 @@ func (r *ServicesRepository) GetByID(ctx context.Context, q Querier, id string) 
 	return service, nil
 }
 
-func (r *ServicesRepository) Create(ctx context.Context, q Querier, payload models.ServicePayload) error {
+func (r *ServicesRepository) Create(ctx context.Context, q Querier, payload *models.Service) error {
 	query := `INSERT INTO services (description, price) 
 				VALUES ($1, $2) RETURNING id`
 
@@ -80,7 +80,7 @@ func (r *ServicesRepository) Create(ctx context.Context, q Querier, payload mode
 	return nil
 }
 
-func (r *ServicesRepository) Update(ctx context.Context, q Querier, id string, payload models.ServicePayload) error {
+func (r *ServicesRepository) Update(ctx context.Context, q Querier, id string, payload *models.Service) error {
 	query := `UPDATE services SET description = $1, price = $2 WHERE id = $3`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
