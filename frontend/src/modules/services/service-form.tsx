@@ -10,7 +10,7 @@ import { FormActions } from '@/components/controls/form-actions';
 type Props = {
   id?: string;
   defaultValues?: ServiceSchema;
-  disebled?: boolean;
+  disabled?: boolean;
   onCancel?: () => void;
   onSubmit: (values: ServiceSchema) => void;
 };
@@ -18,7 +18,7 @@ type Props = {
 function ServiceForm({
   id,
   defaultValues,
-  disebled,
+  disabled,
   onCancel,
   onSubmit,
 }: Props) {
@@ -42,7 +42,7 @@ function ServiceForm({
             label={t('description')}
           />
           <FormText control={form.control} name='price' label={t('price')} />
-          <FormActions id={id} disabled={disebled} onCancel={onCancel} />
+          <FormActions id={id} disabled={disabled} onCancel={onCancel} />
         </form>
       </Form>
     </div>

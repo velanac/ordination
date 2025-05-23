@@ -10,8 +10,11 @@ import { AuthLayout } from '@/modules/auth/auth-layout';
 import { Offices } from '@/pages/offices/offices';
 import { PatientNew } from '@/pages/patients/patient-new';
 import { PatientUpdate } from '@/pages/patients/patient-update';
-import { OfficeNew } from './offices/office-new';
-import { OfficeUpdate } from './offices/office-update';
+import { OfficeNew } from '@/pages/offices/office-new';
+import { OfficeUpdate } from '@/pages/offices/office-update';
+import { ServiceNew } from './services/service-new';
+import { Services } from '@/pages/services/services';
+import { ServiceUpdate } from './services/service-update';
 
 const routers = createBrowserRouter([
   {
@@ -30,6 +33,14 @@ const routers = createBrowserRouter([
         element: <Patients />,
       },
       {
+        path: 'patients/new',
+        element: <PatientNew />,
+      },
+      {
+        path: 'patients/:id',
+        element: <PatientUpdate />,
+      },
+      {
         path: 'offices',
         element: <Offices />,
       },
@@ -42,12 +53,16 @@ const routers = createBrowserRouter([
         element: <OfficeUpdate />,
       },
       {
-        path: 'patients/new',
-        element: <PatientNew />,
+        path: 'services',
+        element: <Services />,
       },
       {
-        path: 'patients/:id',
-        element: <PatientUpdate />,
+        path: 'services/new',
+        element: <ServiceNew />,
+      },
+      {
+        path: 'services/:id',
+        element: <ServiceUpdate />,
       },
     ],
   },

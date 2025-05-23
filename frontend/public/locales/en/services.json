@@ -1,0 +1,11 @@
+{
+  "title": "Services",
+  "subtitle": "Manage your services",
+  "add": "Add Service",
+  "descriprion": "Description",
+  "price": "Price",
+  "new": "New Service",
+  "newDescription": "Add a new service",
+  "edit": "Edit Service",
+  "editDescription": "Edit service information"
+}
