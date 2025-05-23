@@ -60,7 +60,7 @@ const AppSidebar = () => {
         title: t('doctors'),
         url: '/app/doctors',
         icon: StethoscopeIcon,
-        isActive: (pathname: string) => pathname.includes('services'),
+        isActive: (pathname: string) => pathname.includes('doctors'),
       },
       {
         title: t('services'),
