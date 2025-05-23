@@ -11,7 +11,7 @@ import { Form } from '@/components/ui/form';
 import { Grid2 } from '@/components/layout/girid2';
 import { Grid3 } from '@/components/layout/girid3';
 import { FormText } from '@/components/controls/form-text';
-import { FormSubmit } from '@/components/controls/form-submit';
+import { FormActions } from '@/components/controls/form-actions';
 import { usePathPersonal } from '@/modules/personal/hooks/use-path-personal.';
 import { usePostPersonal } from '@/modules/personal/hooks/use-post-personal';
 
@@ -92,7 +92,7 @@ const PersonalForm = ({ personal }: PersonalFormProps) => {
               label={t('postalCode')}
             />
           </Grid3>
-          <FormSubmit />
+          <FormActions />
         </form>
       </Form>
     </div>

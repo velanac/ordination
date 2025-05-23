@@ -18,5 +18,7 @@
   "newPatient": "Novi pacijent",
   "newDescription": "Dodaj novog pacijenta",
   "editPatient": "Izmeni pacijenta",
-  "editDescription": "Izmeni informacije o pacijentu"
+  "editDescription": "Izmeni informacije o pacijentu",
+  "female": "Žensko",
+  "male": "Muško"
 }

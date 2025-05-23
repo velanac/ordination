@@ -4,24 +4,30 @@ import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 import { ColumnDef } from '@tanstack/react-table';
 
-import { OfficeSchema } from '@/types';
+import { ServiceSchema } from '@/types';
 import { DataTable } from '@/components/data-table';
 import { ActionsColumn } from '@/components/data-table/actions-column';
 import { DataTableActions } from '@/components/data-table/data-table-actions';
 
 type Props = {
-  offices: OfficeSchema[];
+  services: ServiceSchema[];
 };
 
-function OfficesTable({ offices }: Props) {
+function ServicesTable({ services }: Props) {
   const navigate = useNavigate();
-  const { t } = useTranslation('offices');
+  const { t } = useTranslation('services');
 
-  const columns: ColumnDef<OfficeSchema>[] = useMemo<ColumnDef<OfficeSchema>[]>(
+  const columns: ColumnDef<ServiceSchema>[] = useMemo<
+    ColumnDef<ServiceSchema>[]
+  >(
     () => [
       {
-        header: t('name'),
-        accessorKey: 'name',
+        header: t('description'),
+        accessorKey: 'description',
+      },
+      {
+        header: t('price'),
+        accessorKey: 'price',
       },
       {
         id: 'actions',
@@ -33,7 +39,7 @@ function OfficesTable({ offices }: Props) {
 
           return (
             <DataTableActions
-              onEdit={() => navigate(`/app/offices/${item.id}`)}
+              onEdit={() => navigate(`/app/services/${item.id}`)}
             />
           );
         },
@@ -44,7 +50,7 @@ function OfficesTable({ offices }: Props) {
     [navigate, t]
   );
 
-  return <DataTable columns={columns} data={offices} />;
+  return <DataTable columns={columns} data={services} />;
 }
 
-export { OfficesTable };
+export { ServicesTable };

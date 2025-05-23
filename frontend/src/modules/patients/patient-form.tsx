@@ -1,78 +1,50 @@
 import { getYear } from 'date-fns';
 import { useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { PatientSchema } from '@/types';
 import { Form } from '@/components/ui/form';
 import { Grid4 } from '@/components/layout/grid4';
 import { Grid3 } from '@/components/layout/girid3';
-import { ToastService } from '@/lib/toast-service';
 import { FormText } from '@/components/controls/form-text';
-import { FormSubmit } from '@/components/controls/form-submit';
 import { FormSelect } from '@/components/controls/form-select';
+import { FormActions } from '@/components/controls/form-actions';
 import { DateFormInput } from '@/components/controls/date-form-input';
-import { usePatientPath } from '@/modules/patients/hooks/use-patient-path';
-import { usePatientPost } from '@/modules/patients/hooks/use-patient-post';
-import { useTranslation } from 'react-i18next';
+import { useMemo } from 'react';
 
 type Props = {
-  patient?: PatientSchema | null;
-  onSaveSuccess: () => void;
+  id?: string;
+  disabled?: boolean;
+  defaultValues?: PatientSchema;
+  onSubmit: (values: PatientSchema) => void;
+  onCancel?: () => void;
 };
 
-function PatientForm({ patient, onSaveSuccess }: Props) {
+function PatientForm({
+  id,
+  disabled,
+  defaultValues,
+  onSubmit,
+  onCancel,
+}: Props) {
   const { t } = useTranslation('patients');
-  const create = usePatientPost();
-  const update = usePatientPath();
+  const genderOptions = useMemo(
+    () => [
+      { value: 'famale', label: t('female') },
+      { value: 'male', label: t('male') },
+    ],
+    [t]
+  );
+  const dateOfBirth = defaultValues
+    ? new Date(defaultValues.dateOfBirth!)
+    : new Date();
+  const gender = defaultValues ? defaultValues.gender : 'male';
+
   const form = useForm<PatientSchema>({
+    defaultValues: { ...defaultValues, dateOfBirth, gender },
     resolver: zodResolver(PatientSchema),
-    defaultValues: {
-      firstName: patient?.firstName || '',
-      parentName: patient?.parentName || '',
-      lastName: patient?.lastName || '',
-      gender: patient?.gender || undefined,
-      dateOfBirth: patient?.dateOfBirth
-        ? new Date(patient.dateOfBirth)
-        : new Date(),
-      email: patient?.email || undefined,
-      phone: patient?.phone || '',
-      address: patient?.address || '',
-      city: patient?.city || '',
-      country: patient?.country || '',
-    },
   });
-
-  const genderOptions = [
-    { value: 'famale', label: 'Famale' },
-    { value: 'male', label: 'Male' },
-  ];
-
-  const onSubmit = (data: PatientSchema) => {
-    if (patient) {
-      update.mutate(
-        { data, id: patient.id! },
-        {
-          onSuccess: () => {
-            ToastService.success('Patient updated successfully');
-            onSaveSuccess();
-          },
-          onError: (err) => {
-            ToastService.error(`Something went wrong: ${err?.message}`);
-          },
-        }
-      );
-    } else {
-      create.mutate(data, {
-        onSuccess: () => {
-          ToastService.success('Patient created successfully');
-          onSaveSuccess();
-        },
-        onError: (err) => {
-          ToastService.error(`Something went wrong: ${err?.message}`);
-        },
-      });
-    }
-  };
 
   return (
     <div className='py-1 px-4 mx-auto w-full'>
@@ -133,7 +105,7 @@ function PatientForm({ patient, onSaveSuccess }: Props) {
             </div>
           </Grid4>
 
-          <FormSubmit />
+          <FormActions id={id} disabled={disabled} onCancel={onCancel} />
         </form>
       </Form>
     </div>

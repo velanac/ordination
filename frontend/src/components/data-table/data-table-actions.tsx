@@ -1,7 +1,4 @@
-'use client';
-
-import { useState } from 'react';
-
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,27 +6,15 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Button } from '@/components/ui/button';
-import { MoreHorizontal, Pencil, Trash } from 'lucide-react';
-import { DeleteConfirmationModal } from '@/components/modals/delete-confirmation-modal';
+import { MoreHorizontal, Pencil } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 
 interface Props {
   onEdit: () => void;
-  onDelete: () => void;
 }
 
-function DataTableActions({ onEdit, onDelete }: Props) {
+function DataTableActions({ onEdit }: Props) {
   const { t } = useTranslation('controls');
-  const [openDialog, setOpenDialog] = useState<boolean>(false);
-
-  const openModal = () => setOpenDialog(true);
-  const closeModal = () => setOpenDialog(false);
-
-  const onDeleteHandler = () => {
-    onDelete();
-    closeModal();
-  };
 
   return (
     <div className='flex items-center justify-end'>
@@ -45,17 +30,8 @@ function DataTableActions({ onEdit, onDelete }: Props) {
           <DropdownMenuItem onClick={onEdit} className='flex gap-2'>
             <Pencil className='w-3 h-3' /> {t('edit')}
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={openModal} className='flex gap-2'>
-            <Trash className='w-3 h-3' />
-            {t('delete')}
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DeleteConfirmationModal
-        isOpen={openDialog}
-        onClose={closeModal}
-        onDelete={onDeleteHandler}
-      />
     </div>
   );
 }

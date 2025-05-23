@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/store"
@@ -69,7 +68,6 @@ func (s *OfficeService) Update(c context.Context, id string, payload *models.Off
 	}
 
 	if err := s.offices.Update(c, s.store.Q(), id, office); err != nil {
-		log.Println("Error updating office:", err)
 		return err
 	}
 

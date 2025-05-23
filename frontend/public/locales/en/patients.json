@@ -16,5 +16,7 @@
   "newPatient": "New Patient",
   "newDescription": "Add a new patient",
   "editPatient": "Edit Patient",
-  "editDescription": "Edit patient information"
+  "editDescription": "Edit patient information",
+  "female": "Famele",
+  "male": "Male"
 }
