@@ -25,9 +25,15 @@ func (h *OfficeHandler) Index(c echo.Context) error {
 
 func (h *OfficeHandler) Show(c echo.Context) error {
 	officeId := c.Param("id")
+
 	office, err := h.offices.GetById(c.Request().Context(), officeId)
+
 	if err != nil {
-		return RespondNoContent(c)
+		return NewInternalServerError("Server error")
+	}
+
+	if office == nil {
+		return NewNotFound("Office not found")
 	}
 
 	return RespondOK(c, office)

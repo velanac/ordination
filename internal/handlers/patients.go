@@ -29,7 +29,11 @@ func (h *PatientHandler) Show(c echo.Context) error {
 	patientId := c.Param("id")
 	patient, err := h.patients.GetById(c.Request().Context(), patientId)
 	if err != nil {
-		return RespondNoContent(c)
+		return NewInternalServerError("Server error")
+	}
+
+	if patient == nil {
+		return NewNotFound("Patient not found")
 	}
 
 	return RespondOK(c, patient)

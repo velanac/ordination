@@ -59,7 +59,7 @@ func (s *ServiceService) Update(c context.Context, id string, payload *models.Se
 	}
 
 	if !exist {
-		return models.ErrNotFound
+		return ErrNotFound
 	}
 
 	updateService := &models.Service{
@@ -83,7 +83,7 @@ func (s *ServiceService) Delete(c context.Context, id string) error {
 	}
 
 	if !exist {
-		return models.ErrNotFound
+		return ErrNotFound
 	}
 
 	err = s.services.Delete(c, s.store.Q(), id)

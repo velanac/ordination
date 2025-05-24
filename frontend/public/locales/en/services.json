@@ -2,10 +2,10 @@
   "title": "Services",
   "subtitle": "Manage your services",
   "add": "Add Service",
-  "descriprion": "Description",
+  "description": "Description",
   "price": "Price",
-  "new": "New Service",
+  "newService": "New Service",
   "newDescription": "Add a new service",
-  "edit": "Edit Service",
+  "editService": "Edit Service",
   "editDescription": "Edit service information"
 }
