@@ -3,9 +3,10 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
-import { ServiceSchema } from '@/types';
+import { ServicePayload } from '@/types';
 import { Spinner } from '@/components/spinner';
 import { ToastService } from '@/lib/toast-service';
+import { convertAmountFromMiliunits } from '@/lib/utils';
 import { FormContainer } from '@/components/form-container';
 import { ServiceForm } from '@/modules/services/service-form';
 import { useService } from '@/modules/services/hooks/use-service';
@@ -23,7 +24,7 @@ function ServiceUpdate() {
 
   const closePage = () => navigate(-1);
 
-  const handleSubmit = (data: ServiceSchema) => {
+  const handleSubmit = (data: ServicePayload) => {
     setDisable(true);
     update.mutate(
       { data, id: id! },
@@ -58,10 +59,11 @@ function ServiceUpdate() {
       {isLoading && <Spinner />}
       {data && (
         <ServiceForm
-          id={data.data.id}
+          id={id}
           disabled={isLoading || disable}
           defaultValues={{
             ...data.data,
+            price: convertAmountFromMiliunits(data.data.price).toString(),
           }}
           onSubmit={handleSubmit}
           onCancel={closePage}

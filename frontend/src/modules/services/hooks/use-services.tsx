@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { ServiceSchema } from '@/types';
+import { ServiceSchema, ServiceResponse } from '@/types';
 import { queryKeys } from '@/lib/query-client';
+import { convertAmountFromMiliunits } from '@/lib/utils';
 
 const useServices = () =>
-  useQuery<{ data: ServiceSchema[] }>({
+  useQuery<ServiceSchema[]>({
     queryKey: [queryKeys.services],
     queryFn: async () => {
       const response = await fetch('/api/v1/services');
@@ -13,7 +14,12 @@ const useServices = () =>
         throw new Error('Network response was not ok');
       }
 
-      return response.json();
+      const { data } = await response.json();
+
+      return data.map((service: ServiceResponse) => ({
+        ...service,
+        price: convertAmountFromMiliunits(service.price), // Convert from miliunits to units
+      }));
     },
   });
 

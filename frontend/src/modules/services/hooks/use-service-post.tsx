@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { ServiceSchema } from '@/types';
+import { ServicePayload } from '@/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
 
 export const useServicePost = () =>
   useMutation({
-    mutationFn: async (data: ServiceSchema) => {
+    mutationFn: async (data: ServicePayload) => {
       const response = await fetch('/api/v1/services', {
         method: 'POST',
         headers: {

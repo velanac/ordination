@@ -1,15 +1,16 @@
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
 
-import { DataTableContainer } from '@/components/data-table-container';
-import { useServices } from '@/modules/services/hooks/use-services';
-import { ServicesTable } from '@/modules/services/services-table';
 import { Spinner } from '@/components/spinner';
+import { ServicesTable } from '@/modules/services/services-table';
+import { useServices } from '@/modules/services/hooks/use-services';
+import { DataTableContainer } from '@/components/data-table-container';
 
 function Services() {
   const navigate = useNavigate();
   const { t } = useTranslation('services');
   const { isLoading, data } = useServices();
+  console.log('Services data:', data);
 
   if (isLoading) {
     return (
@@ -27,7 +28,7 @@ function Services() {
       onAddClick={() => navigate('/app/services/new')}
     >
       <div className='flex w-full flex-col gap-4'>
-        <ServicesTable services={data?.data ?? []} />
+        <ServicesTable services={data ?? []} />
       </div>
     </DataTableContainer>
   );

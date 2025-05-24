@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
-import { ServiceSchema } from '@/types';
+import { ServicePayload } from '@/types';
 import { ToastService } from '@/lib/toast-service';
 import { FormContainer } from '@/components/form-container';
 import { ServiceForm } from '@/modules/services/service-form';
@@ -14,7 +14,7 @@ function ServiceNew() {
 
   const closePage = () => navigate(-1);
 
-  const handleSubmit = (data: ServiceSchema) => {
+  const handleSubmit = (data: ServicePayload) => {
     create.mutate(data, {
       onSuccess: () => {
         ToastService.success('Service created successfully');

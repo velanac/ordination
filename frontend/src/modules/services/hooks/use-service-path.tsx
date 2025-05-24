@@ -1,10 +1,10 @@
+import { ServicePayload } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { ServiceSchema } from '@/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
 
 export const useServicePath = () =>
   useMutation({
-    mutationFn: async ({ data, id }: { data: ServiceSchema; id: string }) => {
+    mutationFn: async ({ data, id }: { data: ServicePayload; id: string }) => {
       const response = await fetch(`/api/v1/services/${id}`, {
         method: 'PATCH',
         headers: {

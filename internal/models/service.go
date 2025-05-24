@@ -2,7 +2,7 @@ package models
 
 type ServicePayload struct {
 	Description string `json:"description" validate:"required"`
-	Price       int64  `json:"price" validate:"required"`
+	Price       int64  `json:"price"`
 }
 
 type Service struct {

@@ -7,4 +7,17 @@ export const ServiceSchema = z.object({
   price: z.string(),
 });
 
+export const ServicePayloadScheme = z.object({
+  description: z.string(),
+  price: z.number(),
+});
+
+export const ServiceResponse = z.object({
+  id: z.string(),
+  description: z.string(),
+  price: z.number(),
+});
+
+export type ServiceResponse = z.infer<typeof ServiceResponse>;
+export type ServicePayload = z.infer<typeof ServicePayloadScheme>;
 export type ServiceSchema = z.infer<typeof ServiceSchema>;

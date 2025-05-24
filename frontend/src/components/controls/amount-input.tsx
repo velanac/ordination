@@ -1,75 +1,55 @@
-'use client';
-
 import CurrencyInput from 'react-currency-input-field';
-import { InfoIcon, MinusCircleIcon, PlusCircleIcon } from 'lucide-react';
+import { Control, FieldValues, Path } from 'react-hook-form';
 
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from '@/components/ui/tooltip';
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+} from '@/components/ui/form';
+import { LocalizeFormMessage } from '@/components/localize-form-message';
 import { cn } from '@/lib/utils';
 
-interface Props {
-  value: string;
-  onChange: (value: string | undefined) => void;
-  disabled?: boolean;
-  placeholder?: string;
-}
+type Props<T extends FieldValues> = {
+  name: Path<T>;
+  label: string;
+  control: Control<T>;
+  description?: string;
+  className?: string;
+};
 
-const AmountInput = (props: Props) => {
-  const { value, onChange, disabled, placeholder } = props;
-  const parsedValue = parseFloat(value);
-  const isIncome = parsedValue > 0;
-  const isExpense = parsedValue < 0;
-
-  const onReverseValue = () => {
-    if (!value) return;
-    const newValue = (parseFloat(value) * -1).toString();
-    onChange(newValue.toString());
-  };
+function AmountInput<T extends FieldValues>(props: Props<T>) {
+  const { name, label, control, description, className } = props;
 
   return (
-    <div className='relative'>
-      <TooltipProvider>
-        <Tooltip delayDuration={100}>
-          <TooltipTrigger asChild>
-            <button
-              type='button'
-              onClick={onReverseValue}
+    <FormField
+      name={name}
+      control={control}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{label}</FormLabel>
+          <FormControl>
+            <CurrencyInput
               className={cn(
-                'bg-slate-400 hover:bg-slate-500 absolute top-1.5 left-1.5 rounded-md p-2 flex items-center justify-center transition',
-                isIncome && 'bg-emerald-500 hover:bg-emerald-600',
-                isExpense && 'bg-rose-500 hover:bg-rose-600'
+                'file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm',
+                'focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]',
+                'aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive text-right',
+                className
               )}
-            >
-              {!parsedValue && <InfoIcon className='size-3 text-white' />}
-              {isIncome && <PlusCircleIcon className='size-3 text-white' />}
-              {isExpense && <MinusCircleIcon className='size-3 text-white' />}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent>
-            Use [+] form income and [-] for expenses
-          </TooltipContent>
-        </Tooltip>
-      </TooltipProvider>
-      <CurrencyInput
-        prefix='$'
-        className='pl-10 flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:text-sm'
-        value={value}
-        placeholder={placeholder}
-        decimalsLimit={2}
-        decimalScale={2}
-        onValueChange={onChange}
-        disabled={disabled}
-      />
-      <p className='text-xs text-muted-foreground mt-2'>
-        {isIncome && 'This will count as income'}
-        {isExpense && 'This will count as expense'}
-      </p>
-    </div>
+              value={field.value}
+              placeholder={'0.00'}
+              decimalsLimit={2}
+              decimalScale={2}
+              onValueChange={field.onChange}
+            />
+          </FormControl>
+          {description && <FormDescription>{description}</FormDescription>}
+          <LocalizeFormMessage />
+        </FormItem>
+      )}
+    />
   );
-};
+}
 
 export { AmountInput };
