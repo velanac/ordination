@@ -3,7 +3,7 @@ import { useQuery } from '@tanstack/react-query';
 import { UserList } from '@/types';
 import { queryKeys } from '@/lib/query-client';
 
-const usePatients = () =>
+const useUsers = () =>
   useQuery<{ data: UserList[] }>({
     queryKey: [queryKeys.users],
     queryFn: async () => {
@@ -16,4 +16,4 @@ const usePatients = () =>
     },
   });
 
-export { usePatients };
+export { useUsers };

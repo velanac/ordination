@@ -1,11 +1,11 @@
+import { ToastService } from '@/lib/toast-service';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient, queryKeys } from '@/lib/query-client';
-import { ToastService } from '@/lib/toast-service';
 
-export const usePatientDelete = () =>
+export const useUserDelete = () =>
   useMutation({
     mutationFn: async (id: string) => {
-      const response = await fetch(`/api/v1/patients/${id}`, {
+      const response = await fetch(`/api/v1/users/${id}`, {
         method: 'DELETE',
       });
       if (!response.ok) {
@@ -14,9 +14,10 @@ export const usePatientDelete = () =>
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.patients],
+        queryKey: [queryKeys.users],
         type: 'all',
       });
+      ToastService.success('User deleted successfully');
     },
     onError: () => {
       ToastService.error('Error deleting patient');

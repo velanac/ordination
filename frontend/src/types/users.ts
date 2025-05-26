@@ -9,6 +9,12 @@ export const UserSchema = z.object({
   role: z.enum(['SuperAdmin', 'Admin', 'Doctor']),
 });
 
+export type UserPayload = {
+  username: string;
+  password: string;
+  role: 'SuperAdmin' | 'Admin' | 'Doctor';
+};
+
 export type UserList = {
   id: string;
   username: string;

@@ -1,11 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
-import { PatientSchema } from '@/types';
+import { UserPayload } from '@/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
 
-export const usePatientPath = () =>
+export const useUserPath = () =>
   useMutation({
-    mutationFn: async ({ data, id }: { data: PatientSchema; id: string }) => {
-      const response = await fetch(`/api/v1/patients/${id}`, {
+    mutationFn: async ({ data, id }: { data: UserPayload; id: string }) => {
+      const response = await fetch(`/api/v1/users/${id}`, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const usePatientPath = () =>
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.patients],
+        queryKey: [queryKeys.users],
         type: 'all',
       });
     },

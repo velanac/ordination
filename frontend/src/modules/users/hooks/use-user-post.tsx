@@ -1,11 +1,11 @@
+import { UserPayload } from '@/types';
 import { useMutation } from '@tanstack/react-query';
-import { PatientSchema } from '@/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
 
-export const usePatientPost = () =>
+export const useUserPost = () =>
   useMutation({
-    mutationFn: async (data: PatientSchema) => {
-      const response = await fetch('/api/v1/patients', {
+    mutationFn: async (data: UserPayload) => {
+      const response = await fetch('/api/v1/users', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -19,7 +19,7 @@ export const usePatientPost = () =>
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: [queryKeys.patients],
+        queryKey: [queryKeys.users],
         type: 'all',
       });
     },
