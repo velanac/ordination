@@ -20,6 +20,6 @@ export const useUserDelete = () =>
       ToastService.success('User deleted successfully');
     },
     onError: () => {
-      ToastService.error('Error deleting patient');
+      ToastService.error('Error deleting user');
     },
   });

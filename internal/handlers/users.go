@@ -56,3 +56,19 @@ func (h *UsersHandler) Create(c echo.Context) error {
 
 	return RespondCreated(c, "User created successfully")
 }
+
+func (h *UsersHandler) Delete(c echo.Context) error {
+	id := c.Param("id")
+	if id == "" {
+		return NewBadRequest("User ID is required")
+	}
+
+	if err := h.users.Delete(c.Request().Context(), id); err != nil {
+		if err == service.ErrNotFound {
+			return NewNotFound("User not found")
+		}
+		return NewInternalServerError("Server error")
+	}
+
+	return RespondNoContent(c)
+}

@@ -97,6 +97,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.GET("/users", usersHandler.Index)
 	v1Auth.GET("/users/:id", usersHandler.Show)
 	v1Auth.POST("/users", usersHandler.Create)
+	v1Auth.DELETE("/users/:id", usersHandler.Delete)
 
 	return e
 }

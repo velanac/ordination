@@ -114,3 +114,17 @@ func (r *UsersRepository) GetUserByEmail(ctx context.Context, q Querier, email s
 
 	return user, nil
 }
+
+func (r *UsersRepository) Delete(ctx context.Context, q Querier, id string) error {
+	query := `DELETE FROM users WHERE id = $1`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := q.ExecContext(ctx, query, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

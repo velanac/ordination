@@ -58,3 +58,10 @@ func (s *UsersService) Create(ctx context.Context, user *models.UserCreate) erro
 
 	return s.users.Create(ctx, s.store.Q(), newUser)
 }
+
+func (s *UsersService) Delete(ctx context.Context, id string) error {
+	if err := s.users.Delete(ctx, s.store.Q(), id); err != nil {
+		return err
+	}
+	return nil
+}
