@@ -23,6 +23,23 @@ func (h *UsersHandler) Index(c echo.Context) error {
 	return RespondOK(c, users)
 }
 
+func (h *UsersHandler) Show(c echo.Context) error {
+	id := c.Param("id")
+	if id == "" {
+		return NewBadRequest("User ID is required")
+	}
+
+	user, err := h.users.GetByID(c.Request().Context(), id)
+	if err != nil {
+		if err == service.ErrNotFound {
+			return NewNotFound("User not found")
+		}
+		return NewInternalServerError("Server error")
+	}
+
+	return RespondOK(c, user)
+}
+
 func (h *UsersHandler) Create(c echo.Context) error {
 	var user models.UserCreate
 	if err := c.Bind(&user); err != nil {

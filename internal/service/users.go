@@ -24,6 +24,19 @@ func (s *UsersService) GetList(ctx context.Context) ([]*models.UserList, error) 
 	return s.users.GetList(ctx, s.store.Q())
 }
 
+func (s *UsersService) GetByID(ctx context.Context, id string) (*models.User, error) {
+	user, err := s.users.GetByID(ctx, s.store.Q(), id)
+	if err != nil {
+		return nil, err
+	}
+
+	if user == nil {
+		return nil, ErrNotFound
+	}
+
+	return user, nil
+}
+
 func (s *UsersService) Create(ctx context.Context, user *models.UserCreate) error {
 	role, err := s.roles.GetByName(ctx, s.store.Q(), user.Role)
 	if err != nil {
