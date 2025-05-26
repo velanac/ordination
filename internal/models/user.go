@@ -8,6 +8,12 @@ type UserProfile struct {
 	Role  string `json:"role"`
 }
 
+type UserCreate struct {
+	UserName string `json:"username" validate:"required,email"`
+	Password string `json:"password" validate:"required,min=8"`
+	Role     string `json:"role" validate:"required,oneof=User SuperAdmin Doctor"`
+}
+
 type User struct {
 	ID       string   `json:"id"`
 	Email    string   `json:"email"`

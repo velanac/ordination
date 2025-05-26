@@ -44,6 +44,21 @@ func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.Use
 	return users, nil
 }
 
+func (r *UsersRepository) Create(ctx context.Context, q Querier, user *models.User) error {
+	query := `INSERT INTO users (email, password, email_verified, role_id) 
+				VALUES ($1, $2, $3, (SELECT id FROM roles WHERE name = $4))`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := q.ExecContext(ctx, query, user.Email, user.Password.Hash, time.Now(), user.Role)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (r *UsersRepository) OpenSuperAdmin(ctx context.Context, q Querier, user *models.User) error {
 	query := `INSERT INTO users (email, password, email_verified, role_id) VALUES ($1, $2, $3, $4, (SELECT id FROM roles WHERE name = 'SuperAdmin'))`
 

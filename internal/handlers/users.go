@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
+	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/service"
 )
 
@@ -20,4 +21,21 @@ func (h *UsersHandler) Index(c echo.Context) error {
 	}
 
 	return RespondOK(c, users)
+}
+
+func (h *UsersHandler) Create(c echo.Context) error {
+	var user models.UserCreate
+	if err := c.Bind(&user); err != nil {
+		return NewBadRequest("Invalid request data")
+	}
+
+	if err := c.Validate(&user); err != nil {
+		return NewBadRequest(err.Error())
+	}
+
+	if err := h.users.Create(c.Request().Context(), &user); err != nil {
+		return NewInternalServerError("Failed to create user")
+	}
+
+	return RespondCreated(c, "User created successfully")
 }
