@@ -4,8 +4,8 @@ import {
   CrossIcon,
   HouseIcon,
   LayoutDashboard,
-  StethoscopeIcon,
   User,
+  UsersIcon,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { NavLink, useLocation } from 'react-router';
@@ -57,16 +57,16 @@ const AppSidebar = () => {
         isActive: (pathname: string) => pathname.includes('offices'),
       },
       {
-        title: t('doctors'),
-        url: '/app/doctors',
-        icon: StethoscopeIcon,
-        isActive: (pathname: string) => pathname.includes('doctors'),
-      },
-      {
         title: t('services'),
         url: '/app/services',
         icon: CrossIcon,
         isActive: (pathname: string) => pathname.includes('services'),
+      },
+      {
+        title: t('users'),
+        url: '/app/users',
+        icon: UsersIcon,
+        isActive: (pathname: string) => pathname.includes('users'),
       },
     ],
     [t]

@@ -1,12 +1,12 @@
 import { Navigate, Outlet } from 'react-router';
 
 import { Header } from '@/components/header';
+import { Spinner } from '@/components/spinner';
 import { useProfile } from '@/hooks/use-profile';
-import { AppSidebar } from '@/modules/app/app-sidebar';
+import { AppSidebar } from '@/components/sidebar/app-sidebar';
 import { ProfileMenu } from '@/components/profile-menu';
 import { SelectLocale } from '@/components/controls/select-locale';
 import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { Spinner } from '@/components/spinner';
 
 const AppLayout = () => {
   const { isLoading, error } = useProfile();

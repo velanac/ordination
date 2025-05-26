@@ -1,10 +1,9 @@
 import { createBrowserRouter } from 'react-router';
 
-import PersonalPage from '@/pages/app/personal';
+import { PersonalPage } from '@/pages/app/personal';
 import { Dashboard } from '@/pages/app/dashboard';
-import { AppLayout } from '@/modules/app/app-layout';
+import { AppLayout } from '@/components/sidebar/app-layout';
 import { SignInPage } from '@/pages/auth/signin-page';
-import { SettingsPage } from '@/pages/app/settings';
 import { Patients } from '@/pages/patients/patients';
 import { AuthLayout } from '@/modules/auth/auth-layout';
 import { Offices } from '@/pages/offices/offices';
@@ -65,10 +64,6 @@ const routers = createBrowserRouter([
         element: <ServiceUpdate />,
       },
     ],
-  },
-  {
-    path: '/app/settings',
-    element: <SettingsPage />,
   },
 ]);
 
