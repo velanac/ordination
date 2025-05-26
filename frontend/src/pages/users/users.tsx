@@ -1,9 +1,10 @@
-import { DataTableContainer } from '@/components/data-table-container';
-import { Spinner } from '@/components/spinner';
-import { useUsers } from '@/modules/users/hooks/use-users';
-import { UsersTable } from '@/modules/users/users-table';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { useTranslation } from 'react-i18next';
+
+import { Spinner } from '@/components/spinner';
+import { UsersTable } from '@/modules/users/users-table';
+import { useUsers } from '@/modules/users/hooks/use-users';
+import { DataTableContainer } from '@/components/data-table-container';
 
 function Users() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ function Users() {
   return (
     <DataTableContainer
       title={t('title')}
-      description={t('description')}
+      description={t('subtitle')}
       addNewButtonTitle={t('add')}
       onAddClick={() => navigate('/app/users/new')}
     >

@@ -15,6 +15,12 @@ type User struct {
 	Role     string   `json:"role"`
 }
 
+type UserList struct {
+	ID       string `json:"id"`
+	UserName string `json:"username"`
+	Role     string `json:"role"`
+}
+
 type password struct {
 	Text *string
 	Hash []byte
