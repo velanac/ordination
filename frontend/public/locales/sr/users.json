@@ -1,0 +1,16 @@
+{
+  "title": "Korisnici",
+  "subtitle": "Upravljajte svojim korisnicima",
+  "add": "Dodaj korisnika",
+  "username": "Korisničko ime",
+  "role": "Uloga",
+  "password": "Lozinka",
+  "confirmPassword": "Potvrdite lozinku",
+  "newUser": "New User",
+  "newDescription": "Add a new user",
+  "editUser": "Edit User",
+  "editDescription": "Edit user information",
+  "doctor": "Doktor",
+  "superadmin": "Super Administrator",
+  "admin": "Administrator"
+}

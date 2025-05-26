@@ -4,7 +4,7 @@ import { UserList } from '@/types';
 import { queryKeys } from '@/lib/query-client';
 
 const useUsers = () =>
-  useQuery<{ data: UserList[] }>({
+  useQuery<UserList[]>({
     queryKey: [queryKeys.users],
     queryFn: async () => {
       const response = await fetch('/api/v1/users');
@@ -12,7 +12,10 @@ const useUsers = () =>
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
+
+      const { data } = await response.json();
+
+      return data as UserList[];
     },
   });
 

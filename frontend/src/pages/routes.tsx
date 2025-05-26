@@ -11,9 +11,12 @@ import { PatientNew } from '@/pages/patients/patient-new';
 import { PatientUpdate } from '@/pages/patients/patient-update';
 import { OfficeNew } from '@/pages/offices/office-new';
 import { OfficeUpdate } from '@/pages/offices/office-update';
-import { ServiceNew } from './services/service-new';
+import { ServiceNew } from '@/pages/services/service-new';
 import { Services } from '@/pages/services/services';
-import { ServiceUpdate } from './services/service-update';
+import { ServiceUpdate } from '@/pages/services/service-update';
+import { Users } from '@/pages/users/users';
+import { UserNew } from '@/pages/users/user-new';
+import { UserUpdate } from '@/pages/users/user-update';
 
 const routers = createBrowserRouter([
   {
@@ -62,6 +65,18 @@ const routers = createBrowserRouter([
       {
         path: 'services/:id',
         element: <ServiceUpdate />,
+      },
+      {
+        path: 'users',
+        element: <Users />,
+      },
+      {
+        path: 'users/new',
+        element: <UserNew />,
+      },
+      {
+        path: 'users/:id',
+        element: <UserUpdate />,
       },
     ],
   },

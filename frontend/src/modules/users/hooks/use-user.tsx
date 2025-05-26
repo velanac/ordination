@@ -4,7 +4,7 @@ import { UserSchema } from '@/types';
 import { queryKeys } from '@/lib/query-client';
 
 const useUser = (id: string | undefined) =>
-  useQuery<{ data: UserSchema }>({
+  useQuery<UserSchema>({
     queryKey: [queryKeys.users, id],
     enabled: !!id,
     queryFn: async () => {
@@ -13,7 +13,9 @@ const useUser = (id: string | undefined) =>
       if (!response.ok) {
         throw new Error('Network response was not ok');
       }
-      return response.json();
+      const { data } = await response.json();
+
+      return data as UserSchema;
     },
   });
 

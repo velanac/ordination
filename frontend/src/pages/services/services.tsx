@@ -10,7 +10,6 @@ function Services() {
   const navigate = useNavigate();
   const { t } = useTranslation('services');
   const { isLoading, data } = useServices();
-  console.log('Services data:', data);
 
   if (isLoading) {
     return (

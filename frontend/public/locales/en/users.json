@@ -1,0 +1,16 @@
+{
+  "title": "Users",
+  "subtitle": "Manage your users",
+  "add": "Add User",
+  "username": "Username",
+  "role": "Role",
+  "password": "Password",
+  "confirmPassword": "Confirm Password",
+  "newUser": "New User",
+  "newDescription": "Add a new user",
+  "editUser": "Edit User",
+  "editDescription": "Edit user information",
+  "doctor": "Doctor",
+  "superadmin": "Super Admin",
+  "admin": "Admin"
+}
