@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 
 type Props = {
   id?: string;
+  saveTitle?: string;
   disabled?: boolean;
   onCancel?: () => void;
 };
@@ -12,9 +13,11 @@ function FormActions({ id, disabled, onCancel }: Props) {
 
   return (
     <div className='flex w-full items-center justify-end space-x-4'>
-      <Button type='button' onClick={onCancel} variant='secondary'>
-        {t('cancel')}
-      </Button>
+      {onCancel && (
+        <Button type='button' onClick={onCancel} variant='secondary'>
+          {t('cancel')}
+        </Button>
+      )}
       <Button type='submit' disabled={disabled} variant='default'>
         {id ? t('saveChanges') : t('save')}
       </Button>

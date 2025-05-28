@@ -6,6 +6,7 @@ import { ToastService } from '@/lib/toast-service';
 import { useUser } from '@/modules/users/hooks/use-user';
 import { FormContainer } from '@/components/form-container';
 import { useUserDelete } from '@/modules/users/hooks/use-user-delete';
+import { ChangePasswordForm } from '@/modules/users/change-password-form';
 
 function UserUpdate() {
   const { id } = useParams();
@@ -46,12 +47,16 @@ function UserUpdate() {
   return (
     <FormContainer
       id={id}
-      title={t('editUser')}
+      title={data ? data.email : ''}
       description={t('editDescription')}
       onDelete={handleDelete}
     >
       {isLoading && <Spinner />}
-      {data && <div>User Edit</div>}
+      {data && (
+        <div>
+          <ChangePasswordForm onSubmit={() => {}} />
+        </div>
+      )}
     </FormContainer>
   );
 }

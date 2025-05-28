@@ -12,5 +12,7 @@
   "editDescription": "Edit user information",
   "doctor": "Doctor",
   "superadmin": "Super Admin",
-  "admin": "Admin"
+  "admin": "Admin",
+  "changePassword": "Change Password",
+  "changePasswordDescription": "Change selected user password"
 }

@@ -12,5 +12,7 @@
   "editDescription": "Edit user information",
   "doctor": "Doktor",
   "superadmin": "Super Administrator",
-  "admin": "Administrator"
+  "admin": "Administrator",
+  "changePassword": "Promeni lozinku",
+  "changePasswordDescription": "Promenite lozinku izabranog korisnika"
 }

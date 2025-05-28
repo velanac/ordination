@@ -21,4 +21,16 @@ export type UserList = {
   role: string;
 };
 
+export type UserResponse = {
+  id: string;
+  email: string;
+  role: string;
+};
+
+export const ChangePasswordSchema = z.object({
+  password: z.string().min(8, requiredValidation),
+  confirmPassword: z.string().min(8, requiredValidation),
+});
+
+export type ChangePasswordSchema = z.infer<typeof ChangePasswordSchema>;
 export type UserSchema = z.infer<typeof UserSchema>;

@@ -1,10 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { UserSchema } from '@/types';
+import { UserResponse } from '@/types';
 import { queryKeys } from '@/lib/query-client';
 
 const useUser = (id: string | undefined) =>
-  useQuery<UserSchema>({
+  useQuery<UserResponse>({
     queryKey: [queryKeys.users, id],
     enabled: !!id,
     queryFn: async () => {
@@ -15,7 +15,7 @@ const useUser = (id: string | undefined) =>
       }
       const { data } = await response.json();
 
-      return data as UserSchema;
+      return data;
     },
   });
 
