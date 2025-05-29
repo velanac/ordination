@@ -45,7 +45,7 @@ func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.Use
 }
 
 func (r *UsersRepository) GetByID(ctx context.Context, q Querier, id string) (*models.User, error) {
-	query := `SELECT u.id, u.email, u.password, r.name FROM users u 
+	query := `SELECT u.id, u.email, u.password, u.active, r.name FROM users u 
 				JOIN roles r on u.role_id = r.id
 				WHERE u.id = $1`
 
@@ -55,7 +55,7 @@ func (r *UsersRepository) GetByID(ctx context.Context, q Querier, id string) (*m
 	row := q.QueryRowContext(ctx, query, id)
 
 	user := &models.User{}
-	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Role); err != nil {
+	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Active, &user.Role); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound
 		}

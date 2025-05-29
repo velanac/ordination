@@ -3,9 +3,10 @@ package models
 import "golang.org/x/crypto/bcrypt"
 
 type UserProfile struct {
-	Id    string `json:"id"`
-	Email string `json:"email"`
-	Role  string `json:"role"`
+	Id     string `json:"id"`
+	Email  string `json:"email"`
+	Role   string `json:"role"`
+	Active bool   `json:"active"`
 }
 
 type UserCreate struct {
@@ -19,6 +20,7 @@ type User struct {
 	Email    string   `json:"email"`
 	Password password `json:"-"`
 	Role     string   `json:"role"`
+	Active   bool     `json:"active"`
 }
 
 type UserList struct {
