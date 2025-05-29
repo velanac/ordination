@@ -67,6 +67,10 @@ func (h *UsersHandler) Delete(c echo.Context) error {
 		if err == service.ErrNotFound {
 			return NewNotFound("User not found")
 		}
+		if err == service.ErrForbidden {
+			return NewForbidden("Cannot delete SuperAdmin user")
+		}
+
 		return NewInternalServerError("Server error")
 	}
 

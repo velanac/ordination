@@ -60,6 +60,20 @@ func (s *UsersService) Create(ctx context.Context, user *models.UserCreate) erro
 }
 
 func (s *UsersService) Delete(ctx context.Context, id string) error {
+	// Check if the user exists
+	user, err := s.users.GetByID(ctx, s.store.Q(), id)
+	if err != nil {
+		return err
+	}
+
+	if user == nil {
+		return ErrNotFound
+	}
+
+	if user.Role == "SuperAdmin" {
+		return ErrForbidden
+	}
+
 	if err := s.users.Delete(ctx, s.store.Q(), id); err != nil {
 		return err
 	}

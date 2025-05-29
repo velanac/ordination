@@ -7,6 +7,7 @@ import { useUser } from '@/modules/users/hooks/use-user';
 import { FormContainer } from '@/components/form-container';
 import { useUserDelete } from '@/modules/users/hooks/use-user-delete';
 import { ChangePasswordForm } from '@/modules/users/change-password-form';
+import { Separator } from '@radix-ui/react-separator';
 
 function UserUpdate() {
   const { id } = useParams();
@@ -45,19 +46,23 @@ function UserUpdate() {
   };
 
   return (
-    <FormContainer
-      id={id}
-      title={data ? data.email : ''}
-      description={t('editDescription')}
-      onDelete={handleDelete}
-    >
+    <div className='container mx-auto h-full w-full'>
+      <div className='py-2 px-4  mx-auto flex items-center justify-between '>
+        <div className=''>
+          <h1 className='text-2xl font-bold'>{data?.email}</h1>
+          <p className='text-sm text-muted-foreground'>
+            {t('editDescription')}
+          </p>
+        </div>
+      </div>
+      <Separator className='my-2 mb-5' />
       {isLoading && <Spinner />}
       {data && (
         <div>
           <ChangePasswordForm onSubmit={() => {}} />
         </div>
       )}
-    </FormContainer>
+    </div>
   );
 }
 

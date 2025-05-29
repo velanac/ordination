@@ -50,7 +50,6 @@ function PatientForm({
     <div className='py-1 px-4 mx-auto w-full'>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
-          <div className='w-full md:w-1/6'></div>
           <Grid3>
             <FormText
               control={form.control}
