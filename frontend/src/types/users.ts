@@ -25,6 +25,7 @@ export type UserResponse = {
   id: string;
   email: string;
   role: string;
+  active: boolean;
 };
 
 export const ChangePasswordSchema = z.object({

@@ -8,14 +8,14 @@ import { FormText } from '@/components/controls/form-text';
 import { FormActions } from '@/components/controls/form-actions';
 import { Separator } from '@/components/ui/separator';
 
-type Props = {
-  disabled?: boolean;
-  onSubmit: (values: ChangePasswordSchema) => void;
-  onCancel?: () => void;
-};
-
-function ChangePasswordForm({ disabled, onSubmit, onCancel }: Props) {
+function ChangePasswordForm() {
   const { t } = useTranslation('users');
+  const disabled = false; // Replace with actual logic to determine if the form should be disabled
+
+  const onSubmit = (data: ChangePasswordSchema) => {
+    // Handle password change logic here
+    console.log('Password changed:', data);
+  };
 
   const form = useForm<ChangePasswordSchema>({
     resolver: zodResolver(ChangePasswordSchema),
@@ -23,14 +23,14 @@ function ChangePasswordForm({ disabled, onSubmit, onCancel }: Props) {
 
   return (
     <div>
-      <div className='py-1 px-4 mx-auto w-full'>
+      <div className='py-4 mx-auto w-full'>
         <h2 className='text-lg font-semibold'>{t('changePassword')}</h2>
         <p className='text-sm text-gray-500'>
           {t('changePasswordDescription')}
         </p>
       </div>
       <Separator className='my-4' />
-      <div className='py-1 px-4 mx-auto w-full'>
+      <div className='py-1 mx-auto w-full'>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
             <FormText
@@ -43,7 +43,7 @@ function ChangePasswordForm({ disabled, onSubmit, onCancel }: Props) {
               name='confirmPassword'
               label={t('confirmPassword')}
             />
-            <FormActions id='1' disabled={disabled} onCancel={onCancel} />
+            <FormActions id='1' disabled={disabled} />
           </form>
         </Form>
       </div>

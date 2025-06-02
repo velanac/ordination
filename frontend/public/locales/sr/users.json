@@ -13,6 +13,16 @@
   "doctor": "Doktor",
   "superadmin": "Super Administrator",
   "admin": "Administrator",
+  "dangerZone": "Opasna zona",
+  "dangerZoneDescription": "Akcije u opasnoj zoni su nepovratne. Molimo vas da postupate sa oprezom.",
+  "deleteUser": "Obriši korisnika",
+  "deleteUserDescription": "Da li ste sigurni da želite da obrišete ovog korisnika? Ova akcija se ne može poništiti.",
+  "generalForm": "Opšte informacije",
+  "generalFormDescription": "Opšte informacije o korisniku",
   "changePassword": "Promeni lozinku",
-  "changePasswordDescription": "Promenite lozinku izabranog korisnika"
+  "changePasswordDescription": "Promenite lozinku izabranog korisnika",
+  "changeActiveStatus": "Promeni aktivan status",
+  "changeActiveStatusDescription": "Promenite aktivan status izabranog korisnika. Aktivni korisnici mogu da se prijave i koriste sistem. Neaktivni korisnici ne mogu da se prijave.",
+  "active": "Aktivan",
+  "inactive": "Neaktivan"
 }

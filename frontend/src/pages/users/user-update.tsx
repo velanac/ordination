@@ -2,18 +2,17 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate, useParams } from 'react-router';
 
 import { Spinner } from '@/components/spinner';
-import { ToastService } from '@/lib/toast-service';
+import { Separator } from '@/components/ui/separator';
 import { useUser } from '@/modules/users/hooks/use-user';
-import { FormContainer } from '@/components/form-container';
-import { useUserDelete } from '@/modules/users/hooks/use-user-delete';
+import { DangerZoneForm } from '@/modules/users/danger-zone-form';
 import { ChangePasswordForm } from '@/modules/users/change-password-form';
-import { Separator } from '@radix-ui/react-separator';
+import { GeneraSettingsForm } from '@/modules/users/general-settings-form';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 function UserUpdate() {
   const { id } = useParams();
   const navigate = useNavigate();
   // const update = useUserPath();
-  const deleteAction = useUserDelete();
   // const [disable, setDisable] = useState(false);
   const { t } = useTranslation('users');
   const { isLoading, data } = useUser(id);
@@ -39,15 +38,9 @@ function UserUpdate() {
   //     );
   //   };
 
-  const handleDelete = () => {
-    deleteAction.mutate(id!);
-    ToastService.success('Office deleted successfully');
-    closePage();
-  };
-
   return (
     <div className='container mx-auto h-full w-full'>
-      <div className='py-2 px-4  mx-auto flex items-center justify-between '>
+      <div className='py-2 mx-auto flex items-center justify-between '>
         <div className=''>
           <h1 className='text-2xl font-bold'>{data?.email}</h1>
           <p className='text-sm text-muted-foreground'>
@@ -56,12 +49,29 @@ function UserUpdate() {
         </div>
       </div>
       <Separator className='my-2 mb-5' />
-      {isLoading && <Spinner />}
-      {data && (
-        <div>
-          <ChangePasswordForm onSubmit={() => {}} />
-        </div>
-      )}
+      <Tabs defaultValue='general'>
+        <TabsList className='grid w-full grid-cols-3'>
+          <TabsTrigger value='general'>Genaral</TabsTrigger>
+          <TabsTrigger value='password'>Change Password</TabsTrigger>
+          <TabsTrigger value='danger'>Danger Zone</TabsTrigger>
+        </TabsList>
+        {isLoading && <Spinner />}
+        {data && (
+          <>
+            <TabsContent value='general'>
+              <div>
+                <GeneraSettingsForm active={data.active} />
+              </div>
+            </TabsContent>
+            <TabsContent value='password'>
+              <ChangePasswordForm />
+            </TabsContent>
+            <TabsContent value='danger'>
+              <DangerZoneForm />
+            </TabsContent>
+          </>
+        )}
+      </Tabs>
     </div>
   );
 }
