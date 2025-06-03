@@ -20,10 +20,10 @@ function DangerZoneForm() {
   const navigate = useNavigate();
   const { t } = useTranslation('users');
   const [openDialog, setOpenDialog] = useState<boolean>(false);
-  const deleteMutation = useUserDelete();
+  const deleteMutation = useUserDelete(id!);
 
   const onDelete = () => {
-    deleteMutation.mutate(id!, {
+    deleteMutation.mutate(undefined, {
       onSuccess: () => {
         navigate('/app/users');
       },

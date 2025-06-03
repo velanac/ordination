@@ -94,10 +94,12 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.POST("/services", serviceHandler.Create)
 	v1Auth.PATCH("/services/:id", serviceHandler.Update)
 	v1Auth.DELETE("/services/:id", serviceHandler.Delete)
-	v1Auth.GET("/users", usersHandler.Index)
-	v1Auth.GET("/users/:id", usersHandler.Show)
-	v1Auth.POST("/users", usersHandler.Create)
-	v1Auth.DELETE("/users/:id", usersHandler.Delete)
+	superAdminAPI := v1Auth.Group("/users", IsSuperAdmin)
+	superAdminAPI.GET("", usersHandler.Index)
+	superAdminAPI.GET("/:id", usersHandler.Show)
+	superAdminAPI.POST("", usersHandler.Create)
+	superAdminAPI.DELETE("/:id", usersHandler.Delete)
+	superAdminAPI.PATCH("/:id/general", usersHandler.UpdateGeneralSettings)
 
 	return e
 }

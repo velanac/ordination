@@ -13,6 +13,7 @@ import {
 } from '@/components/ui/form';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { Separator } from '@/components/ui/separator';
 
 const formSchema = z.object({
   active: z.boolean(),
@@ -26,7 +27,7 @@ type Props = {
 
 function GeneraSettingsForm({ active }: Props) {
   const { t } = useTranslation('users');
-
+  const { t: contorlsT } = useTranslation('controls');
   const onSubmit = (data: formSchema) => {
     // Handle form submission logic here
     console.log('Form submitted with data:', data);
@@ -45,6 +46,7 @@ function GeneraSettingsForm({ active }: Props) {
         <h2 className='text-lg font-semibold'>{t('generalForm')}</h2>
         <p className='text-sm text-gray-500'>{t('generalFormDescription')}</p>
       </div>
+      <Separator className='my-4' />
       <div className=' mx-auto w-full'>
         <Form {...form}>
           <form
@@ -76,7 +78,7 @@ function GeneraSettingsForm({ active }: Props) {
               </div>
             </div>
             <div className='flex justify-end'>
-              <Button type='submit'>Submit</Button>
+              <Button type='submit'>{contorlsT('saveChanges')}</Button>
             </div>
           </form>
         </Form>

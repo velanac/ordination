@@ -128,3 +128,31 @@ func (r *UsersRepository) Delete(ctx context.Context, q Querier, id string) erro
 
 	return nil
 }
+
+func (r *UsersRepository) ChangeActiveStatus(ctx context.Context, q Querier, status bool, id string) error {
+	query := `UPDATE users SET active = $1 WHERE id = $2`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := q.ExecContext(ctx, query, status, id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r *UsersRepository) UpdateGeneralSettings(ctx context.Context, q Querier, user *models.User) error {
+	query := `UPDATE users SET active = $1, role_id = (SELECT id FROM roles WHERE name = $2) WHERE id = $3`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := q.ExecContext(ctx, query, user.Active, user.Role, user.ID)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

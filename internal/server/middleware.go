@@ -1,6 +1,7 @@
 package server
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/golang-jwt/jwt/v5"
@@ -40,5 +41,16 @@ func JWTFromCookie(secret string) echo.MiddlewareFunc {
 
 			return next(c)
 		}
+	}
+}
+
+func IsSuperAdmin(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		userProfile := c.Get("user").(*models.UserProfile)
+		log.Printf("User Profile: %+v", userProfile)
+		if userProfile.Role != "SuperAdmin" {
+			return c.JSON(http.StatusForbidden, map[string]string{"message": "Access denied"})
+		}
+		return next(c)
 	}
 }

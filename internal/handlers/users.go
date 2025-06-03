@@ -76,3 +76,32 @@ func (h *UsersHandler) Delete(c echo.Context) error {
 
 	return RespondNoContent(c)
 }
+
+func (h *UsersHandler) UpdateGeneralSettings(c echo.Context) error {
+	id := c.Param("id")
+	if id == "" {
+		return NewBadRequest("User ID is required")
+	}
+
+	var settings models.UserGeneralSettings
+	if err := c.Bind(&settings); err != nil {
+		return NewBadRequest("Invalid request data")
+	}
+
+	if err := c.Validate(&settings); err != nil {
+		return NewBadRequest(err.Error())
+	}
+
+	if err := h.users.UpdateGeneralSettings(c.Request().Context(), id, &settings); err != nil {
+		if err == service.ErrNotFound {
+			return NewNotFound("User not found")
+		}
+		if err == service.ErrForbidden {
+			return NewForbidden("Cannot update SuperAdmin user settings")
+		}
+
+		return NewInternalServerError("Server error")
+	}
+
+	return RespondOK(c, "User settings updated successfully")
+}

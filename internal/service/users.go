@@ -79,3 +79,32 @@ func (s *UsersService) Delete(ctx context.Context, id string) error {
 	}
 	return nil
 }
+
+func (s *UsersService) UpdateGeneralSettings(ctx context.Context, id string, settings *models.UserGeneralSettings) error {
+	// Check if the user exists
+	user, err := s.users.GetByID(ctx, s.store.Q(), id)
+	if err != nil {
+		return err
+	}
+
+	if user == nil {
+		return ErrNotFound
+	}
+
+	role, err := s.roles.GetByName(ctx, s.store.Q(), settings.Role)
+	if err != nil {
+		return err
+	}
+
+	if role == nil {
+		return ErrNotFound
+	}
+
+	update := &models.User{
+		ID:     id,
+		Active: settings.Active,
+		Role:   settings.Role,
+	}
+
+	return s.users.UpdateGeneralSettings(ctx, s.store.Q(), update)
+}

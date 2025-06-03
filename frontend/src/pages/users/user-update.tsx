@@ -8,44 +8,30 @@ import { DangerZoneForm } from '@/modules/users/danger-zone-form';
 import { ChangePasswordForm } from '@/modules/users/change-password-form';
 import { GeneraSettingsForm } from '@/modules/users/general-settings-form';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
+import { X } from 'lucide-react';
 
 function UserUpdate() {
   const { id } = useParams();
   const navigate = useNavigate();
-  // const update = useUserPath();
-  // const [disable, setDisable] = useState(false);
   const { t } = useTranslation('users');
   const { isLoading, data } = useUser(id);
 
   const closePage = () => navigate(-1);
 
-  //   const handleSubmit = (data: UserPayload) => {
-  //     setDisable(true);
-  //     update.mutate(
-  //       { data, id: id! },
-  //       {
-  //         onSuccess: () => {
-  //           ToastService.success('Office updated successfully');
-  //           closePage();
-  //         },
-  //         onError: (err) => {
-  //           ToastService.error(`Something went wrong: ${err?.message}`);
-  //         },
-  //         onSettled: () => {
-  //           setDisable(false);
-  //         },
-  //       }
-  //     );
-  //   };
-
   return (
     <div className='container mx-auto h-full w-full'>
       <div className='py-2 mx-auto flex items-center justify-between '>
-        <div className=''>
-          <h1 className='text-2xl font-bold'>{data?.email}</h1>
-          <p className='text-sm text-muted-foreground'>
-            {t('editDescription')}
-          </p>
+        <div className='flex justify-between items-center w-full'>
+          <div className='w-full'>
+            <h1 className='text-2xl font-bold'>{data?.email}</h1>
+            <p className='text-sm text-muted-foreground'>
+              {t('editDescription')}
+            </p>
+          </div>
+          <Button variant='ghost' onClick={closePage}>
+            <X />
+          </Button>
         </div>
       </div>
       <Separator className='my-2 mb-5' />

@@ -9,6 +9,11 @@ type UserProfile struct {
 	Active bool   `json:"active"`
 }
 
+type UserGeneralSettings struct {
+	Active bool   `json:"active"`
+	Role   string `json:"role" validate:"required,oneof=Admin SuperAdmin Doctor"`
+}
+
 type UserCreate struct {
 	UserName string `json:"username" validate:"required,email"`
 	Password string `json:"password" validate:"required,min=8"`
