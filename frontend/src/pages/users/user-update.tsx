@@ -46,7 +46,10 @@ function UserUpdate() {
           <>
             <TabsContent value='general'>
               <div>
-                <GeneraSettingsForm active={data.active} />
+                <GeneraSettingsForm
+                  active={data.active}
+                  role={data.role as 'Doctor' | 'SuperAdmin' | 'Admin'}
+                />
               </div>
             </TabsContent>
             <TabsContent value='password'>

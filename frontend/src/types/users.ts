@@ -28,6 +28,11 @@ export type UserResponse = {
   active: boolean;
 };
 
+export const UserGeneralSettingsSchema = z.object({
+  active: z.boolean(),
+  role: z.enum(['SuperAdmin', 'Admin', 'Doctor']),
+});
+
 export const ChangePasswordSchema = z.object({
   password: z.string().min(8, requiredValidation),
   confirmPassword: z.string().min(8, requiredValidation),
@@ -35,3 +40,6 @@ export const ChangePasswordSchema = z.object({
 
 export type ChangePasswordSchema = z.infer<typeof ChangePasswordSchema>;
 export type UserSchema = z.infer<typeof UserSchema>;
+export type UserGeneralSettingsSchema = z.infer<
+  typeof UserGeneralSettingsSchema
+>;

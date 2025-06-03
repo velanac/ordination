@@ -1,8 +1,10 @@
-import { z } from 'zod';
+import { useMemo } from 'react';
+
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { zodResolver } from '@hookform/resolvers/zod';
 
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
@@ -11,32 +13,50 @@ import {
   FormItem,
   FormLabel,
 } from '@/components/ui/form';
-import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
+import { UserGeneralSettingsSchema } from '@/types';
 import { Separator } from '@/components/ui/separator';
-
-const formSchema = z.object({
-  active: z.boolean(),
-});
-
-type formSchema = z.infer<typeof formSchema>;
+import { FormSelect } from '@/components/controls/form-select';
+import { useUserGeneralSettings } from './hooks/use-user-general';
+import { useNavigate, useParams } from 'react-router';
 
 type Props = {
   active: boolean;
+  role?: 'SuperAdmin' | 'Admin' | 'Doctor';
 };
 
-function GeneraSettingsForm({ active }: Props) {
+function GeneraSettingsForm({ active, role }: Props) {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const { t } = useTranslation('users');
+  const updateGeneral = useUserGeneralSettings(id!);
   const { t: contorlsT } = useTranslation('controls');
-  const onSubmit = (data: formSchema) => {
-    // Handle form submission logic here
-    console.log('Form submitted with data:', data);
+  const roles = useMemo(
+    () => [
+      { value: 'SuperAdmin', label: t('superadmin') },
+      { value: 'Admin', label: t('admin') },
+      { value: 'Doctor', label: t('doctor') },
+    ],
+    [t]
+  );
+
+  const onSubmit = (data: UserGeneralSettingsSchema) => {
+    updateGeneral.mutate(data, {
+      onSuccess: () => {
+        navigate(-1);
+      },
+      onError: (error) => {
+        // Optionally handle error, e.g., show a toast notification
+        console.error('Error updating user general settings:', error);
+      },
+    });
   };
 
-  const form = useForm<formSchema>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<UserGeneralSettingsSchema>({
+    resolver: zodResolver(UserGeneralSettingsSchema),
     defaultValues: {
       active: active,
+      role: role || 'Doctor',
     },
   });
 
@@ -74,6 +94,12 @@ function GeneraSettingsForm({ active }: Props) {
                       </FormControl>
                     </FormItem>
                   )}
+                />
+                <FormSelect
+                  name='role'
+                  label={t('role')}
+                  items={roles}
+                  control={form.control}
                 />
               </div>
             </div>
