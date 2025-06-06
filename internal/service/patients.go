@@ -29,7 +29,7 @@ func (s *PatientService) GetList(c context.Context) ([]*models.PatientListItem, 
 }
 
 func (s *PatientService) GetById(c context.Context, id string) (*models.Patient, error) {
-	patient, err := s.patients.GetById(c, s.store.Q(), id)
+	patient, err := s.patients.GetByID(c, s.store.Q(), id)
 	if err != nil {
 		return nil, err
 	}

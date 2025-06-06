@@ -10,10 +10,11 @@ import (
 
 type PatientHandler struct {
 	patients *service.PatientService
+	events   *service.EventsService
 }
 
-func NewPatientHandler(service *service.PatientService) *PatientHandler {
-	return &PatientHandler{patients: service}
+func NewPatientHandler(service *service.PatientService, events *service.EventsService) *PatientHandler {
+	return &PatientHandler{patients: service, events: events}
 }
 
 func (h *PatientHandler) Index(c echo.Context) error {

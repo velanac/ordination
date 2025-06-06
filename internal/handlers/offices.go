@@ -8,10 +8,11 @@ import (
 
 type OfficeHandler struct {
 	offices *service.OfficeService
+	events  *service.EventsService
 }
 
-func NewOfficeHandler(service *service.OfficeService) *OfficeHandler {
-	return &OfficeHandler{offices: service}
+func NewOfficeHandler(service *service.OfficeService, events *service.EventsService) *OfficeHandler {
+	return &OfficeHandler{offices: service, events: events}
 }
 
 func (h *OfficeHandler) Index(c echo.Context) error {

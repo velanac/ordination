@@ -50,13 +50,14 @@ func (s *Server) RegisterRoutes() http.Handler {
 	officeService := service.NewOfficeService(s.store)
 	serviceService := service.NewServiceService(s.store)
 	usersService := service.NewUsersService(s.store)
+	eventsService := service.NewEventsService(s.store)
 
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
 	authHandler := handlers.NewAuthHandler(authService)
 	personalHandler := handlers.NewPersonalHandler(personalService)
-	patientHandler := handlers.NewPatientHandler(patientService)
-	officeHandler := handlers.NewOfficeHandler(officeService)
+	patientHandler := handlers.NewPatientHandler(patientService, eventsService)
+	officeHandler := handlers.NewOfficeHandler(officeService, eventsService)
 	serviceHandler := handlers.NewServiceHandler(serviceService)
 	usersHandler := handlers.NewUsersHandler(usersService)
 

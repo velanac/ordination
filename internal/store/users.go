@@ -17,7 +17,7 @@ func NewUsersRepository() *UsersRepository {
 func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.UserList, error) {
 	query := `SELECT u.id, u.email, r.name FROM users u 
 				JOIN roles r on u.role_id = r.id
-				ORDER BY u.id`
+				ORDER BY u.created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()

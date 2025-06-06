@@ -59,7 +59,7 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 	return patientsList, nil
 }
 
-func (r *PatientsRepository) GetById(ctx context.Context, q Querier, id string) (*models.Patient, error) {
+func (r *PatientsRepository) GetByID(ctx context.Context, q Querier, id string) (*models.Patient, error) {
 	query := `SELECT 
 			id, first_name, parent_name, last_name, gender, date_of_birth, email, phone, address, city, country
 			FROM patients WHERE id = $1`
