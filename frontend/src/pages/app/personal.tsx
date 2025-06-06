@@ -1,4 +1,3 @@
-import { useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
 import { FormContainer } from '@/components/form-container';
@@ -8,7 +7,6 @@ import { usePersonal } from '@/modules/personal/hooks/use-personal';
 function PersonalPage() {
   const { t } = useTranslation('personal');
   const { data, isLoading } = usePersonal();
-  const navidate = useNavigate();
 
   if (isLoading) {
     return (

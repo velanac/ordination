@@ -47,7 +47,7 @@ function PatientModal() {
           <DialogDescription>Patiente datails</DialogDescription>
         </div>
         <div className='w-full h-full'>
-          <PatientForm patient={patientData ? patientData : null} />
+          <PatientForm defaultValues={patientData} id='1' onSubmit={() => {}} />
         </div>
       </DialogContent>
     </Dialog>
