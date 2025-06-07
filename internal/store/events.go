@@ -13,18 +13,18 @@ func NewEventsRepository() *EventsRepository {
 	return &EventsRepository{}
 }
 
-// GetOfficeEvents retrieves events for a specific ordination that occurred more than 24 hours ago.
-func (r *EventsRepository) GetOfficeEvents(ctx context.Context, q Querier, offceID string) ([]*models.Event, error) {
+// GetRecentAndUpcomingEvents retrieves a list of events that occurred in the last 24 hours.
+func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Querier) ([]*models.Event, error) {
 	query := `SELECT
-					id, title, start_time, end_time, type, ordination_id, user_id, patient_id
+					id, title, start_time, end_time, type, office_id, user_id, patient_id
 					FROM events 
-					WHERE office_id = $1 AND start_time >= NOW() - INTERVAL '24 hours'
+					WHERE start_time >= NOW() - INTERVAL '24 hours'
 					ORDER BY start_time`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query, offceID)
+	rows, err := q.QueryContext(ctx, query)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return nil, ErrNotFound

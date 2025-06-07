@@ -25,9 +25,9 @@ func NewEventsService(s *store.Store) *EventsService {
 	}
 }
 
-// GetOfficeEvents retrieves events for a specific ordination that occurred more than 24 hours ago.
-func (s *EventsService) GetOfficeEvents(c context.Context, officeID string) ([]*models.Event, error) {
-	events, err := s.events.GetOfficeEvents(c, s.s.Q(), officeID)
+// GetRecentAndUpcomingEvents retrieves a list of events that occurred in the last 24 hours.
+func (s *EventsService) GetRecentAndUpcomingEvents(c context.Context) ([]*models.Event, error) {
+	events, err := s.events.GetRecentAndUpcomingEvents(c, s.s.Q())
 	if err != nil {
 		return nil, err
 	}
@@ -73,6 +73,10 @@ func (s *EventsService) CreatePatientEvent(c context.Context, payload *models.Pa
 	patient, err := s.patients.GetByID(c, s.s.Q(), payload.PatientID)
 	if err != nil {
 		return err
+	}
+
+	if patient == nil {
+		return ErrNotFound
 	}
 
 	event := &models.Event{

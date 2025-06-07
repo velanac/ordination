@@ -57,7 +57,7 @@ func (h *UsersHandler) Create(c echo.Context) error {
 	return RespondCreated(c, "User created successfully")
 }
 
-func (h *UsersHandler) Delete(c echo.Context) error {
+func (h *UsersHandler) Destory(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
 		return NewBadRequest("User ID is required")

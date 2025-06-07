@@ -10,11 +10,10 @@ import (
 
 type PatientHandler struct {
 	patients *service.PatientService
-	events   *service.EventsService
 }
 
-func NewPatientHandler(service *service.PatientService, events *service.EventsService) *PatientHandler {
-	return &PatientHandler{patients: service, events: events}
+func NewPatientHandler(service *service.PatientService) *PatientHandler {
+	return &PatientHandler{patients: service}
 }
 
 func (h *PatientHandler) Index(c echo.Context) error {
@@ -85,7 +84,7 @@ func (h *PatientHandler) Update(c echo.Context) error {
 	return RespondOK(c, "Patient updated successfully")
 }
 
-func (h *PatientHandler) Delete(c echo.Context) error {
+func (h *PatientHandler) Destroy(c echo.Context) error {
 	patientId := c.Param("id")
 	if patientId == "" {
 		return NewBadRequest("Invalid patient ID")

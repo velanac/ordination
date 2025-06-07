@@ -84,7 +84,7 @@ func (h *ServiceHandler) Update(c echo.Context) error {
 	return RespondOK(c, "Service updated successfully")
 }
 
-func (h *ServiceHandler) Delete(c echo.Context) error {
+func (h *ServiceHandler) Destory(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
 		return NewBadRequest("Invalid service ID")

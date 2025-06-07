@@ -8,11 +8,10 @@ import (
 
 type OfficeHandler struct {
 	offices *service.OfficeService
-	events  *service.EventsService
 }
 
-func NewOfficeHandler(service *service.OfficeService, events *service.EventsService) *OfficeHandler {
-	return &OfficeHandler{offices: service, events: events}
+func NewOfficeHandler(service *service.OfficeService) *OfficeHandler {
+	return &OfficeHandler{offices: service}
 }
 
 func (h *OfficeHandler) Index(c echo.Context) error {
@@ -75,7 +74,7 @@ func (h *OfficeHandler) Update(c echo.Context) error {
 	return RespondOK(c, "Office updated successfully")
 }
 
-func (h *OfficeHandler) Delete(c echo.Context) error {
+func (h *OfficeHandler) Destory(c echo.Context) error {
 	officeId := c.Param("id")
 	if err := h.offices.Delete(c.Request().Context(), officeId); err != nil {
 		return NewInternalServerError("Server error")
