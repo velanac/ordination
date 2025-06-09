@@ -10,3 +10,10 @@ type Office struct {
 	Name        string `json:"name"`
 	Description string `json:"description"`
 }
+
+type OfficeWithEvents struct {
+	ID          string  `json:"id"`
+	Name        string  `json:"name"`
+	Description string  `json:"description"`
+	Events      []Event `json:"events"`
+}

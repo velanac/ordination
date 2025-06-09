@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 
 import {
+  CalendarDays,
   CrossIcon,
   HouseIcon,
   LayoutDashboard,
@@ -43,6 +44,12 @@ const AppSidebar = () => {
         url: '/app/patients',
         icon: User,
         isActive: (pathname: string) => pathname.includes('patients'),
+      },
+      {
+        title: t('appointments'),
+        url: '/app/appointments',
+        icon: CalendarDays,
+        isActive: (pathname: string) => pathname.includes('appointments'),
       },
     ],
     [t]

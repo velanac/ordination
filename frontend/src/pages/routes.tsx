@@ -17,6 +17,8 @@ import { ServiceUpdate } from '@/pages/services/service-update';
 import { Users } from '@/pages/users/users';
 import { UserNew } from '@/pages/users/user-new';
 import { UserUpdate } from '@/pages/users/user-update';
+import { OfficeEventsPage } from './events/office-events-page';
+import { EventsPage } from './events/events-page';
 
 const routers = createBrowserRouter([
   {
@@ -77,6 +79,14 @@ const routers = createBrowserRouter([
       {
         path: 'users/:id',
         element: <UserUpdate />,
+      },
+      {
+        path: 'appointments',
+        element: <EventsPage />,
+      },
+      {
+        path: 'appointments/:officeId',
+        element: <OfficeEventsPage />,
       },
     ],
   },

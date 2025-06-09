@@ -2,25 +2,25 @@ package models
 
 type Event struct {
 	ID        string `json:"id"`
-	UserID    string `json:"user_id"`
-	PatientID string `json:"patient_id"`
-	OfficeID  string `json:"office_id"`
+	UserID    string `json:"userId"`
+	PatientID string `json:"patientId"`
+	OfficeID  string `json:"officeId"`
 	Title     string `json:"title"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 	Type      string `json:"type"`
 }
 
 type DoctorEventPayload struct {
-	UserID    string `json:"user_id"`
-	OfficeID  string `json:"office_id"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	UserID    string `json:"userId"`
+	OfficeID  string `json:"officeId"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 }
 
 type PatientEventPayload struct {
-	PatientID string `json:"patient_id"`
-	OfficeID  string `json:"office_id"`
-	StartTime string `json:"start_time"`
-	EndTime   string `json:"end_time"`
+	PatientID string `json:"patientId"`
+	OfficeID  string `json:"officeId"`
+	StartTime string `json:"startTime"`
+	EndTime   string `json:"endTime"`
 }

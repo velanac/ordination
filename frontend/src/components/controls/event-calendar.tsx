@@ -1,39 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import {
-  Calendar,
-  dateFnsLocalizer,
-  Navigate,
-  SlotInfo,
-  View,
-} from 'react-big-calendar';
+import { addHours, subMinutes } from 'date-fns';
+import { Calendar, Navigate, SlotInfo, View } from 'react-big-calendar';
 import { useTranslation } from 'react-i18next';
-import { enUS, srLatn } from 'date-fns/locale';
-import {
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  addHours,
-  subMinutes,
-} from 'date-fns';
 
+import { localizer } from '@/lib/localizer';
 import { Button } from '@/components/ui/button';
 import { ArrowBigLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-
-const locales = {
-  en: enUS, // Add other languages as needed
-  sr: srLatn,
-};
-
-// Initialize the localizer
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
 
 type Event = {
   id?: number; // Optional ID for background events

@@ -95,6 +95,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.PATCH("/services/:id", serviceHandler.Update)
 	v1Auth.DELETE("/services/:id", serviceHandler.Destory)
 	v1Auth.GET("/events", eventsHandler.Index)
+	v1Auth.GET("/offices-events", eventsHandler.GetRecentAndUpcomingOfficesEvents)
 	v1Auth.GET("/events/:id", eventsHandler.Show)
 	v1Auth.POST("/events/doctor", eventsHandler.CreateDoctorEvent)
 	v1Auth.POST("/events/patient", eventsHandler.CreatePatientEvent)

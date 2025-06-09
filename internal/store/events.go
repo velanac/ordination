@@ -16,19 +16,17 @@ func NewEventsRepository() *EventsRepository {
 // GetRecentAndUpcomingEvents retrieves a list of events that occurred in the last 24 hours.
 func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Querier) ([]*models.Event, error) {
 	query := `SELECT
-					id, title, start_time, end_time, type, office_id, user_id, patient_id
-					FROM events 
+					id, title, start_time, end_time, type, 
+					office_id, user_id, patient_id
+					FROM events
 					WHERE start_time >= NOW() - INTERVAL '24 hours'
-					ORDER BY start_time`
+					ORDER BY events.start_time`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	rows, err := q.QueryContext(ctx, query)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, ErrNotFound
-		}
 		return nil, err
 	}
 	defer rows.Close()
@@ -59,6 +57,83 @@ func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Que
 		return nil, err
 	}
 	return events, nil
+}
+
+// GetRecentEvents
+func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context, q Querier) ([]*models.OfficeWithEvents, error) {
+	query := `
+		SELECT 
+			o.id, o.name, o.description, 
+			e.id, e.title, e.start_time, e.end_time, e.type, e.office_id, e.user_id, e.patient_id
+		FROM offices o
+		LEFT JOIN events e 
+			ON o.id = e.office_id 
+			AND e.type = 'doctor' 
+			AND e.start_time >= NOW() - INTERVAL '24 hours'
+		ORDER BY o.id, e.start_time
+	`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	rows, err := q.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	offices := make(map[string]*models.OfficeWithEvents)
+	for rows.Next() {
+		var (
+			officeID, officeName, officeDescription                                    sql.NullString
+			eventID, eventTitle, eventType, eventOfficeID, eventUserID, eventPatientID sql.NullString
+			eventStartTime, eventEndTime                                               sql.NullTime
+		)
+
+		if err := rows.Scan(
+			&officeID, &officeName, &officeDescription,
+			&eventID, &eventTitle, &eventStartTime, &eventEndTime, &eventType, &eventOfficeID, &eventUserID, &eventPatientID,
+		); err != nil {
+			return nil, err
+		}
+
+		id := officeID.String
+		if _, exists := offices[id]; !exists {
+			offices[id] = &models.OfficeWithEvents{
+				ID:          officeID.String,
+				Name:        officeName.String,
+				Description: officeDescription.String,
+				Events:      []models.Event{},
+			}
+		}
+
+		// Only add event if it exists (LEFT JOIN may return NULLs)
+		if eventID.Valid {
+			event := models.Event{
+				ID:        eventID.String,
+				Title:     eventTitle.String,
+				StartTime: eventStartTime.Time.String(),
+				EndTime:   eventEndTime.Time.String(),
+				Type:      eventType.String,
+				OfficeID:  eventOfficeID.String,
+				UserID:    eventUserID.String,
+				PatientID: eventPatientID.String,
+			}
+			offices[id].Events = append(offices[id].Events, event)
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Convert map to slice
+	officeList := make([]*models.OfficeWithEvents, 0, len(offices))
+	for _, office := range offices {
+		officeList = append(officeList, office)
+	}
+
+	return officeList, nil
 }
 
 // GetByID retrieves an event by its ID.

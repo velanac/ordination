@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordination/internal/models"
 	"github.com/velenac/ordination/internal/service"
@@ -18,10 +20,22 @@ func NewEventHandler(service *service.EventsService) *EventHandler {
 func (h *EventHandler) Index(c echo.Context) error {
 	events, err := h.events.GetRecentAndUpcomingEvents(c.Request().Context())
 	if err != nil {
+		log.Printf("Error retrieving events: %v", err)
 		return NewInternalServerError("Server error")
 	}
 
 	return RespondOK(c, events)
+}
+
+// GetRecentAndUpcomingOfficesEvents retrieves a list of recent and upcoming events for offices.
+func (h *EventHandler) GetRecentAndUpcomingOfficesEvents(c echo.Context) error {
+	officesEvents, err := h.events.GetRecentAndUpcomingOfficesEvents(c.Request().Context())
+	if err != nil {
+		log.Printf("Error retrieving events: %v", err)
+		return NewInternalServerError("Server error")
+	}
+
+	return RespondOK(c, officesEvents)
 }
 
 // Show retrieves a specific event by its ID.

@@ -35,6 +35,15 @@ func (s *EventsService) GetRecentAndUpcomingEvents(c context.Context) ([]*models
 	return events, nil
 }
 
+func (s *EventsService) GetRecentAndUpcomingOfficesEvents(c context.Context) ([]*models.OfficeWithEvents, error) {
+	officesEvents, err := s.events.GetRecentAndUpcomingOfficesEvents(c, s.s.Q())
+	if err != nil {
+		return nil, err
+	}
+
+	return officesEvents, nil
+}
+
 // CreateDoctorEvent creates a new event for a doctor.
 func (s *EventsService) CreateDoctorEvent(c context.Context, payload *models.DoctorEventPayload) error {
 	user, err := s.users.GetByID(c, s.s.Q(), payload.UserID)
