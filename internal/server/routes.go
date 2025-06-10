@@ -51,6 +51,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	serviceService := service.NewServiceService(s.store)
 	usersService := service.NewUsersService(s.store)
 	eventsService := service.NewEventsService(s.store)
+	doctorsService := service.NewDoctorsService(s.store)
 
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
@@ -61,6 +62,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	serviceHandler := handlers.NewServiceHandler(serviceService)
 	usersHandler := handlers.NewUsersHandler(usersService)
 	eventsHandler := handlers.NewEventHandler(eventsService)
+	doctorsHandler := handlers.NewDoctorsHandler(doctorsService)
 
 	// Initialize the file store and pass it to the handlers
 	e.Static("/files", "storage")
@@ -102,6 +104,7 @@ func (s *Server) RegisterRoutes() http.Handler {
 	v1Auth.PATCH("/events/doctor/:id", eventsHandler.UpdateDoctorEvent)
 	v1Auth.PATCH("/events/patient/:id", eventsHandler.UpdatePatientEvent)
 	v1Auth.DELETE("/events/:id", eventsHandler.Destroy)
+	v1Auth.GET("/doctors", doctorsHandler.Index)
 	superAdminAPI := v1Auth.Group("/users", IsSuperAdmin)
 	superAdminAPI.GET("", usersHandler.Index)
 	superAdminAPI.GET("/:id", usersHandler.Show)
