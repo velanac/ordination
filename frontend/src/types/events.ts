@@ -26,8 +26,8 @@ export const PatientEventPayload = z.object({
   endTime: z.string().min(1, 'End time is required'),
 });
 
-type DoctorEventPayload = z.infer<typeof DoctorEventPayload>;
-type PatientEventPayload = z.infer<typeof PatientEventPayload>;
+export type DoctorEventPayload = z.infer<typeof DoctorEventPayload>;
+export type PatientEventPayload = z.infer<typeof PatientEventPayload>;
 
 export type OfficeEvent = {
   id: string;

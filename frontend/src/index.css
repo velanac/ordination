@@ -133,13 +133,13 @@ body,
 
 /*React Big Calendar*/
 
-.rbc-header {
+/* .rbc-header {
   @apply bg-blue-500 p-2 text-xl text-white font-bold dark:bg-gray-800 dark:text-gray-200;
 }
 
-/* .rbc-event {
+.rbc-event {
   @apply bg-blue-200 text-card-foreground dark:bg-gray-700 dark:text-gray-200;
-} */
+}
 
 .rbc-time-slot {
   @apply bg-gray-100 dark:bg-gray-800 font-semibold;
@@ -151,4 +151,4 @@ body,
 
 .rbc-background-event .rbc-event-content {
   @apply text-right w-full;
-}
+} */
