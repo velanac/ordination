@@ -9,6 +9,7 @@ export const queryKeys = {
   services: 'services',
   users: 'users',
   events: 'events',
+  doctors: 'doctors',
 };
 
 function queryErrorHandler(error: Error): void {

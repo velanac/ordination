@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordination/internal/service"
 )
@@ -17,6 +19,7 @@ func NewDoctorsHandler(service *service.DoctorsService) *DoctorsHandler {
 func (h *DoctorsHandler) Index(c echo.Context) error {
 	doctors, err := h.doctors.GetList(c.Request().Context())
 	if err != nil {
+		log.Println("Error retrieving doctors:", err)
 		return NewInternalServerError("Server error")
 	}
 

@@ -15,10 +15,18 @@ import {
   SheetTitle,
   SheetTrigger,
 } from '@/components/ui/sheet';
+import { useDoctors } from '@/hooks/use-doctors';
 
 function OfficeEventsPage() {
   const { officeId } = useParams<{ officeId: string }>();
   const { data, isLoading } = useOffice(officeId);
+  const { data: doctors, isLoading: isDoctorsLoading } = useDoctors();
+
+  if (isDoctorsLoading) {
+    return <div>Loading doctors...</div>;
+  }
+
+  console.log('doctors', doctors);
 
   if (isLoading) {
     return <div>Loading...</div>;

@@ -13,10 +13,10 @@ func NewDoctorsRepository() *DoctorsRepository {
 }
 
 func (r *DoctorsRepository) GetList(ctx context.Context, q Querier) ([]*models.Doctor, error) {
-	query := `SELECT p.user_id, CONCAT(p.titles, ' ',p.first_name, ' ', p.last_name) AS description FORM users u
-				LEFT JOIN role r ON  r.id = u.role_id
-				LEFT JOIN profiles p ON p.user_id = u.id
-				WHERE r.type = 'doctor' ORDER BY p.description`
+	query := `SELECT p.user_id, CONCAT(p.titles, ' ',p.first_name, ' ', p.last_name) AS description FROM users u
+				LEFT JOIN roles r ON  r.id = u.role_id
+				INNER JOIN personal p ON p.user_id = u.id
+				WHERE r.name = 'Doctor' ORDER BY p.first_name, p.last_name;`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
