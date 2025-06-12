@@ -12,6 +12,7 @@ import { FormSelect } from '@/components/controls/form-select';
 import { FormActions } from '@/components/controls/form-actions';
 import { DateFormInput } from '@/components/controls/date-form-input';
 import { useMemo } from 'react';
+import { FormDate } from '@/components/controls/form-date';
 
 type Props = {
   id?: string;
@@ -68,12 +69,17 @@ function PatientForm({
             />
           </Grid3>
           <Grid4>
-            <DateFormInput
+            {/* <DateFormInput
               name='dateOfBirth'
               label={t('birthDate')}
               control={form.control}
               startYear={1900}
               endYear={getYear(new Date())}
+            /> */}
+            <FormDate
+              name='dateOfBirth'
+              label={t('birthDate')}
+              control={form.control}
             />
             <FormText control={form.control} name='email' label={t('email')} />
             <FormSelect

@@ -131,7 +131,6 @@ function DateFormInput<T extends FieldValues>(props: Props<T>) {
                       field.onChange(newDate);
                     }
                   }}
-                  initialFocus
                   month={field.value}
                   onMonthChange={field.onChange}
                   locale={srLatn}
