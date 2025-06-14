@@ -1,4 +1,4 @@
-module github.com/velenac/ordination
+module github.com/velenac/ordiora
 
 go 1.24.1
 

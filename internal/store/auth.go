@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/velenac/ordination/internal/models"
+	"github.com/velenac/ordiora/internal/models"
 )
 
 type AuthRepository struct{}

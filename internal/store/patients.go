@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 
-	"github.com/velenac/ordination/internal/models"
+	"github.com/velenac/ordiora/internal/models"
 )
 
 type PatientsRepository struct{}

@@ -4,7 +4,7 @@ import (
 	"context"
 	"database/sql"
 
-	"github.com/velenac/ordination/internal/models"
+	"github.com/velenac/ordiora/internal/models"
 )
 
 type PersonalRepository struct{}

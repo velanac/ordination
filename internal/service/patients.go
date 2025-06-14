@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 
-	"github.com/velenac/ordination/internal/models"
-	"github.com/velenac/ordination/internal/store"
+	"github.com/velenac/ordiora/internal/models"
+	"github.com/velenac/ordiora/internal/store"
 )
 
 type PatientService struct {

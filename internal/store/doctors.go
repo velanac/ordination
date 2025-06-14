@@ -3,7 +3,7 @@ package store
 import (
 	"context"
 
-	"github.com/velenac/ordination/internal/models"
+	"github.com/velenac/ordiora/internal/models"
 )
 
 type DoctorsRepository struct{}

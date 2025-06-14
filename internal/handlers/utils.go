@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/labstack/echo/v4"
-	"github.com/velenac/ordination/internal/models"
+	"github.com/velenac/ordiora/internal/models"
 )
 
 func getUserFromContext(c echo.Context) (*models.UserProfile, error) {

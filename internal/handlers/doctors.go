@@ -4,7 +4,7 @@ import (
 	"log"
 
 	"github.com/labstack/echo/v4"
-	"github.com/velenac/ordination/internal/service"
+	"github.com/velenac/ordiora/internal/service"
 )
 
 type DoctorsHandler struct {

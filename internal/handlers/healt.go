@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/velenac/ordination/internal/service"
+	"github.com/velenac/ordiora/internal/service"
 )
 
 type HealthHandler struct {

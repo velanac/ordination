@@ -6,10 +6,10 @@ import (
 	"github.com/go-playground/validator"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/velenac/ordination/frontend"
-	"github.com/velenac/ordination/internal/handlers"
-	"github.com/velenac/ordination/internal/service"
-	"github.com/velenac/ordination/pkg/auth"
+	"github.com/velenac/ordiora/frontend"
+	"github.com/velenac/ordiora/internal/handlers"
+	"github.com/velenac/ordiora/internal/service"
+	"github.com/velenac/ordiora/pkg/auth"
 )
 
 type CustomValidator struct {

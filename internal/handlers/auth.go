@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/labstack/echo/v4"
-	"github.com/velenac/ordination/internal/models"
-	"github.com/velenac/ordination/internal/service"
+	"github.com/velenac/ordiora/internal/models"
+	"github.com/velenac/ordiora/internal/service"
 )
 
 type AuthHandler struct {

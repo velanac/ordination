@@ -9,10 +9,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/velenac/ordination/internal/db"
-	"github.com/velenac/ordination/internal/server"
-	"github.com/velenac/ordination/pkg/config"
-	"github.com/velenac/ordination/pkg/filestore"
+	"github.com/velenac/ordiora/internal/db"
+	"github.com/velenac/ordiora/internal/server"
+	"github.com/velenac/ordiora/pkg/config"
+	"github.com/velenac/ordiora/pkg/filestore"
 )
 
 func gracefulShutdown(apiServer *http.Server, done chan bool) {

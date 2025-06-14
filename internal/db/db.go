@@ -7,7 +7,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/velenac/ordination/internal/migrations"
+	"github.com/velenac/ordiora/internal/migrations"
 )
 
 func New(addr string, catalog string, maxOpenConns, maxIdleConns int, maxIdleTime string, appEnv string) (*sql.DB, error) {

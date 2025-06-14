@@ -5,9 +5,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/velenac/ordination/internal/store"
-	"github.com/velenac/ordination/pkg/config"
-	"github.com/velenac/ordination/pkg/filestore"
+	"github.com/velenac/ordiora/internal/store"
+	"github.com/velenac/ordiora/pkg/config"
+	"github.com/velenac/ordiora/pkg/filestore"
 )
 
 type Server struct {
