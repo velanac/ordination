@@ -3,6 +3,8 @@ import { ToastService } from './toast-service';
 import {
   PatientListItem,
   PatientSchema,
+  ServicePayload,
+  ServiceResponse,
   UserGeneralSettingsSchema,
   UserList,
   UserPayload,
@@ -64,7 +66,18 @@ const Patients = {
   delete: (id: string) => Requests.del<void>(`/patients/${id}`),
 };
 
+const Services = {
+  getAll: () => Requests.get<ServiceResponse[]>('/services'),
+  getById: (id: string) => Requests.get<ServicePayload>(`/services/${id}`),
+  create: (service: ServicePayload) =>
+    Requests.post<void>('/services', service),
+  update: (id: string, service: ServicePayload) =>
+    Requests.patch<void>(`/services/${id}`, service),
+  delete: (id: string) => Requests.del<void>(`/services/${id}`),
+};
+
 export const agent = {
   Patients,
   Users,
+  Services,
 };

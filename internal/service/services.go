@@ -22,6 +22,9 @@ func NewServiceService(s *store.Store) *ServiceService {
 func (s *ServiceService) GetList(c context.Context) ([]*models.Service, error) {
 	data, err := s.services.GetAll(c, s.store.Q())
 	if err != nil {
+		if err == store.ErrNotFound {
+			return nil, ErrNotFound // Return nil if no services found
+		}
 		return nil, err
 	}
 

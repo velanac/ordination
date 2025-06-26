@@ -17,7 +17,7 @@ function ServiceUpdate() {
   const { id } = useParams();
   const navigate = useNavigate();
   const update = useServicePath();
-  const deleteAction = useServiceDelete();
+  const deleteAction = useServiceDelete(id!);
   const [disable, setDisable] = useState(false);
   const { t } = useTranslation('services');
   const { isLoading, data } = useService(id);
@@ -44,7 +44,7 @@ function ServiceUpdate() {
   };
 
   const handleDelete = () => {
-    deleteAction.mutate(id!);
+    deleteAction.mutate();
     ToastService.success('Office deleted successfully');
     closePage();
   };
@@ -62,8 +62,8 @@ function ServiceUpdate() {
           id={id}
           disabled={isLoading || disable}
           defaultValues={{
-            ...data.data,
-            price: convertAmountFromMiliunits(data.data.price).toString(),
+            ...data,
+            price: convertAmountFromMiliunits(data.price).toString(),
           }}
           onSubmit={handleSubmit}
           onCancel={closePage}

@@ -28,7 +28,11 @@ function ServiceNew() {
 
   return (
     <FormContainer title={t('newService')} description={t('newDescription')}>
-      <ServiceForm onCancel={closePage} onSubmit={handleSubmit} />
+      <ServiceForm
+        onCancel={closePage}
+        onSubmit={handleSubmit}
+        defaultValues={{ description: '', price: '' }}
+      />
     </FormContainer>
   );
 }

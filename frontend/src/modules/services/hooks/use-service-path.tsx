@@ -1,22 +1,12 @@
 import { ServicePayload } from '@/types';
 import { useMutation } from '@tanstack/react-query';
 import { queryClient, queryKeys } from '@/lib/query-client';
+import { agent } from '@/lib/agent';
 
 export const useServicePath = () =>
   useMutation({
-    mutationFn: async ({ data, id }: { data: ServicePayload; id: string }) => {
-      const response = await fetch(`/api/v1/services/${id}`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    },
+    mutationFn: ({ data, id }: { data: ServicePayload; id: string }) =>
+      agent.Services.update(id, data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.services],

@@ -29,16 +29,20 @@ func (h *ServiceHandler) Show(c echo.Context) error {
 		return NewBadRequest("ID is required")
 	}
 
-	service, err := h.services.GetByID(c.Request().Context(), id)
+	ser, err := h.services.GetByID(c.Request().Context(), id)
 	if err != nil {
+		if err == service.ErrNotFound {
+			return NewNotFound("Service not found")
+		}
+
 		return NewInternalServerError("Server error")
 	}
 
-	if service == nil {
+	if ser == nil {
 		return NewNotFound("Service not found")
 	}
 
-	return RespondOK(c, service)
+	return RespondOK(c, ser)
 }
 
 func (h *ServiceHandler) Create(c echo.Context) error {
