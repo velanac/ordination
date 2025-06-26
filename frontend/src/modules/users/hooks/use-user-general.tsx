@@ -1,22 +1,14 @@
-import { ToastService } from '@/lib/toast-service';
 import { useMutation } from '@tanstack/react-query';
+
+import { agent } from '@/lib/agent';
+import { ToastService } from '@/lib/toast-service';
 import { UserGeneralSettingsSchema } from '@/types';
 import { queryClient, queryKeys } from '@/lib/query-client';
 
 export const useUserGeneralSettings = (id: string) =>
   useMutation({
-    mutationFn: async (general: UserGeneralSettingsSchema) => {
-      const response = await fetch(`/api/v1/users/${id}/general`, {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(general), // Assuming you want to activate the user
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-    },
+    mutationFn: async (general: UserGeneralSettingsSchema) =>
+      agent.Users.updateGeneral(id, general),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.users],

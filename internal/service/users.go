@@ -27,6 +27,10 @@ func (s *UsersService) GetList(ctx context.Context) ([]*models.UserList, error) 
 func (s *UsersService) GetByID(ctx context.Context, id string) (*models.User, error) {
 	user, err := s.users.GetByID(ctx, s.store.Q(), id)
 	if err != nil {
+		if err == store.ErrNotFound {
+			return nil, ErrNotFound
+		}
+
 		return nil, err
 	}
 

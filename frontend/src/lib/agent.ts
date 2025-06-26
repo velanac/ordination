@@ -1,6 +1,13 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ToastService } from './toast-service';
-import { PatientListItem, PatientSchema } from '@/types';
+import {
+  PatientListItem,
+  PatientSchema,
+  UserGeneralSettingsSchema,
+  UserList,
+  UserPayload,
+  UserResponse,
+} from '@/types';
 
 const apiUrl = '/api/v1/';
 
@@ -37,6 +44,17 @@ export const Requests = {
   del: <T>(url: string) => axiosInstance.delete<T>(url).then(responseBody),
 };
 
+const Users = {
+  getAll: () => Requests.get<UserList[]>('/users'),
+  getById: (id: string) => Requests.get<UserResponse>(`/users/${id}`),
+  create: (user: UserPayload) => Requests.post<void>('/users', user),
+  update: (id: string, user: UserPayload) =>
+    Requests.patch<void>(`/users/${id}`, user),
+  updateGeneral: (id: string, general: UserGeneralSettingsSchema) =>
+    Requests.patch<void>(`/users/${id}/general`, general),
+  delete: (id: string) => Requests.del<void>(`/users/${id}`),
+};
+
 const Patients = {
   getAll: () => Requests.get<PatientListItem[]>('/patients'),
   getById: (id: string) => Requests.get<PatientSchema>(`/patients/${id}`),
@@ -48,5 +66,5 @@ const Patients = {
 
 export const agent = {
   Patients,
-  // Add other entities like Offices, Doctors, etc. here
+  Users,
 };
