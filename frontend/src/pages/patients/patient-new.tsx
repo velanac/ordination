@@ -28,7 +28,21 @@ function PatientNew() {
 
   return (
     <FormContainer title={t('newPatient')} description={t('newDescription')}>
-      <PatientForm onCancel={closePage} onSubmit={handleSubmit} />
+      <PatientForm
+        onCancel={closePage}
+        onSubmit={handleSubmit}
+        defaultValues={{
+          firstName: '',
+          parentName: '',
+          lastName: '',
+          email: '',
+          phone: '',
+          gender: 'male',
+          address: '',
+          city: '',
+          dateOfBirth: new Date(),
+        }}
+      />
     </FormContainer>
   );
 }

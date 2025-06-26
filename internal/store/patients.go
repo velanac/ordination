@@ -68,6 +68,7 @@ func (r *PatientsRepository) GetByID(ctx context.Context, q Querier, id string) 
 	defer cancel()
 
 	row := q.QueryRowContext(ctx, query, id)
+
 	patient := &models.Patient{}
 	if err := row.Scan(
 		&patient.ID,
@@ -81,6 +82,10 @@ func (r *PatientsRepository) GetByID(ctx context.Context, q Querier, id string) 
 		&patient.Address,
 		&patient.City,
 		&patient.Country); err != nil {
+
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrNotFound
+		}
 
 		return nil, err
 	}

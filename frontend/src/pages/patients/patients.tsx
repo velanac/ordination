@@ -8,7 +8,7 @@ import { DataTableContainer } from '@/components/data-table-container';
 function Patients() {
   const { t } = useTranslation('patients');
   const navigate = useNavigate();
-  const { isLoading, data } = usePatients();
+  const { isLoading, data = [] } = usePatients();
 
   if (isLoading) {
     return (
@@ -26,7 +26,7 @@ function Patients() {
       onAddClick={() => navigate('/app/patients/new')}
     >
       <div className='flex w-full flex-col gap-4'>
-        <PatientsTable patients={data?.data ?? []} />
+        <PatientsTable patients={data} />
       </div>
     </DataTableContainer>
   );

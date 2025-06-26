@@ -2,18 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 
 import { PatientListItem } from '@/types';
 import { queryKeys } from '@/lib/query-client';
+import { agent } from '@/lib/agent';
 
 const usePatients = () =>
-  useQuery<{ data: PatientListItem[] }>({
+  useQuery<PatientListItem[]>({
     queryKey: [queryKeys.patients],
-    queryFn: async () => {
-      const response = await fetch('/api/v1/patients');
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    },
+    queryFn: () => agent.Patients.getAll(),
   });
 
 export { usePatients };

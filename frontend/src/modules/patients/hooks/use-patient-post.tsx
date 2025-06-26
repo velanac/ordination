@@ -1,22 +1,10 @@
-import { useMutation } from '@tanstack/react-query';
-import { PatientSchema } from '@/types';
+import { agent } from '@/lib/agent';
 import { queryClient, queryKeys } from '@/lib/query-client';
+import { useMutation } from '@tanstack/react-query';
 
 export const usePatientPost = () =>
   useMutation({
-    mutationFn: async (data: PatientSchema) => {
-      const response = await fetch('/api/v1/patients', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    },
+    mutationFn: agent.Patients.create,
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.patients],

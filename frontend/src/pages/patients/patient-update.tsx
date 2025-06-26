@@ -16,7 +16,7 @@ function PatientUpdate() {
   const { id } = useParams();
   const navigate = useNavigate();
   const update = usePatientPath();
-  const deleteAction = usePatientDelete();
+  const deleteAction = usePatientDelete(id!);
   const [disable, setDisable] = useState(false);
   const { t } = useTranslation('patients');
   const { isLoading, data } = usePatient(id);
@@ -29,7 +29,7 @@ function PatientUpdate() {
       { data, id: id! },
       {
         onSuccess: () => {
-          ToastService.success('Office updated successfully');
+          ToastService.success('Patient updated successfully');
           closePage();
         },
         onError: (err) => {
@@ -43,8 +43,8 @@ function PatientUpdate() {
   };
 
   const handleDelete = () => {
-    deleteAction.mutate(id!);
-    ToastService.success('Office deleted successfully');
+    deleteAction.mutate();
+    ToastService.success('Patient deleted successfully');
     closePage();
   };
 
@@ -58,11 +58,9 @@ function PatientUpdate() {
       {isLoading && <Spinner />}
       {data && (
         <PatientForm
-          id={data.data.id}
+          id={data.id}
           disabled={isLoading || disable}
-          defaultValues={{
-            ...data.data,
-          }}
+          defaultValues={data}
           onSubmit={handleSubmit}
           onCancel={closePage}
         />

@@ -31,6 +31,10 @@ func (s *PatientService) GetList(c context.Context) ([]*models.PatientListItem, 
 func (s *PatientService) GetById(c context.Context, id string) (*models.Patient, error) {
 	patient, err := s.patients.GetByID(c, s.store.Q(), id)
 	if err != nil {
+		if err == store.ErrNotFound {
+			return nil, ErrNotFound
+		}
+
 		return nil, err
 	}
 
