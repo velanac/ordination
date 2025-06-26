@@ -3,6 +3,7 @@ import { ToastService } from './toast-service';
 import {
   PatientListItem,
   PatientSchema,
+  Personal as PersonalType,
   ServicePayload,
   ServiceResponse,
   UserGeneralSettingsSchema,
@@ -10,6 +11,7 @@ import {
   UserPayload,
   UserResponse,
 } from '@/types';
+import { PersonalFormPayload } from '@/modules/personal/types';
 
 const apiUrl = '/api/v1/';
 
@@ -76,8 +78,16 @@ const Services = {
   delete: (id: string) => Requests.del<void>(`/services/${id}`),
 };
 
+const Personal = {
+  get: () => Requests.get<PersonalType>('/personal'),
+  update: (data: PersonalFormPayload) =>
+    Requests.patch<void>('/personal', data),
+  create: (data: PersonalFormPayload) => Requests.post<void>('/personal', data),
+};
+
 export const agent = {
   Patients,
   Users,
   Services,
+  Personal,
 };

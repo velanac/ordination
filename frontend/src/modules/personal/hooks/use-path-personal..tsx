@@ -1,22 +1,11 @@
 import { useMutation } from '@tanstack/react-query';
 import { PersonalFormPayload } from '../types';
 import { queryClient, queryKeys } from '@/lib/query-client';
+import { agent } from '@/lib/agent';
 
 export const usePathPersonal = () =>
   useMutation({
-    mutationFn: async (data: PersonalFormPayload) => {
-      const response = await fetch('/api/v1/personal', {
-        method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    },
+    mutationFn: (data: PersonalFormPayload) => agent.Personal.update(data),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [queryKeys.personal],

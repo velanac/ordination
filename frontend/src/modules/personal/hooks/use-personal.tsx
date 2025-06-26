@@ -2,19 +2,13 @@ import { useQuery } from '@tanstack/react-query';
 
 import { Personal } from '@/types';
 import { queryKeys } from '@/lib/query-client';
+import { agent } from '@/lib/agent';
 
 const usePersonal = () =>
-  useQuery<{ data: Personal }>({
+  useQuery<Personal>({
     queryKey: [queryKeys.personal],
     retry: false,
-    queryFn: async () => {
-      const response = await fetch('/api/v1/personal');
-
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
-      }
-      return response.json();
-    },
+    queryFn: agent.Personal.get,
   });
 
 export { usePersonal };

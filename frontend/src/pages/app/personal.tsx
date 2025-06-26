@@ -16,11 +16,9 @@ function PersonalPage() {
     );
   }
 
-  const personal = data?.data ?? null;
-
   return (
     <FormContainer title={t('title')} description={t('description')}>
-      <PersonalForm personal={personal} />
+      <PersonalForm personal={data} />
     </FormContainer>
   );
 }
