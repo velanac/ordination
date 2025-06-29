@@ -166,16 +166,14 @@ func (r *EventsRepository) GetByID(ctx context.Context, q Querier, id string) (*
 
 // Create inserts a new event into the database.
 func (r *EventsRepository) Create(ctx context.Context, q Querier, event *models.Event) error {
-	query := `INSERT INTO events (id, user_id, patient_id, office_id, title, start_time, end_time, type)
-			VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`
+	query := `INSERT INTO events (user_id, office_id, title, start_time, end_time, type)
+			VALUES ($1, $2, $3, $4, $5, $6)`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	_, err := q.ExecContext(ctx, query,
-		event.ID,
 		event.UserID,
-		event.PatientID,
 		event.OfficeID,
 		event.Title,
 		event.StartTime,

@@ -9,8 +9,8 @@ const SignInPage = () => {
   return (
     <AuthCard>
       {isLoading && <p>Loading...</p>}
-      {!isLoading && !data?.data.isOpen && <SignUpForm />}
-      {!isLoading && data?.data.isOpen && <SignInForm />}
+      {!isLoading && !data?.isOpen && <SignUpForm />}
+      {!isLoading && data?.isOpen && <SignInForm />}
     </AuthCard>
   );
 };

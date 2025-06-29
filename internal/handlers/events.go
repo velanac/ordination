@@ -64,10 +64,14 @@ func (h *EventHandler) CreateDoctorEvent(c echo.Context) error {
 		return NewBadRequest("Validation failed")
 	}
 
+	log.Printf("Creating doctor event for user ID: %s", payload)
+
 	if err := h.events.CreateDoctorEvent(c.Request().Context(), &payload); err != nil {
 		if err == service.ErrNotFound {
 			return NewNotFound("Doctor not found")
 		}
+
+		log.Printf("Error creating doctor event: %v", err)
 
 		return NewInternalServerError("Failed to create doctor event")
 	}

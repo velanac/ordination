@@ -5,3 +5,4 @@ export * from './office';
 export * from './service';
 export * from './users';
 export * from './doctors';
+export * from './events';

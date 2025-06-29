@@ -17,38 +17,51 @@ type Event = {
   release: boolean;
 };
 
-const events: Event[] = [
-  {
-    start: new Date(), // Example start time, 15 minutes ago
-    end: addHours(new Date(), 0.15), // Example end time, 1 hour after start
-    title: 'Vlado Jovanović',
-    type: 'test',
-    release: false,
-  },
-  {
-    start: addHours(new Date(), 0.15), // Example start time, 15 minutes ago
-    end: addHours(new Date(), 0.3), // Example end time, 1 hour after start
-    title: 'Milosav Jovanović',
-    type: 'test',
-    release: false,
-  },
-];
+// const events: Event[] = [
+//   {
+//     start: new Date(), // Example start time, 15 minutes ago
+//     end: addHours(new Date(), 0.15), // Example end time, 1 hour after start
+//     title: 'Vlado Jovanović',
+//     type: 'test',
+//     release: true,
+//   },
+//   {
+//     start: addHours(new Date(), 0.15), // Example start time, 15 minutes ago
+//     end: addHours(new Date(), 0.3), // Example end time, 1 hour after start
+//     title: 'Milosav Jovanović',
+//     type: 'test',
+//     release: false,
+//   },
+// ];
 
-const backgroundEvents: Event[] = [
-  {
-    id: 0,
-    start: subMinutes(new Date(), 15),
-    end: addHours(new Date(), 1), // Example end time, 1 hour after start
-    title: 'Dr Milan Jovanović',
-    type: 'test',
-    release: false,
-  },
-];
+// const backgroundEvents: Event[] = [
+//   {
+//     id: 0,
+//     start: subMinutes(new Date(), 15),
+//     end: addHours(new Date(), 1), // Example end time, 1 hour after start
+//     title: 'Dr Milan Jovanović',
+//     type: 'test',
+//     release: false,
+//   },
+// ];
 
-function EventCalendar() {
+type Props = {
+  view: View;
+  onChangeView: (view: View) => void;
+  events: Event[];
+  backgroundEvents: Event[];
+  onSelectSlot: (slotInfo: SlotInfo) => void;
+};
+
+function EventCalendar({
+  view,
+  onChangeView,
+  events,
+  backgroundEvents,
+  onSelectSlot,
+}: Props) {
   const { i18n } = useTranslation();
-  const [culture, setCulture] = useState(i18n.language); // Postavite kulturu na srLatn ili enUS
-  const [currentView, setCurrentView] = useState<View>('month'); // Default view can be 'month', 'week', 'day', or 'agenda'
+  const [culture, setCulture] = useState(i18n.language);
   const [currentDate, setCurrentDate] = useState<Date | undefined>(undefined);
   const [scrollTime, setScrollTime] = useState(new Date(1972, 0, 1, 6, 0, 0));
 
@@ -59,10 +72,34 @@ function EventCalendar() {
     setCurrentDate(new Date());
   }, [i18n.language]);
 
-  const onSelectSlot = (slotInfo: SlotInfo) => {
-    console.log('Selected slot:', slotInfo);
-    setCurrentDate(slotInfo.start);
-    setCurrentView('day'); // Change view to day after selecting a slot
+  const onSelectSlotHandler = (slotInfo: SlotInfo) => {
+    if (view === 'month') {
+      setCurrentDate(slotInfo.start);
+      onChangeView('day');
+      console.log('Selected slot:', slotInfo);
+    } else {
+      console.log('Selected slot:', slotInfo);
+      const start = slotInfo.start;
+      const end = slotInfo.end;
+      const backgroundEventsInSlot = backgroundEvents.filter((event) => {
+        return (
+          (event.start >= start && event.start < end) ||
+          (event.end > start && event.end <= end) ||
+          (event.start <= start && event.end >= end)
+        );
+      });
+      // onSelectSlot(slotInfo);
+      if (backgroundEventsInSlot.length > 0) {
+        console.log(
+          'Background events exist in this slot:',
+          backgroundEventsInSlot
+        );
+        // Handle the case where background events exist
+      } else {
+        console.log('No background events in this slot');
+        onSelectSlot(slotInfo);
+      }
+    }
   };
 
   const today = new Date();
@@ -85,7 +122,7 @@ function EventCalendar() {
 
   return (
     <Calendar
-      className='h-64 w-full'
+      className='w-full'
       localizer={localizer}
       culture={culture}
       date={currentDate}
@@ -93,22 +130,22 @@ function EventCalendar() {
       step={5}
       onSelectEvent={(event) => {
         setCurrentDate(event.start); // Set the current date to the event's start date
-        setCurrentView('day'); // Change view to day when an event is selected
+        onChangeView('day'); // Change view to day when an event is selected
         console.log('Selected event:', event);
         const scrollTo = new Date(event.start);
         scrollTo.setMinutes(scrollTo.getMinutes() - 30);
         setScrollTime(scrollTo);
       }}
-      onSelectSlot={onSelectSlot}
+      onSelectSlot={onSelectSlotHandler}
       backgroundEvents={backgroundEvents}
       events={events}
       components={{
         toolbar: ({ onNavigate, label }) => (
           <div className='p-2 flex justify-between items-center'>
             <div className='flex gap-2'>
-              {currentView === 'day' && (
+              {view === 'day' && (
                 <Button
-                  onClick={() => setCurrentView('month')}
+                  onClick={() => onChangeView('month')}
                   variant='ghost'
                   className='text-sm'
                 >
@@ -133,12 +170,12 @@ function EventCalendar() {
       }}
       startAccessor='start'
       endAccessor='end'
-      style={{ height: 500 }}
+      style={{ height: '100%' }}
       onNavigate={(date) => {
         setCurrentDate(date);
       }}
-      view={currentView}
-      onView={setCurrentView}
+      view={view}
+      onView={onChangeView}
       min={min}
       max={max} // Example max date
       scrollToTime={scrollTime}

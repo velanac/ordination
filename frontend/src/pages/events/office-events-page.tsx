@@ -1,41 +1,64 @@
-import { EventCalendar } from '@/components/controls/event-calendar';
-import { Button } from '@/components/ui/button';
-import { useOffice } from '@/modules/offices/hooks/use-office';
+import { useState } from 'react';
+
 import { X } from 'lucide-react';
+import { useSetAtom } from 'jotai';
 import { Link, useParams } from 'react-router';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import {
-  Sheet,
-  SheetClose,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from '@/components/ui/sheet';
+import { SlotInfo, View } from 'react-big-calendar';
+
+import { Button } from '@/components/ui/button';
 import { useDoctors } from '@/hooks/use-doctors';
-import { DoctorEventForm } from '@/modules/events/doctor-event-form';
-import { Doctor } from '@/types';
+import { useOffice } from '@/modules/offices/hooks/use-office';
+import { EventCalendar } from '@/components/controls/event-calendar';
+import { SheetDoctorEvent } from '@/modules/events/sheet-doctor-event';
+import { endTime, isOpen, startTime } from '@/store/doctor-event-sheet';
+import { useFilterOfficeEvents } from '@/modules/events/hooks/use-filter-office-events';
 
 function OfficeEventsPage() {
   const { officeId } = useParams<{ officeId: string }>();
+  const setOpen = useSetAtom(isOpen);
+  const setStartTime = useSetAtom(startTime);
+  const setEndTime = useSetAtom(endTime);
   const { data, isLoading } = useOffice(officeId);
+  const [currentView, setCurrentView] = useState<View>('month');
   const { data: doctorsData, isLoading: isDoctorsLoading } = useDoctors();
+  const { data: office, isLoading: isLoadingEvent } = useFilterOfficeEvents(
+    officeId!
+  );
 
-  if (isDoctorsLoading) {
-    return <div>Loading doctors...</div>;
-  }
+  const events =
+    office && currentView === 'month'
+      ? office.events.map((event, index) => {
+          return {
+            id: index,
+            start: new Date(event.startTime),
+            end: new Date(event.endTime),
+            title: event.title,
+            type: 'doctor',
+            release: false,
+            resurceId: event.id,
+          };
+        })
+      : [];
 
-  console.log('doctors', doctorsData);
+  const backgroundEvents =
+    office && currentView === 'day'
+      ? office.events.map((event, index) => ({
+          id: index,
+          start: new Date(event.startTime),
+          end: new Date(event.endTime),
+          title: event.title,
+          type: 'doctor',
+          release: false,
+          resurceId: event.id,
+        }))
+      : [];
 
-  if (isLoading) {
+  if (isLoading || isDoctorsLoading || isLoadingEvent) {
     return <div>Loading...</div>;
   }
 
   return (
-    <div className='flex w-full flex-col items-center justify-center p-4'>
+    <div className='flex w-full h-full flex-col items-center justify-center p-4'>
       <div className='flex justify-between items-center w-full mb-4'>
         <h2 className='text-2xl font-bold'>{data?.data.name}</h2>
         <Button variant='ghost' asChild>
@@ -45,58 +68,24 @@ function OfficeEventsPage() {
         </Button>
       </div>
       <div className='mb-4 flex justify-end w-full'>
-        <SheetDemo doctors={doctorsData.data} />
+        {currentView === 'day' && (
+          <SheetDoctorEvent doctors={doctorsData!} officeId={officeId!} />
+        )}
       </div>
-      <div className='flex w-full flex-col items-center justify-center'>
-        <EventCalendar />
+      <div className='flex w-full h-[75vh] flex-col items-center justify-center'>
+        <EventCalendar
+          view={currentView}
+          onChangeView={setCurrentView}
+          events={events}
+          backgroundEvents={backgroundEvents}
+          onSelectSlot={(slotInfo: SlotInfo) => {
+            setStartTime(slotInfo.start);
+            setEndTime(slotInfo.end);
+            setOpen(true);
+          }}
+        />
       </div>
     </div>
-  );
-}
-
-export function SheetDemo({ doctors = [] }: { doctors?: Doctor[] }) {
-  return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant='outline'>Add Doctor Event</Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>Edit profile</SheetTitle>
-          <SheetDescription>
-            Make changes to your profile here. Click save when you&apos;re done.
-          </SheetDescription>
-        </SheetHeader>
-        <div className='grid flex-1 auto-rows-min gap-6 px-4'>
-          <DoctorEventForm
-            onSubmit={(values) => {
-              console.log('Submitted values:', values);
-            }}
-            doctors={doctors}
-            defaultValues={{
-              userId: '',
-              officeId: '',
-              startTime: new Date().toLocaleDateString(),
-              endTime: new Date().toLocaleDateString(),
-            }}
-          />
-          {/* <div className='grid gap-3'>
-            <Label htmlFor='sheet-demo-name'>Name</Label>
-            <Input id='sheet-demo-name' defaultValue='Pedro Duarte' />
-          </div>
-          <div className='grid gap-3'>
-            <Label htmlFor='sheet-demo-username'>Username</Label>
-            <Input id='sheet-demo-username' defaultValue='@peduarte' />
-          </div> */}
-        </div>
-        <SheetFooter>
-          <Button type='submit'>Save changes</Button>
-          <SheetClose asChild>
-            <Button variant='outline'>Close</Button>
-          </SheetClose>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
   );
 }
 

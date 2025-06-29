@@ -51,7 +51,7 @@ func (s *EventsService) CreateDoctorEvent(c context.Context, payload *models.Doc
 		return err
 	}
 
-	if user.Role != "doctor" {
+	if user.Role != "Doctor" {
 		return ErrNotFound
 	}
 

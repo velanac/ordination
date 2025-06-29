@@ -1,6 +1,7 @@
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { ToastService } from './toast-service';
 import {
+  Doctor,
   PatientListItem,
   PatientSchema,
   Personal as PersonalType,
@@ -10,6 +11,8 @@ import {
   UserList,
   UserPayload,
   UserResponse,
+  DoctorEventPayload,
+  OfficeWithEvents,
 } from '@/types';
 import { PersonalFormPayload } from '@/modules/personal/types';
 
@@ -85,9 +88,21 @@ const Personal = {
   create: (data: PersonalFormPayload) => Requests.post<void>('/personal', data),
 };
 
+const Doctors = {
+  getAll: () => Requests.get<Doctor[]>('/doctors'),
+};
+
+const Events = {
+  getOfficesEvents: () => Requests.get<OfficeWithEvents[]>('/offices-events'),
+  createDoctorEvent: (event: DoctorEventPayload) =>
+    Requests.post<void>('/events/doctor', event),
+};
+
 export const agent = {
   Patients,
   Users,
   Services,
   Personal,
+  Doctors,
+  Events,
 };
