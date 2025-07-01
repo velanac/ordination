@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"github.com/velenac/ordiora/internal/models"
 	"github.com/velenac/ordiora/internal/store"
@@ -120,7 +121,7 @@ func (s *EventsService) UpdateDoctorEvent(c context.Context, id string, payload 
 		return err
 	}
 
-	if user.Role != "doctor" {
+	if user.Role != "Doctor" {
 		return ErrNotFound
 	}
 
@@ -134,6 +135,7 @@ func (s *EventsService) UpdateDoctorEvent(c context.Context, id string, payload 
 		UserID:    user.ID,
 		StartTime: payload.StartTime,
 		EndTime:   payload.EndTime,
+		OfficeID:  payload.OfficeID,
 		Type:      "doctor",
 		Title:     personal.Titles + " " + personal.FirstName + " " + personal.LastName,
 	}
@@ -150,6 +152,7 @@ func (s *EventsService) UpdateDoctorEvent(c context.Context, id string, payload 
 
 	err = s.events.Update(c, s.s.Q(), event)
 	if err != nil {
+		log.Panicln("Error updating doctor event:", err)
 		return err
 	}
 

@@ -13,6 +13,7 @@ export type Event = {
 };
 
 export const DoctorEventPayload = z.object({
+  id: z.string().optional(),
   userId: z.string().min(1, 'User ID is required'),
   officeId: z.string().min(1, 'Office ID is required'),
   startTime: z.date(),
@@ -31,9 +32,13 @@ export type PatientEventPayload = z.infer<typeof PatientEventPayload>;
 
 export type OfficeEvent = {
   id: string;
+  userId: string;
+  patientId: string;
+  officeId: string;
   title: string;
   startTime: string;
   endTime: string;
+  type: 'doctor' | 'patient';
 };
 
 export type OfficeWithEvents = {

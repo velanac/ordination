@@ -1,7 +1,7 @@
-import { Input } from '@/components/ui/input';
+import React from 'react';
 
 import { cn } from '@/lib/utils';
-import React from 'react';
+import { Input } from '@/components/ui/input';
 import {
   Period,
   TimePickerType,
@@ -39,6 +39,7 @@ const TimePickerInput = React.forwardRef<
       period,
       onLeftFocus,
       onRightFocus,
+      step = 1,
       ...props
     },
     ref
@@ -83,8 +84,8 @@ const TimePickerInput = React.forwardRef<
       if (e.key === 'ArrowRight') onRightFocus?.();
       if (e.key === 'ArrowLeft') onLeftFocus?.();
       if (['ArrowUp', 'ArrowDown'].includes(e.key)) {
-        const step = e.key === 'ArrowUp' ? 1 : -1;
-        const newValue = getArrowByType(calculatedValue, step, picker);
+        const st = e.key === 'ArrowUp' ? Number(step) : Number(-step);
+        const newValue = getArrowByType(calculatedValue, st, picker);
         if (flag) setFlag(false);
         const tempDate = new Date(date);
         setDate(setDateByType(tempDate, newValue, picker, period));

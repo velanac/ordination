@@ -96,6 +96,8 @@ const Events = {
   getOfficesEvents: () => Requests.get<OfficeWithEvents[]>('/offices-events'),
   createDoctorEvent: (event: DoctorEventPayload) =>
     Requests.post<void>('/events/doctor', event),
+  updateDoctorEvent: (event: DoctorEventPayload) =>
+    Requests.patch<void>(`/events/doctor/${event.id}`, event),
 };
 
 export const agent = {

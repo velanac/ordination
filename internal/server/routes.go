@@ -67,14 +67,13 @@ func (s *Server) RegisterRoutes() http.Handler {
 	// Initialize the file store and pass it to the handlers
 	e.Static("/files", "storage")
 
-	api := e.Group("/api")
-	v1 := api.Group("/v1")
+	v1 := e.Group("/api/v1")
 	v1.GET("/health", healthHandler.HealthCheck)
 	v1.POST("/auth/signin", authHandler.SignIn)
 	v1.GET("/auth/isopen", authHandler.IsSuperAdminOpen)
 	v1.POST("/auth/opensuperadmin", authHandler.OpenSuperAdmin)
-	apiAuth := e.Group("/api")
-	v1Auth := apiAuth.Group("/v1")
+
+	v1Auth := e.Group("/api/v1")
 	v1Auth.Use(JWTFromCookie("secret"))
 	v1Auth.GET("/auth/profile", authHandler.GetUserProfile)
 	v1Auth.POST("/auth/signout", authHandler.SignOut)

@@ -63,14 +63,14 @@ func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Que
 func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context, q Querier) ([]*models.OfficeWithEvents, error) {
 	query := `
 		SELECT 
-			o.id, o.name, o.description, 
+			o.id, o.name, o.description, o.created_at,
 			e.id, e.title, e.start_time, e.end_time, e.type, e.office_id, e.user_id, e.patient_id
 		FROM offices o
 		LEFT JOIN events e 
 			ON o.id = e.office_id 
 			AND e.type = 'doctor' 
 			AND e.start_time >= NOW() - INTERVAL '24 hours'
-		ORDER BY o.id, e.start_time
+		ORDER BY o.created_at, e.start_time
 	`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -85,13 +85,13 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 	offices := make(map[string]*models.OfficeWithEvents)
 	for rows.Next() {
 		var (
-			officeID, officeName, officeDescription                                    sql.NullString
+			officeID, officeName, officeDescription, officeCreatedAt                   sql.NullString
 			eventID, eventTitle, eventType, eventOfficeID, eventUserID, eventPatientID sql.NullString
 			eventStartTime, eventEndTime                                               sql.NullTime
 		)
 
 		if err := rows.Scan(
-			&officeID, &officeName, &officeDescription,
+			&officeID, &officeName, &officeDescription, &officeCreatedAt,
 			&eventID, &eventTitle, &eventStartTime, &eventEndTime, &eventType, &eventOfficeID, &eventUserID, &eventPatientID,
 		); err != nil {
 			return nil, err
@@ -186,20 +186,18 @@ func (r *EventsRepository) Create(ctx context.Context, q Querier, event *models.
 // Update modifies an existing event in the database.
 func (r *EventsRepository) Update(ctx context.Context, q Querier, event *models.Event) error {
 	query := `UPDATE events 
-			SET user_id = $1, patient_id = $2, office_id = $3, title = $4, start_time = $5, end_time = $6, type = $7
-			WHERE id = $8`
+			SET user_id = $1, office_id = $2, title = $3, start_time = $4, end_time = $5
+			WHERE id = $6`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
 	_, err := q.ExecContext(ctx, query,
 		event.UserID,
-		event.PatientID,
 		event.OfficeID,
 		event.Title,
 		event.StartTime,
 		event.EndTime,
-		event.Type,
 		event.ID)
 
 	return err

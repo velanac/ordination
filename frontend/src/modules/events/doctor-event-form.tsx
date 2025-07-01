@@ -1,11 +1,11 @@
 import { useForm } from 'react-hook-form';
-import { useTranslation } from 'react-i18next';
 
 import { Doctor } from '@/types';
 import { Form } from '@/components/ui/form';
 import { DoctorEventPayload } from '@/types/events';
 import { FormCombobox } from '@/components/controls/form-combobox';
 import { TimeFormInput } from '@/components/controls/time-form-input';
+import { FormText } from '@/components/controls/form-text';
 
 type Props = {
   form: ReturnType<typeof useForm<DoctorEventPayload>>;
@@ -13,12 +13,11 @@ type Props = {
 };
 
 function DoctorEventForm({ form, doctors = [] }: Props) {
-  const { t } = useTranslation('events');
-
   return (
     <div className='py-1 px-1 mx-auto w-full'>
       <Form {...form}>
         <form className='space-y-4'>
+          <FormText hidden={true} control={form.control} name='id' label='' />
           <FormCombobox
             control={form.control}
             items={[

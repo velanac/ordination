@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { useAtom, useAtomValue } from 'jotai';
+import { useAtom } from 'jotai';
 
 import {
   Sheet,
@@ -17,25 +17,36 @@ import { Button } from '@/components/ui/button';
 import { DoctorEventPayload } from '@/types/events';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { DoctorEventForm } from '@/modules/events/doctor-event-form';
-import { endTime, isOpen, startTime } from '@/store/doctor-event-sheet';
+import {
+  doctorId as doctorIdAtom,
+  endTime,
+  isOpen,
+  selectedEventId,
+  startTime,
+} from '@/store/doctor-event-sheet-store';
 import { useEffect } from 'react';
 import { useCreateDoctorEvent } from './hooks/use-create-doctor-event';
+import { useUpdateDoctorEvent } from './hooks/use-update-doctor-event';
 
 type Props = {
   doctors: Doctor[];
-  officeId: string;
+  officeId: string; // Optional, if you want to pre-select a doctor
 };
 
 function SheetDoctorEvent({ doctors = [], officeId }: Props) {
   const [open, setOpen] = useAtom(isOpen);
-  const start = useAtomValue(startTime);
-  const end = useAtomValue(endTime);
+  const [end, setEnd] = useAtom(endTime);
+  const [start, setStart] = useAtom(startTime);
+  const [doctorId, setDoctor] = useAtom(doctorIdAtom); // Use the atom value directly
+  const [eventId, setEventId] = useAtom(selectedEventId); // Use the atom value directly
   const createDoctorEvent = useCreateDoctorEvent();
+  const updateDoctorEvent = useUpdateDoctorEvent();
 
   const form = useForm<DoctorEventPayload>({
     resolver: zodResolver(DoctorEventPayload),
     defaultValues: {
-      userId: '',
+      id: eventId, // Use the eventId from the atom
+      userId: doctorId,
       officeId: officeId,
       startTime: start,
       endTime: end,
@@ -50,17 +61,41 @@ function SheetDoctorEvent({ doctors = [], officeId }: Props) {
     if (form.getValues('endTime') !== end) {
       form.setValue('endTime', end);
     }
-  }, [form, start, end]);
+
+    if (form.getValues('userId') !== doctorId) {
+      form.setValue('userId', doctorId!);
+    }
+
+    if (form.getValues('id') !== eventId) {
+      form.setValue('id', eventId);
+    }
+  }, [form, start, end, doctorId, eventId]);
 
   const onSubmit = (data: DoctorEventPayload) => {
-    createDoctorEvent.mutate(data);
-    setOpen(false);
+    if (!data.id) {
+      createDoctorEvent.mutate(data);
+      setOpen(false);
+    } else {
+      updateDoctorEvent.mutate(data);
+      setOpen(false);
+    }
   };
 
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button variant='outline'>Add Doctor Event</Button>
+        <Button
+          variant='outline'
+          onClick={() => {
+            setEventId(undefined); // Reset event ID for new event
+            setDoctor('');
+            setEnd(new Date(new Date().setHours(16, 0, 0, 0)));
+            setStart(new Date(new Date().setHours(8, 0, 0, 0))); // Set default start time to 8 AM
+            setOpen(true);
+          }}
+        >
+          Add Doctor Event
+        </Button>
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

@@ -15,6 +15,7 @@ type Event = {
   title: string;
   type: string;
   release: boolean;
+  eventId?: string; // ID originalnog događaja iz baze
 };
 
 // const events: Event[] = [
@@ -51,6 +52,7 @@ type Props = {
   events: Event[];
   backgroundEvents: Event[];
   onSelectSlot: (slotInfo: SlotInfo) => void;
+  onClickEvent: (event: Event) => void; // Optional callback for selecting doctor events
 };
 
 function EventCalendar({
@@ -59,6 +61,7 @@ function EventCalendar({
   events,
   backgroundEvents,
   onSelectSlot,
+  onClickEvent,
 }: Props) {
   const { i18n } = useTranslation();
   const [culture, setCulture] = useState(i18n.language);
@@ -78,6 +81,10 @@ function EventCalendar({
       onChangeView('day');
       console.log('Selected slot:', slotInfo);
     } else {
+      if (slotInfo.action === 'click') {
+        console.log('Slot selection action:', slotInfo.action);
+        return; // Ignore non-click actions
+      }
       console.log('Selected slot:', slotInfo);
       const start = slotInfo.start;
       const end = slotInfo.end;
@@ -129,12 +136,17 @@ function EventCalendar({
       selectable
       step={5}
       onSelectEvent={(event) => {
-        setCurrentDate(event.start); // Set the current date to the event's start date
-        onChangeView('day'); // Change view to day when an event is selected
-        console.log('Selected event:', event);
-        const scrollTo = new Date(event.start);
-        scrollTo.setMinutes(scrollTo.getMinutes() - 30);
-        setScrollTime(scrollTo);
+        if (view === 'day') {
+          onClickEvent(event); // Call the onClickEvent callback if provided
+          return; // Ignore event selection in day view
+        } else if (view === 'month') {
+          setCurrentDate(event.start); // Set the current date to the event's start date
+          onChangeView('day'); // Change view to day when an event is selected
+          console.log('Selected event:', event);
+          const scrollTo = new Date(event.start);
+          scrollTo.setMinutes(scrollTo.getMinutes() - 30);
+          setScrollTime(scrollTo);
+        }
       }}
       onSelectSlot={onSelectSlotHandler}
       backgroundEvents={backgroundEvents}
