@@ -6,14 +6,16 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordiora/internal/models"
 	"github.com/velenac/ordiora/internal/service"
+	"go.uber.org/zap"
 )
 
 type PatientHandler struct {
 	patients *service.PatientService
+	logger   *zap.SugaredLogger
 }
 
-func NewPatientHandler(service *service.PatientService) *PatientHandler {
-	return &PatientHandler{patients: service}
+func NewPatientHandler(service *service.PatientService, logger *zap.SugaredLogger) *PatientHandler {
+	return &PatientHandler{patients: service, logger: logger}
 }
 
 func (h *PatientHandler) Index(c echo.Context) error {
@@ -33,11 +35,9 @@ func (h *PatientHandler) Show(c echo.Context) error {
 			return NewNotFound("Patient not found")
 		}
 
-		return NewInternalServerError("Server error")
-	}
+		h.logger.Errorw("Failed to get patient by ID", "id", patientId, "error", err)
 
-	if patient == nil {
-		return NewNotFound("Patient not found")
+		return NewInternalServerError("Server error")
 	}
 
 	return RespondOK(c, patient)

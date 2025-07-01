@@ -19,7 +19,7 @@ func NewDoctorsHandler(service *service.DoctorsService) *DoctorsHandler {
 func (h *DoctorsHandler) Index(c echo.Context) error {
 	doctors, err := h.doctors.GetList(c.Request().Context())
 	if err != nil {
-		log.Println("Error retrieving doctors:", err)
+		log.Printf("Error retrieving doctors: %v", err)
 		return NewInternalServerError("Server error")
 	}
 

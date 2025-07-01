@@ -2,10 +2,10 @@ package service
 
 import (
 	"context"
-	"log"
 
 	"github.com/velenac/ordiora/internal/models"
 	"github.com/velenac/ordiora/internal/store"
+	"go.uber.org/zap"
 )
 
 type EventsService struct {
@@ -16,7 +16,7 @@ type EventsService struct {
 	users    *store.UsersRepository
 }
 
-func NewEventsService(s *store.Store) *EventsService {
+func NewEventsService(s *store.Store, logger *zap.SugaredLogger) *EventsService {
 	return &EventsService{
 		s:        s,
 		events:   store.NewEventsRepository(),
@@ -152,7 +152,6 @@ func (s *EventsService) UpdateDoctorEvent(c context.Context, id string, payload 
 
 	err = s.events.Update(c, s.s.Q(), event)
 	if err != nil {
-		log.Panicln("Error updating doctor event:", err)
 		return err
 	}
 

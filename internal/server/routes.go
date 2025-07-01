@@ -10,6 +10,7 @@ import (
 	"github.com/velenac/ordiora/internal/handlers"
 	"github.com/velenac/ordiora/internal/service"
 	"github.com/velenac/ordiora/pkg/auth"
+	"go.uber.org/zap"
 )
 
 type CustomValidator struct {
@@ -26,8 +27,12 @@ func (cv *CustomValidator) Validate(i any) error {
 
 func (s *Server) RegisterRoutes() http.Handler {
 	e := echo.New()
+	logger, _ := zap.NewProduction()
+	defer logger.Sync()
 
-	e.Use(middleware.Logger())
+	sugarLoger := logger.Sugar()
+
+	e.Use(ZapLogger(logger))
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
 		AllowOrigins:     []string{"https://*", "http://*"},
@@ -50,18 +55,18 @@ func (s *Server) RegisterRoutes() http.Handler {
 	officeService := service.NewOfficeService(s.store)
 	serviceService := service.NewServiceService(s.store)
 	usersService := service.NewUsersService(s.store)
-	eventsService := service.NewEventsService(s.store)
+	eventsService := service.NewEventsService(s.store, sugarLoger)
 	doctorsService := service.NewDoctorsService(s.store)
 
 	// Initialize the handlers with the store and other services
 	healthHandler := handlers.NewHealthHandler(healtService)
 	authHandler := handlers.NewAuthHandler(authService)
 	personalHandler := handlers.NewPersonalHandler(personalService)
-	patientHandler := handlers.NewPatientHandler(patientService)
+	patientHandler := handlers.NewPatientHandler(patientService, sugarLoger)
 	officeHandler := handlers.NewOfficeHandler(officeService)
 	serviceHandler := handlers.NewServiceHandler(serviceService)
 	usersHandler := handlers.NewUsersHandler(usersService)
-	eventsHandler := handlers.NewEventHandler(eventsService)
+	eventsHandler := handlers.NewEventHandler(eventsService, sugarLoger)
 	doctorsHandler := handlers.NewDoctorsHandler(doctorsService)
 
 	// Initialize the file store and pass it to the handlers

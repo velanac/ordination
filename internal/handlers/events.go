@@ -1,26 +1,26 @@
 package handlers
 
 import (
-	"log"
-
 	"github.com/labstack/echo/v4"
 	"github.com/velenac/ordiora/internal/models"
 	"github.com/velenac/ordiora/internal/service"
+	"go.uber.org/zap"
 )
 
 type EventHandler struct {
 	events *service.EventsService
+	logger *zap.SugaredLogger
 }
 
-func NewEventHandler(service *service.EventsService) *EventHandler {
-	return &EventHandler{events: service}
+func NewEventHandler(service *service.EventsService, logger *zap.SugaredLogger) *EventHandler {
+	return &EventHandler{events: service, logger: logger}
 }
 
 // Index retrieves a list of recent and upcoming events.
 func (h *EventHandler) Index(c echo.Context) error {
 	events, err := h.events.GetRecentAndUpcomingEvents(c.Request().Context())
 	if err != nil {
-		log.Printf("Error retrieving events: %v", err)
+		h.logger.Errorw("Error retrieving events", "error", err)
 		return NewInternalServerError("Server error")
 	}
 
@@ -31,7 +31,7 @@ func (h *EventHandler) Index(c echo.Context) error {
 func (h *EventHandler) GetRecentAndUpcomingOfficesEvents(c echo.Context) error {
 	officesEvents, err := h.events.GetRecentAndUpcomingOfficesEvents(c.Request().Context())
 	if err != nil {
-		log.Printf("Error retrieving events: %v", err)
+		h.logger.Errorw("Error retrieving offices events", "error", err)
 		return NewInternalServerError("Server error")
 	}
 
@@ -43,6 +43,7 @@ func (h *EventHandler) Show(c echo.Context) error {
 	eventId := c.Param("id")
 	event, err := h.events.GetByID(c.Request().Context(), eventId)
 	if err != nil {
+		h.logger.Errorw("Error retrieving event by ID", "error", err, "eventId", eventId)
 		return NewInternalServerError("Server error")
 	}
 
@@ -57,21 +58,21 @@ func (h *EventHandler) Show(c echo.Context) error {
 func (h *EventHandler) CreateDoctorEvent(c echo.Context) error {
 	var payload models.DoctorEventPayload
 	if err := c.Bind(&payload); err != nil {
+		h.logger.Errorw("Error binding request payload", "error", err)
 		return NewBadRequest("Invalid request payload")
 	}
 
 	if err := c.Validate(payload); err != nil {
+		h.logger.Errorw("Validation failed for doctor event payload", "error", err)
 		return NewBadRequest("Validation failed")
 	}
-
-	log.Printf("Creating doctor event for user ID: %s", payload)
 
 	if err := h.events.CreateDoctorEvent(c.Request().Context(), &payload); err != nil {
 		if err == service.ErrNotFound {
 			return NewNotFound("Doctor not found")
 		}
 
-		log.Printf("Error creating doctor event: %v", err)
+		h.logger.Errorw("Failed to create doctor event", "error", err, "payload", payload)
 
 		return NewInternalServerError("Failed to create doctor event")
 	}
@@ -95,6 +96,8 @@ func (h *EventHandler) CreatePatientEvent(c echo.Context) error {
 			return NewNotFound("Patient not found")
 		}
 
+		h.logger.Errorw("Failed to create patient event", "error", err, "payload", payload)
+
 		return NewInternalServerError("Failed to create patient event")
 	}
 
@@ -117,6 +120,9 @@ func (h *EventHandler) UpdateDoctorEvent(c echo.Context) error {
 		if err == service.ErrNotFound {
 			return NewNotFound("Event not found")
 		}
+
+		h.logger.Errorw("Failed to update doctor event", "error", err, "eventId", eventId, "payload", payload)
+
 		return NewInternalServerError("Failed to update doctor event")
 	}
 
@@ -139,6 +145,9 @@ func (h *EventHandler) UpdatePatientEvent(c echo.Context) error {
 		if err == service.ErrNotFound {
 			return NewNotFound("Event not found")
 		}
+
+		h.logger.Errorw("Failed to update patient event", "error", err, "eventId", eventId, "payload", payload)
+
 		return NewInternalServerError("Failed to update patient event")
 	}
 
@@ -152,6 +161,9 @@ func (h *EventHandler) Destroy(c echo.Context) error {
 		if err == service.ErrNotFound {
 			return NewNotFound("Event not found")
 		}
+
+		h.logger.Errorw("Failed to delete event", "error", err, "eventId", eventId)
+
 		return NewInternalServerError("Failed to delete event")
 	}
 
