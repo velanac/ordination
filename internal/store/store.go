@@ -13,6 +13,14 @@ var (
 	QueryTimeoutDuration = time.Second * 5 // 5 minutes
 )
 
+var (
+	DoctorEvent  = "doctor"
+	PatientEvent = "patient"
+	DoctorRole   = "Doctor"
+	PatientRole  = "Patient"
+	AdminRole    = "Admin"
+)
+
 type Querier interface {
 	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
 	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)

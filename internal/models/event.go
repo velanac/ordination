@@ -20,6 +20,7 @@ type DoctorEventPayload struct {
 
 type PatientEventPayload struct {
 	PatientID string `json:"patientId"`
+	UserID    string `json:"userId"`
 	OfficeID  string `json:"officeId"`
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`

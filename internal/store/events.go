@@ -164,8 +164,8 @@ func (r *EventsRepository) GetByID(ctx context.Context, q Querier, id string) (*
 	return event, nil
 }
 
-// Create inserts a new event into the database.
-func (r *EventsRepository) Create(ctx context.Context, q Querier, event *models.Event) error {
+// Create inserts a new doctor event into the database.
+func (r *EventsRepository) CreateDoctorEvent(ctx context.Context, q Querier, event *models.Event) error {
 	query := `INSERT INTO events (user_id, office_id, title, start_time, end_time, type)
 			VALUES ($1, $2, $3, $4, $5, $6)`
 
@@ -179,6 +179,40 @@ func (r *EventsRepository) Create(ctx context.Context, q Querier, event *models.
 		event.StartTime,
 		event.EndTime,
 		event.Type)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
+
+		return err
+	}
+
+	return nil
+}
+
+// CreatePatientEvent inserts a new patient event into the database.
+func (r *EventsRepository) CreatePatientEvent(ctx context.Context, q Querier, event *models.Event) error {
+	query := `INSERT INTO events (patient_id, office_id, user_id, title, start_time, end_time, type)
+			VALUES ($1, $2, $3, $4, $5, $6, $7)`
+
+	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
+	defer cancel()
+
+	_, err := q.ExecContext(ctx, query,
+		event.PatientID,
+		event.OfficeID,
+		event.UserID,
+		event.Title,
+		event.StartTime,
+		event.EndTime,
+		event.Type)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return ErrNotFound
+		}
+	}
 
 	return err
 }

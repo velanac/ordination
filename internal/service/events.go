@@ -70,7 +70,7 @@ func (s *EventsService) CreateDoctorEvent(c context.Context, payload *models.Doc
 		Title:     personal.Titles + " " + personal.FirstName + " " + personal.LastName,
 	}
 
-	err = s.events.Create(c, s.s.Q(), event)
+	err = s.events.CreateDoctorEvent(c, s.s.Q(), event)
 	if err != nil {
 		return err
 	}
@@ -82,6 +82,10 @@ func (s *EventsService) CreateDoctorEvent(c context.Context, payload *models.Doc
 func (s *EventsService) CreatePatientEvent(c context.Context, payload *models.PatientEventPayload) error {
 	patient, err := s.patients.GetByID(c, s.s.Q(), payload.PatientID)
 	if err != nil {
+		if err == store.ErrNotFound {
+			return ErrNotFound
+		}
+
 		return err
 	}
 
@@ -89,16 +93,30 @@ func (s *EventsService) CreatePatientEvent(c context.Context, payload *models.Pa
 		return ErrNotFound
 	}
 
+	doctor, err := s.users.GetByID(c, s.s.Q(), payload.UserID)
+	if err != nil {
+		if err == store.ErrNotFound {
+			return ErrNotFound
+		}
+
+		return err
+	}
+
+	if doctor == nil || doctor.Role != "Doctor" {
+		return ErrNotFound
+	}
+
 	event := &models.Event{
 		PatientID: patient.ID,
 		OfficeID:  payload.OfficeID,
+		UserID:    doctor.ID,
 		StartTime: payload.StartTime,
 		EndTime:   payload.EndTime,
 		Type:      "patient",
 		Title:     patient.FirstName + " " + patient.LastName,
 	}
 
-	err = s.events.Create(c, s.s.Q(), event)
+	err = s.events.CreatePatientEvent(c, s.s.Q(), event)
 	if err != nil {
 		return err
 	}
@@ -136,8 +154,8 @@ func (s *EventsService) UpdateDoctorEvent(c context.Context, id string, payload 
 		StartTime: payload.StartTime,
 		EndTime:   payload.EndTime,
 		OfficeID:  payload.OfficeID,
-		Type:      "doctor",
 		Title:     personal.Titles + " " + personal.FirstName + " " + personal.LastName,
+		Type:      "doctor",
 	}
 
 	// Check if the event exists
