@@ -18,6 +18,8 @@ import {
   startTime,
 } from '@/store/doctor-event-sheet-store';
 import { useFilterOfficeEvents } from '@/modules/events/hooks/use-filter-office-events';
+import { SheetPatientEvent } from '@/modules/events/sheet-patient-event';
+import { patientSheetStore } from '@/store/patient-event-sheet-store';
 
 function OfficeEventsPage() {
   const { officeId } = useParams<{ officeId: string }>();
@@ -26,8 +28,10 @@ function OfficeEventsPage() {
   const setEndTime = useSetAtom(endTime);
   const setDoctorId = useSetAtom(doctorId);
   const setEventId = useSetAtom(selectedEventId);
+  const setPatientStore = useSetAtom(patientSheetStore);
   const { data, isLoading } = useOffice(officeId);
   const [currentView, setCurrentView] = useState<View>('month');
+  const [eventTitle, setEventTitle] = useState<string>('');
   const { data: doctorsData, isLoading: isDoctorsLoading } = useDoctors();
   const { data: office, isLoading: isLoadingEvent } = useFilterOfficeEvents(
     officeId!
@@ -77,7 +81,14 @@ function OfficeEventsPage() {
       </div>
       <div className='mb-4 flex justify-end w-full'>
         {currentView === 'day' && (
-          <SheetDoctorEvent doctors={doctorsData!} officeId={officeId!} />
+          <>
+            <SheetPatientEvent
+              patients={[]}
+              officeId={officeId!}
+              eventTitle={eventTitle}
+            />
+            <SheetDoctorEvent doctors={doctorsData!} officeId={officeId!} />
+          </>
         )}
       </div>
       <div className='flex w-full h-[75vh] flex-col items-center justify-center'>
@@ -106,6 +117,22 @@ function OfficeEventsPage() {
             setStartTime(slotInfo.start);
             setEndTime(slotInfo.end);
             setOpen(true);
+          }}
+          onCreatePatientEvent={(slotInfo: SlotInfo) => {
+            console.log('Creating patient event:', event);
+            const doctorEvent = office?.events.find(
+              (e) => e.id === slotInfo.resourceId
+            );
+
+            setEventTitle(doctorEvent?.title || '');
+
+            setPatientStore({
+              isOpen: true,
+              startTime: slotInfo.start,
+              endTime: slotInfo.end,
+              doctorId: doctorEvent?.userId || '',
+              patientId: '',
+            });
           }}
         />
       </div>

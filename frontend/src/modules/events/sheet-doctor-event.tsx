@@ -84,7 +84,7 @@ function SheetDoctorEvent({ doctors = [], officeId }: Props) {
   return (
     <Sheet onOpenChange={setOpen} open={open}>
       <SheetTrigger asChild>
-        <Button
+        {/* <Button
           variant='outline'
           onClick={() => {
             setEventId(undefined); // Reset event ID for new event
@@ -95,7 +95,7 @@ function SheetDoctorEvent({ doctors = [], officeId }: Props) {
           }}
         >
           Add Doctor Event
-        </Button>
+        </Button> */}
       </SheetTrigger>
       <SheetContent>
         <SheetHeader>

@@ -52,7 +52,8 @@ type Props = {
   events: Event[];
   backgroundEvents: Event[];
   onSelectSlot: (slotInfo: SlotInfo) => void;
-  onClickEvent: (event: Event) => void; // Optional callback for selecting doctor events
+  onClickEvent: (event: Event) => void;
+  onCreatePatientEvent: (slotInfo: SlotInfo) => void;
 };
 
 function EventCalendar({
@@ -62,6 +63,7 @@ function EventCalendar({
   backgroundEvents,
   onSelectSlot,
   onClickEvent,
+  onCreatePatientEvent,
 }: Props) {
   const { i18n } = useTranslation();
   const [culture, setCulture] = useState(i18n.language);
@@ -85,7 +87,7 @@ function EventCalendar({
         console.log('Slot selection action:', slotInfo.action);
         return; // Ignore non-click actions
       }
-      console.log('Selected slot:', slotInfo);
+
       const start = slotInfo.start;
       const end = slotInfo.end;
       const backgroundEventsInSlot = backgroundEvents.filter((event) => {
@@ -101,7 +103,10 @@ function EventCalendar({
           'Background events exist in this slot:',
           backgroundEventsInSlot
         );
-        // Handle the case where background events exist
+
+        const backgroundEvent = backgroundEventsInSlot[0];
+        slotInfo.resourceId = backgroundEvent.eventId; // Assign the ID of the background event to the slotInfo
+        onCreatePatientEvent(slotInfo);
       } else {
         console.log('No background events in this slot');
         onSelectSlot(slotInfo);

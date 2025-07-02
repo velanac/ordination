@@ -16,7 +16,7 @@ func NewPatientsRepository() *PatientsRepository {
 
 func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.PatientListItem, error) {
 	query := `SELECT 
-				id, first_name, parent_name, last_name, email, city, created_at 
+				id, first_name, parent_name, last_name, address, email, city, created_at 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -36,6 +36,7 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 			&patient.FirstName,
 			&patient.ParentName,
 			&patient.LastName,
+			&patient.Address,
 			&patient.Email,
 			&patient.City,
 			&patient.CreatedAt); err != nil {
@@ -51,6 +52,7 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 			ID:        p.ID,
 			FullName:  p.FirstName + " " + p.ParentName + " " + p.LastName,
 			Email:     p.Email,
+			Address:   p.Address,
 			City:      p.City,
 			CreatedAt: p.CreatedAt,
 		}

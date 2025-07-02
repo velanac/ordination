@@ -31,6 +31,7 @@ func (p *PatientPayload) GetPatient() *Patient {
 type PatientListItem struct {
 	ID        string `json:"id"`
 	FullName  string `json:"fullName"`
+	Address   string `json:"address"`
 	Email     string `json:"email"`
 	City      string `json:"city"`
 	CreatedAt string `json:"createdAt"`

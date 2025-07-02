@@ -22,6 +22,7 @@ export type PatientListItem = {
   id: string;
   fullName: string;
   email: string | null;
+  address: string | null;
   city: string | null;
   createdAt: string;
 };
