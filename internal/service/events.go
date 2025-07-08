@@ -185,6 +185,8 @@ func (s *EventsService) UpdatePatientEvent(c context.Context, id string, payload
 	event := &models.Event{
 		ID:        id,
 		PatientID: patient.ID,
+		OfficeID:  payload.OfficeID,
+		UserID:    payload.UserID,
 		StartTime: payload.StartTime,
 		EndTime:   payload.EndTime,
 		Type:      "patient",

@@ -1,6 +1,6 @@
 import { useForm } from 'react-hook-form';
 
-import { useAtom } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
 
 import {
   Sheet,
@@ -35,10 +35,10 @@ type Props = {
 
 function SheetDoctorEvent({ doctors = [], officeId }: Props) {
   const [open, setOpen] = useAtom(isOpen);
-  const [end, setEnd] = useAtom(endTime);
-  const [start, setStart] = useAtom(startTime);
-  const [doctorId, setDoctor] = useAtom(doctorIdAtom); // Use the atom value directly
-  const [eventId, setEventId] = useAtom(selectedEventId); // Use the atom value directly
+  const end = useAtomValue(endTime);
+  const start = useAtomValue(startTime);
+  const doctorId = useAtomValue(doctorIdAtom); // Use the atom value directly
+  const eventId = useAtomValue(selectedEventId); // Use the atom value directly
   const createDoctorEvent = useCreateDoctorEvent();
   const updateDoctorEvent = useUpdateDoctorEvent();
 

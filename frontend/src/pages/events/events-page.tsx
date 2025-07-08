@@ -23,7 +23,9 @@ function EventsPage() {
               <h1 className='text-3xl font-semibold'>{office.name}</h1>
             </Link>
             <div className='h-[300px] w-full overflow-auto'>
-              <AgendaCalendar events={office.events} />
+              <AgendaCalendar
+                events={office.events.filter((e) => e.type === 'doctor')}
+              />
             </div>
           </div>
         ))}

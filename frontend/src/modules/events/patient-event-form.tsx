@@ -1,14 +1,13 @@
 import { useForm } from 'react-hook-form';
 
-import { FormCombobox } from '@/components/controls/form-combobox';
-import { FormText } from '@/components/controls/form-text';
-import { TimeFormInput } from '@/components/controls/time-form-input';
-import { Form } from '@/components/ui/form';
 import { PatientListItem } from '@/types';
-import { PatientEventPayload } from '@/types/events';
+import { Form } from '@/components/ui/form';
+import { PatientFormPayload } from '@/types/events';
+import { FormText } from '@/components/controls/form-text';
+import { FormCombobox } from '@/components/controls/form-combobox';
 
 type Props = {
-  form: ReturnType<typeof useForm<PatientEventPayload>>;
+  form: ReturnType<typeof useForm<PatientFormPayload>>;
   patients: PatientListItem[];
 };
 
@@ -31,16 +30,6 @@ function PatientEventForm({ form, patients = [] }: Props) {
             onSelect={(value) => {
               form.setValue('patientId', value!);
             }}
-          />
-          <TimeFormInput
-            name='startTime'
-            label='Start Time'
-            control={form.control}
-          />
-          <TimeFormInput
-            name='endTime'
-            label='End Time'
-            control={form.control}
           />
         </form>
       </Form>

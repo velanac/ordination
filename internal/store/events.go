@@ -68,7 +68,6 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 		FROM offices o
 		LEFT JOIN events e 
 			ON o.id = e.office_id 
-			AND e.type = 'doctor' 
 			AND e.start_time >= NOW() - INTERVAL '24 hours'
 		ORDER BY o.created_at, e.start_time
 	`
@@ -119,6 +118,7 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 				UserID:    eventUserID.String,
 				PatientID: eventPatientID.String,
 			}
+
 			offices[id].Events = append(offices[id].Events, event)
 		}
 	}

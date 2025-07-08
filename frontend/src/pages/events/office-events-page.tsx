@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { X } from 'lucide-react';
-import { useSetAtom } from 'jotai';
+import { useAtom, useSetAtom } from 'jotai';
 import { Link, useParams } from 'react-router';
 import { SlotInfo, View } from 'react-big-calendar';
 
@@ -20,6 +20,7 @@ import {
 import { useFilterOfficeEvents } from '@/modules/events/hooks/use-filter-office-events';
 import { SheetPatientEvent } from '@/modules/events/sheet-patient-event';
 import { patientSheetStore } from '@/store/patient-event-sheet-store';
+import { usePatients } from '@/modules/patients/hooks/use-patients';
 
 function OfficeEventsPage() {
   const { officeId } = useParams<{ officeId: string }>();
@@ -28,7 +29,7 @@ function OfficeEventsPage() {
   const setEndTime = useSetAtom(endTime);
   const setDoctorId = useSetAtom(doctorId);
   const setEventId = useSetAtom(selectedEventId);
-  const setPatientStore = useSetAtom(patientSheetStore);
+  const [patientStore, setPatientStore] = useAtom(patientSheetStore);
   const { data, isLoading } = useOffice(officeId);
   const [currentView, setCurrentView] = useState<View>('month');
   const [eventTitle, setEventTitle] = useState<string>('');
@@ -36,21 +37,40 @@ function OfficeEventsPage() {
   const { data: office, isLoading: isLoadingEvent } = useFilterOfficeEvents(
     officeId!
   );
+  const { data: patientes = [], isLoading: isLoadingPatients } = usePatients();
+
+  if (!office) {
+    return <div>No office data available.</div>;
+  }
 
   const events =
-    office && currentView === 'month'
-      ? office.events.map((event, index) => {
-          return {
-            id: index, // Koristimo index za lokalni Event tip
-            start: new Date(event.startTime),
-            end: new Date(event.endTime),
-            title: event.title,
-            type: 'doctor',
-            release: false,
-            eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
-          };
-        })
-      : [];
+    currentView === 'month'
+      ? office.events
+          .filter((e) => e.type === 'doctor')
+          .map((event, index) => {
+            return {
+              id: index, // Koristimo index za lokalni Event tip
+              start: new Date(event.startTime),
+              end: new Date(event.endTime),
+              title: event.title,
+              type: event.type,
+              release: false,
+              eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
+            };
+          })
+      : office.events
+          .filter((e) => e.type === 'patient')
+          .map((event, index) => {
+            return {
+              id: index, // Koristimo index za lokalni Event tip
+              start: new Date(event.startTime),
+              end: new Date(event.endTime),
+              title: event.title,
+              type: event.type,
+              release: false,
+              eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
+            };
+          });
 
   const backgroundEvents =
     office && currentView === 'day'
@@ -59,13 +79,13 @@ function OfficeEventsPage() {
           start: new Date(event.startTime),
           end: new Date(event.endTime),
           title: event.title,
-          type: 'doctor',
+          type: event.type,
           release: false,
           eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
         }))
       : [];
 
-  if (isLoading || isDoctorsLoading || isLoadingEvent) {
+  if (isLoading || isDoctorsLoading || isLoadingEvent || isLoadingPatients) {
     return <div>Loading...</div>;
   }
 
@@ -83,9 +103,11 @@ function OfficeEventsPage() {
         {currentView === 'day' && (
           <>
             <SheetPatientEvent
-              patients={[]}
-              officeId={officeId!}
+              patients={patientes}
               eventTitle={eventTitle}
+              startTime={patientStore.startTime}
+              endTime={patientStore.endTime}
+              officeId={officeId!}
             />
             <SheetDoctorEvent doctors={doctorsData!} officeId={officeId!} />
           </>
@@ -110,6 +132,21 @@ function OfficeEventsPage() {
               setStartTime(event.start);
               setEndTime(event.end);
               setOpen(true);
+            } else if (event.type === 'patient') {
+              const patientEvent = office?.events.find(
+                (e) => e.id === event.eventId
+              );
+
+              if (!patientEvent) return;
+
+              setPatientStore({
+                isOpen: true,
+                startTime: event.start,
+                selectedEventId: patientEvent.id,
+                endTime: event.end,
+                doctorId: patientEvent.userId || '',
+                patientId: patientEvent.patientId || '',
+              });
             }
           }}
           onSelectSlot={(slotInfo: SlotInfo) => {

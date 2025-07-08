@@ -13,6 +13,7 @@ import {
   UserResponse,
   DoctorEventPayload,
   OfficeWithEvents,
+  PatientEventPayload,
 } from '@/types';
 import { PersonalFormPayload } from '@/modules/personal/types';
 
@@ -96,8 +97,12 @@ const Events = {
   getOfficesEvents: () => Requests.get<OfficeWithEvents[]>('/offices-events'),
   createDoctorEvent: (event: DoctorEventPayload) =>
     Requests.post<void>('/events/doctor', event),
+  createPatientEvent: (event: PatientEventPayload) =>
+    Requests.post<void>('/events/patient', event),
   updateDoctorEvent: (event: DoctorEventPayload) =>
     Requests.patch<void>(`/events/doctor/${event.id}`, event),
+  updatePatientEvent: (event: DoctorEventPayload) =>
+    Requests.patch<void>(`/events/patient/${event.id}`, event),
 };
 
 export const agent = {
