@@ -6,7 +6,7 @@ import (
 	"log"
 	"time"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/velenac/ordiora/internal/migrations"
 )
 
@@ -23,7 +23,7 @@ func New(addr string, catalog string, maxOpenConns, maxIdleConns int, maxIdleTim
 		}
 	}
 
-	db, err := sql.Open("postgres", addr+catalog+"?sslmode=disable")
+	db, err := sql.Open("pgx", addr+catalog+"?sslmode=disable")
 	if err != nil {
 		return nil, err
 	}

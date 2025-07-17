@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/georgysavva/scany/v2/sqlscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -27,16 +28,9 @@ func (r *OfficesRepository) GetList(ctx context.Context, q Querier) ([]*models.O
 	}
 	defer rows.Close()
 
-	offices := []*models.Office{}
-	for rows.Next() {
-		office := &models.Office{}
-		if err := rows.Scan(
-			&office.ID,
-			&office.Name,
-			&office.Description); err != nil {
-			return nil, err
-		}
-		offices = append(offices, office)
+	var offices []*models.Office
+	if err := sqlscan.ScanAll(&offices, rows); err != nil {
+		return nil, err
 	}
 
 	return offices, nil
@@ -50,18 +44,21 @@ func (r *OfficesRepository) GetByID(ctx context.Context, q Querier, id string) (
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	office := &models.Office{}
-	if err := q.QueryRowContext(ctx, query, id).Scan(
-		&office.ID,
-		&office.Name,
-		&office.Description); err != nil {
-		if err == sql.ErrNoRows {
+	rows, err := q.QueryContext(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var office models.Office
+	if err := sqlscan.ScanOne(&office, rows); err != nil {
+		if sqlscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
 
-	return office, nil
+	return &office, nil
 }
 
 func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *models.Office) error {

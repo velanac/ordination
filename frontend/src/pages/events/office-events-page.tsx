@@ -29,63 +29,15 @@ function OfficeEventsPage() {
   const setEndTime = useSetAtom(endTime);
   const setDoctorId = useSetAtom(doctorId);
   const setEventId = useSetAtom(selectedEventId);
-  const [patientStore, setPatientStore] = useAtom(patientSheetStore);
   const { data, isLoading } = useOffice(officeId);
-  const [currentView, setCurrentView] = useState<View>('month');
   const [eventTitle, setEventTitle] = useState<string>('');
+  const [patientStore, setPatientStore] = useAtom(patientSheetStore);
   const { data: doctorsData, isLoading: isDoctorsLoading } = useDoctors();
-  const { data: office, isLoading: isLoadingEvent } = useFilterOfficeEvents(
-    officeId!
-  );
   const { data: patientes = [], isLoading: isLoadingPatients } = usePatients();
+  const { events, backgroundEvents, setCurrentView, currentView } =
+    useFilterOfficeEvents();
 
-  if (!office) {
-    return <div>No office data available.</div>;
-  }
-
-  const events =
-    currentView === 'month'
-      ? office.events
-          .filter((e) => e.type === 'doctor')
-          .map((event, index) => {
-            return {
-              id: index, // Koristimo index za lokalni Event tip
-              start: new Date(event.startTime),
-              end: new Date(event.endTime),
-              title: event.title,
-              type: event.type,
-              release: false,
-              eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
-            };
-          })
-      : office.events
-          .filter((e) => e.type === 'patient')
-          .map((event, index) => {
-            return {
-              id: index, // Koristimo index za lokalni Event tip
-              start: new Date(event.startTime),
-              end: new Date(event.endTime),
-              title: event.title,
-              type: event.type,
-              release: false,
-              eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
-            };
-          });
-
-  const backgroundEvents =
-    office && currentView === 'day'
-      ? office.events.map((event, index) => ({
-          id: index,
-          start: new Date(event.startTime),
-          end: new Date(event.endTime),
-          title: event.title,
-          type: event.type,
-          release: false,
-          eventId: event.id, // Dodajemo eventId za referencu na originalni događaj
-        }))
-      : [];
-
-  if (isLoading || isDoctorsLoading || isLoadingEvent || isLoadingPatients) {
+  if (isLoading || isDoctorsLoading || isLoadingPatients) {
     return <div>Loading...</div>;
   }
 
@@ -120,34 +72,30 @@ function OfficeEventsPage() {
           events={events}
           backgroundEvents={backgroundEvents}
           onClickEvent={(event) => {
-            if (event.type === 'doctor') {
-              const doctorEvent = office?.events.find(
-                (e) => e.id === event.eventId
-              );
-
-              if (!doctorEvent) return;
-
-              setEventId(doctorEvent.id);
-              setDoctorId(doctorEvent.userId);
-              setStartTime(event.start);
-              setEndTime(event.end);
-              setOpen(true);
-            } else if (event.type === 'patient') {
-              const patientEvent = office?.events.find(
-                (e) => e.id === event.eventId
-              );
-
-              if (!patientEvent) return;
-
-              setPatientStore({
-                isOpen: true,
-                startTime: event.start,
-                selectedEventId: patientEvent.id,
-                endTime: event.end,
-                doctorId: patientEvent.userId || '',
-                patientId: patientEvent.patientId || '',
-              });
-            }
+            // if (event.type === 'doctor') {
+            //   const doctorEvent = events.find(
+            //     (e) => e.eventId === event.eventId
+            //   );
+            //   if (!doctorEvent) return;
+            //   setEventId(doctorEvent.eventId);
+            //   setDoctorId(doctorEvent.);
+            //   setStartTime(event.start);
+            //   setEndTime(event.end);
+            //   setOpen(true);
+            // } else if (event.type === 'patient') {
+            //   const patientEvent = office?.events.find(
+            //     (e) => e.id === event.eventId
+            //   );
+            //   if (!patientEvent) return;
+            //   setPatientStore({
+            //     isOpen: true,
+            //     startTime: event.start,
+            //     selectedEventId: patientEvent.id,
+            //     endTime: event.end,
+            //     doctorId: patientEvent.userId || '',
+            //     patientId: patientEvent.patientId || '',
+            //   });
+            // }
           }}
           onSelectSlot={(slotInfo: SlotInfo) => {
             setDoctorId(''); // Reset doctor ID
@@ -156,20 +104,18 @@ function OfficeEventsPage() {
             setOpen(true);
           }}
           onCreatePatientEvent={(slotInfo: SlotInfo) => {
-            console.log('Creating patient event:', event);
-            const doctorEvent = office?.events.find(
-              (e) => e.id === slotInfo.resourceId
-            );
-
-            setEventTitle(doctorEvent?.title || '');
-
-            setPatientStore({
-              isOpen: true,
-              startTime: slotInfo.start,
-              endTime: slotInfo.end,
-              doctorId: doctorEvent?.userId || '',
-              patientId: '',
-            });
+            // console.log('Creating patient event:', event);
+            // const doctorEvent = office?.events.find(
+            //   (e) => e.id === slotInfo.resourceId
+            // );
+            // setEventTitle(doctorEvent?.title || '');
+            // setPatientStore({
+            //   isOpen: true,
+            //   startTime: slotInfo.start,
+            //   endTime: slotInfo.end,
+            //   doctorId: doctorEvent?.userId || '',
+            //   patientId: '',
+            // });
           }}
         />
       </div>

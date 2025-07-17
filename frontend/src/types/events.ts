@@ -54,3 +54,13 @@ export type OfficeWithEvents = {
   description: string;
   events: OfficeEvent[];
 };
+
+export type CalendarEvent = {
+  id?: number; // Optional ID for background events
+  start: Date;
+  end: Date;
+  title: string;
+  type: string;
+  release: boolean;
+  eventId?: string; // ID originalnog događaja iz baze
+};

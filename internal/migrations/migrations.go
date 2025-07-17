@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"log"
 
-	_ "github.com/lib/pq"
+	_ "github.com/jackc/pgx/v5/stdlib"
 	"github.com/pressly/goose/v3"
 )
 
@@ -27,7 +27,7 @@ func New(dbServer, catalog string) *Migrator {
 }
 
 func (m *Migrator) CreateDatabaseIfNotExtist() *Migrator {
-	db, err := sql.Open("postgres", m.DbServer+"postgres?sslmode=disable")
+	db, err := sql.Open("pgx", m.DbServer+"postgres?sslmode=disable")
 	if err != nil {
 		log.Fatalf("Failed to connect to database: %v", err)
 	}
