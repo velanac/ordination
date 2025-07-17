@@ -27,8 +27,12 @@ func (r *DoctorsRepository) GetList(ctx context.Context, q Querier) ([]*models.D
 		return nil, err
 	}
 	defer rows.Close()
+
 	var doctors []*models.Doctor
-	pgxscan.ScanAll(&doctors, rows)
+	err = pgxscan.ScanAll(&doctors, rows)
+	if err != nil {
+		return nil, err
+	}
 
 	return doctors, nil
 }

@@ -16,7 +16,7 @@ func NewPatientsRepository() *PatientsRepository {
 
 func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.PatientListItem, error) {
 	query := `SELECT 
-				id, first_name || ' ' || parent_name || ' ' || last_name AS full_name, address, email, city, created_at 
+				id, CONCAT(first_name,' ',parent_name,' ',last_name) AS full_name, address, email, city, created_at 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
