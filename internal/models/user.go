@@ -34,9 +34,9 @@ type User struct {
 }
 
 type UserList struct {
-	ID       string `json:"id"`
-	UserName string `json:"username"`
-	Role     string `json:"role"`
+	ID       string `json:"id" db:"id"`
+	UserName string `json:"username" db:"username"`
+	Role     string `json:"role" db:"role"`
 }
 
 type password struct {

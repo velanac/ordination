@@ -15,7 +15,7 @@ func NewUsersRepository() *UsersRepository {
 }
 
 func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.UserList, error) {
-	query := `SELECT u.id, u.email, r.name FROM users u 
+	query := `SELECT u.id, u.email AS username, r.name AS role FROM users u 
 				JOIN roles r on u.role_id = r.id
 				ORDER BY u.created_at DESC`
 
@@ -37,7 +37,7 @@ func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.Use
 }
 
 func (r *UsersRepository) GetByID(ctx context.Context, q Querier, id string) (*models.User, error) {
-	query := `SELECT u.id, u.email, u.password, u.active, r.name FROM users u 
+	query := `SELECT u.id, u.email, u.active, r.name AS role FROM users u 
 				JOIN roles r on u.role_id = r.id
 				WHERE u.id = $1`
 

@@ -2,6 +2,7 @@ package store
 
 import (
 	"context"
+	"log"
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
@@ -15,7 +16,7 @@ func NewPatientsRepository() *PatientsRepository {
 
 func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.PatientListItem, error) {
 	query := `SELECT 
-				id, first_name, parent_name, last_name, address, email, city, created_at 
+				id, first_name || ' ' || parent_name || ' ' || last_name AS full_name, address, email, city, created_at 
 				FROM patients ORDER BY created_at DESC`
 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
@@ -27,37 +28,14 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 	}
 	defer rows.Close()
 
-	patients := []*models.Patient{}
-	for rows.Next() {
-		patient := &models.Patient{}
-		if err := rows.Scan(
-			&patient.ID,
-			&patient.FirstName,
-			&patient.ParentName,
-			&patient.LastName,
-			&patient.Address,
-			&patient.Email,
-			&patient.City,
-			&patient.CreatedAt); err != nil {
-			return nil, err
-		}
-		patients = append(patients, patient)
+	patients := []*models.PatientListItem{}
+	err = pgxscan.ScanAll(&patients, rows)
+	if err != nil {
+		log.Printf("Error scanning patients: %v", err)
+		return nil, err
 	}
 
-	patientsList := make([]*models.PatientListItem, len(patients))
-
-	for i, p := range patients {
-		patientsList[i] = &models.PatientListItem{
-			ID:        p.ID,
-			FullName:  p.FirstName + " " + p.ParentName + " " + p.LastName,
-			Email:     p.Email,
-			Address:   p.Address,
-			City:      p.City,
-			CreatedAt: p.CreatedAt,
-		}
-	}
-
-	return patientsList, nil
+	return patients, nil
 }
 
 func (r *PatientsRepository) GetByID(ctx context.Context, q Querier, id string) (*models.Patient, error) {
