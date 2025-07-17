@@ -2,8 +2,9 @@ package store
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
+	"github.com/jackc/pgx/v5"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -20,23 +21,14 @@ func (r *ServicesRepository) GetAll(ctx context.Context, q Querier) ([]*models.S
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	services := []*models.Service{}
-	for rows.Next() {
-		service := &models.Service{}
-		if err := rows.Scan(
-			&service.ID,
-			&service.Description,
-			&service.Price); err != nil {
-			return nil, err
-		}
-		services = append(services, service)
-	}
+	pgxscan.ScanAll(&services, rows)
 
 	return services, nil
 }
@@ -49,11 +41,11 @@ func (r *ServicesRepository) GetByID(ctx context.Context, q Querier, id string) 
 	defer cancel()
 
 	service := &models.Service{}
-	if err := q.QueryRowContext(ctx, query, id).Scan(
+	if err := q.QueryRow(ctx, query, id).Scan(
 		&service.ID,
 		&service.Description,
 		&service.Price); err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return nil, ErrNotFound
 		}
 		return nil, err
@@ -70,7 +62,7 @@ func (r *ServicesRepository) Create(ctx context.Context, q Querier, payload *mod
 	defer cancel()
 
 	service := &models.Service{}
-	if err := q.QueryRowContext(ctx, query,
+	if err := q.QueryRow(ctx, query,
 		payload.Description,
 		payload.Price).Scan(
 		&service.ID); err != nil {
@@ -86,11 +78,11 @@ func (r *ServicesRepository) Update(ctx context.Context, q Querier, id string, p
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	if _, err := q.ExecContext(ctx, query,
+	if _, err := q.Exec(ctx, query,
 		payload.Description,
 		payload.Price,
 		id); err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return ErrNotFound
 		}
 		return err
@@ -105,8 +97,8 @@ func (r *ServicesRepository) Delete(ctx context.Context, q Querier, id string) e
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	if _, err := q.ExecContext(ctx, query, id); err != nil {
-		if err == sql.ErrNoRows {
+	if _, err := q.Exec(ctx, query, id); err != nil {
+		if err == pgx.ErrNoRows {
 			return ErrNotFound
 		}
 		return err
@@ -122,7 +114,7 @@ func (r *ServicesRepository) IsExists(ctx context.Context, q Querier, id string)
 	defer cancel()
 
 	var exist bool
-	err := q.QueryRowContext(ctx, query, id).Scan(&exist)
+	err := q.QueryRow(ctx, query, id).Scan(&exist)
 	if err != nil {
 		return false, err
 	}

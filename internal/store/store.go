@@ -2,9 +2,12 @@ package store
 
 import (
 	"context"
-	"database/sql"
 	"errors"
 	"time"
+
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
+	"github.com/jackc/pgx/v5/pgxpool"
 )
 
 var (
@@ -22,25 +25,25 @@ var (
 )
 
 type Querier interface {
-	ExecContext(ctx context.Context, query string, args ...any) (sql.Result, error)
-	QueryContext(ctx context.Context, query string, args ...any) (*sql.Rows, error)
-	QueryRowContext(ctx context.Context, query string, args ...any) *sql.Row
+	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
+	Query(ctx context.Context, sql string, args ...any) (pgx.Rows, error)
+	QueryRow(ctx context.Context, sql string, args ...any) pgx.Row
 }
 
-var _ Querier = (*sql.DB)(nil)
-var _ Querier = (*sql.Tx)(nil)
+var _ Querier = (*pgxpool.Pool)(nil)
+var _ Querier = (pgx.Tx)(nil)
 
 type Store struct {
-	db *sql.DB
+	db *pgxpool.Pool
 }
 
-func New(db *sql.DB) *Store {
+func New(db *pgxpool.Pool) *Store {
 	return &Store{
 		db: db,
 	}
 }
 
-func (s *Store) DB() *sql.DB {
+func (s *Store) DB() *pgxpool.Pool {
 	return s.db
 }
 
@@ -49,23 +52,22 @@ func (s *Store) Q() Querier {
 }
 
 func (s *Store) WithTx(ctx context.Context, fn func(Querier) error) error {
-	tx, err := s.db.BeginTx(ctx, nil)
-	s.db.Ping()
+	tx, err := s.db.Begin(ctx)
 	if err != nil {
 		return err
 	}
 
 	defer func() {
 		if p := recover(); p != nil {
-			_ = tx.Rollback()
+			_ = tx.Rollback(ctx)
 			panic(p)
 		}
 	}()
 
 	if err := fn(tx); err != nil {
-		_ = tx.Rollback()
+		_ = tx.Rollback(ctx)
 		return err
 	}
 
-	return tx.Commit()
+	return tx.Commit(ctx)
 }

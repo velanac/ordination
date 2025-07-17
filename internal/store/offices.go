@@ -2,9 +2,9 @@ package store
 
 import (
 	"context"
-	"database/sql"
 
-	"github.com/georgysavva/scany/v2/sqlscan"
+	"github.com/georgysavva/scany/v2/pgxscan"
+	"github.com/jackc/pgx/v5"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -22,14 +22,14 @@ func (r *OfficesRepository) GetList(ctx context.Context, q Querier) ([]*models.O
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var offices []*models.Office
-	if err := sqlscan.ScanAll(&offices, rows); err != nil {
+	if err := pgxscan.ScanAll(&offices, rows); err != nil {
 		return nil, err
 	}
 
@@ -44,15 +44,15 @@ func (r *OfficesRepository) GetByID(ctx context.Context, q Querier, id string) (
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query, id)
+	rows, err := q.Query(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var office models.Office
-	if err := sqlscan.ScanOne(&office, rows); err != nil {
-		if sqlscan.NotFound(err) {
+	if err := pgxscan.ScanOne(&office, rows); err != nil {
+		if pgxscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 		return nil, err
@@ -67,9 +67,9 @@ func (r *OfficesRepository) Create(ctx context.Context, q Querier, office *model
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	createdOffice := &models.Office{}
-	if err := q.QueryRowContext(ctx, query, office.Name, office.Description).Scan(&createdOffice.ID); err != nil {
-		if err == sql.ErrNoRows {
+	var createdID string
+	if err := q.QueryRow(ctx, query, office.Name, office.Description).Scan(&createdID); err != nil {
+		if err == pgx.ErrNoRows {
 			return ErrNotFound
 		}
 		return err
@@ -84,14 +84,8 @@ func (r *OfficesRepository) Update(ctx context.Context, q Querier, id string, of
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	if _, err := q.ExecContext(ctx, query, office.Name, office.Description, id); err != nil {
-		if err == sql.ErrNoRows {
-			return ErrNotFound
-		}
-		return err
-	}
-
-	return nil
+	_, err := q.Exec(ctx, query, office.Name, office.Description, id)
+	return err
 }
 
 func (r *OfficesRepository) Delete(ctx context.Context, q Querier, id string) error {
@@ -100,14 +94,8 @@ func (r *OfficesRepository) Delete(ctx context.Context, q Querier, id string) er
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	if _, err := q.ExecContext(ctx, query, id); err != nil {
-		if err == sql.ErrNoRows {
-			return ErrNotFound
-		}
-		return err
-	}
-
-	return nil
+	_, err := q.Exec(ctx, query, id)
+	return err
 }
 
 func (r *OfficesRepository) IsExists(ctx context.Context, q Querier, id string) (bool, error) {
@@ -117,7 +105,7 @@ func (r *OfficesRepository) IsExists(ctx context.Context, q Querier, id string) 
 	defer cancel()
 
 	var exist bool
-	err := q.QueryRowContext(ctx, query, id).Scan(&exist)
+	err := q.QueryRow(ctx, query, id).Scan(&exist)
 	if err != nil {
 		return false, err
 	}

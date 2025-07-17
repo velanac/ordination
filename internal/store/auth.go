@@ -2,9 +2,10 @@ package store
 
 import (
 	"context"
-	"database/sql"
+	"log"
 	"time"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -15,23 +16,29 @@ func NewAuthRepository() *AuthRepository {
 }
 
 func (r *AuthRepository) GetUserByEmail(c context.Context, q Querier, email string) (*models.User, error) {
-	query := `SELECT users.id, email, password, roles.name FROM users 
+	query := `SELECT users.id AS id, email, password, roles.name AS role FROM users 
 			JOIN roles ON users.role_id = roles.id WHERE email = $1`
 
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query, email)
+	rows, err := q.Query(ctx, query, email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-	user := &models.User{}
-	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Role); err != nil {
-		if err == sql.ErrNoRows {
-			return nil, nil // User not found
+	var user models.User
+	err = pgxscan.ScanOne(&user, rows)
+	if err != nil {
+		log.Printf("Error scanning user: %v", err)
+		if pgxscan.NotFound(err) {
+			return nil, ErrNotFound // User not found
 		}
 		return nil, err // Other error
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (r *AuthRepository) IsSuperAdminOpen(c context.Context, q Querier) (bool, error) {
@@ -42,7 +49,7 @@ func (r *AuthRepository) IsSuperAdminOpen(c context.Context, q Querier) (bool, e
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query)
+	row := q.QueryRow(ctx, query)
 
 	var count int
 	if err := row.Scan(&count); err != nil {
@@ -58,7 +65,7 @@ func (r *AuthRepository) OpenSuperAdmin(ctx context.Context, q Querier, user *mo
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, user.Email, user.Password.Hash, time.Now())
+	_, err := q.Exec(ctx, query, user.Email, user.Password.Hash, time.Now())
 	if err != nil {
 		return err
 	}

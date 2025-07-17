@@ -2,9 +2,9 @@ package store
 
 import (
 	"context"
-	"database/sql"
 	"time"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -22,22 +22,14 @@ func (r *UsersRepository) GetList(ctx context.Context, q Querier) ([]*models.Use
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
 	var users []*models.UserList
-	for rows.Next() {
-		user := &models.UserList{}
-		if err := rows.Scan(&user.ID, &user.UserName, &user.Role); err != nil {
-			return nil, err
-		}
-		users = append(users, user)
-	}
-
-	if err := rows.Err(); err != nil {
+	if err := pgxscan.ScanAll(&users, rows); err != nil {
 		return nil, err
 	}
 
@@ -52,17 +44,21 @@ func (r *UsersRepository) GetByID(ctx context.Context, q Querier, id string) (*m
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query, id)
+	rows, err := q.Query(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-	user := &models.User{}
-	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Active, &user.Role); err != nil {
-		if err == sql.ErrNoRows {
+	var user models.User
+	if err := pgxscan.ScanOne(&user, rows); err != nil {
+		if pgxscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (r *UsersRepository) Create(ctx context.Context, q Querier, user *models.User) error {
@@ -72,7 +68,7 @@ func (r *UsersRepository) Create(ctx context.Context, q Querier, user *models.Us
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, user.Email, user.Password.Hash, time.Now(), user.Role)
+	_, err := q.Exec(ctx, query, user.Email, user.Password.Hash, time.Now(), user.Role)
 	if err != nil {
 		return err
 	}
@@ -86,7 +82,7 @@ func (r *UsersRepository) OpenSuperAdmin(ctx context.Context, q Querier, user *m
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, user.Email, user.Password.Hash, time.Now())
+	_, err := q.Exec(ctx, query, user.Email, user.Password.Hash, time.Now())
 	if err != nil {
 		return err
 	}
@@ -102,17 +98,22 @@ func (r *UsersRepository) GetUserByEmail(ctx context.Context, q Querier, email s
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query, email)
+	rows, err := q.Query(ctx, query, email)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
-	user := &models.User{}
-	if err := row.Scan(&user.ID, &user.Email, &user.Password.Hash, &user.Role); err != nil {
-		if err == sql.ErrNoRows {
+	var user models.User
+	err = pgxscan.ScanOne(&user, rows)
+	if err != nil {
+		if pgxscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
 
-	return user, nil
+	return &user, nil
 }
 
 func (r *UsersRepository) Delete(ctx context.Context, q Querier, id string) error {
@@ -121,7 +122,7 @@ func (r *UsersRepository) Delete(ctx context.Context, q Querier, id string) erro
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, id)
+	_, err := q.Exec(ctx, query, id)
 	if err != nil {
 		return err
 	}
@@ -135,7 +136,7 @@ func (r *UsersRepository) ChangeActiveStatus(ctx context.Context, q Querier, sta
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, status, id)
+	_, err := q.Exec(ctx, query, status, id)
 	if err != nil {
 		return err
 	}
@@ -149,7 +150,7 @@ func (r *UsersRepository) UpdateGeneralSettings(ctx context.Context, q Querier, 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, user.Active, user.Role, user.ID)
+	_, err := q.Exec(ctx, query, user.Active, user.Role, user.ID)
 	if err != nil {
 		return err
 	}

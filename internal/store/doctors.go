@@ -3,6 +3,7 @@ package store
 import (
 	"context"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -21,23 +22,13 @@ func (r *DoctorsRepository) GetList(ctx context.Context, q Querier) ([]*models.D
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 	var doctors []*models.Doctor
-	for rows.Next() {
-		doctor := &models.Doctor{}
-		if err := rows.Scan(&doctor.ID, &doctor.Description); err != nil {
-			return nil, err
-		}
-		doctors = append(doctors, doctor)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
+	pgxscan.ScanAll(&doctors, rows)
 
 	return doctors, nil
 }

@@ -1,10 +1,10 @@
 package server
 
 import (
-	"database/sql"
 	"net/http"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/velenac/ordiora/internal/store"
 	"github.com/velenac/ordiora/pkg/config"
 	"github.com/velenac/ordiora/pkg/filestore"
@@ -17,7 +17,7 @@ type Server struct {
 	fs     *filestore.FileStore
 }
 
-func NewServer(cfg *config.Config, db *sql.DB, fs *filestore.FileStore) *http.Server {
+func NewServer(cfg *config.Config, db *pgxpool.Pool, fs *filestore.FileStore) *http.Server {
 	store := store.New(db)
 
 	NewServer := &Server{

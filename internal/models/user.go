@@ -1,6 +1,11 @@
 package models
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"database/sql/driver"
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 type UserProfile struct {
 	Id     string `json:"id"`
@@ -21,11 +26,11 @@ type UserCreate struct {
 }
 
 type User struct {
-	ID       string   `json:"id"`
-	Email    string   `json:"email"`
-	Password password `json:"-"`
-	Role     string   `json:"role"`
-	Active   bool     `json:"active"`
+	ID       string   `json:"id" db:"id"`
+	Email    string   `json:"email" db:"email"`
+	Password password `json:"-" db:"password"`
+	Role     string   `json:"role" db:"role"`
+	Active   bool     `json:"active" db:"active"`
 }
 
 type UserList struct {
@@ -52,4 +57,27 @@ func (p *password) Set(rawPassword string) error {
 
 func (p *password) Compare(text string) error {
 	return bcrypt.CompareHashAndPassword(p.Hash, []byte(text))
+}
+
+// Scan implements the Scanner interface for database scanning
+func (p *password) Scan(value interface{}) error {
+	if value == nil {
+		return nil
+	}
+
+	switch v := value.(type) {
+	case string:
+		p.Hash = []byte(v)
+		return nil
+	case []byte:
+		p.Hash = v
+		return nil
+	default:
+		return fmt.Errorf("cannot scan %T into password", value)
+	}
+}
+
+// Value implements the Valuer interface for database storage
+func (p password) Value() (driver.Value, error) {
+	return string(p.Hash), nil
 }

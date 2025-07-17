@@ -2,8 +2,8 @@ package store
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -19,13 +19,13 @@ func (r *PersonalRepository) GetPersonalByUserId(ctx context.Context, q Querier,
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query, userId)
+	row := q.QueryRow(ctx, query, userId)
 
 	personal := &models.Personal{}
 	if err := row.Scan(&personal.UserId, &personal.Titles, &personal.FirstName, &personal.LastName, &personal.Phone,
 		&personal.Address, &personal.City, &personal.State, &personal.Country,
 		&personal.PostalCode); err != nil {
-		if err == sql.ErrNoRows {
+		if err == pgx.ErrNoRows {
 			return nil, ErrNotFound
 		}
 		return nil, err
@@ -42,7 +42,7 @@ func (r *PersonalRepository) CreatePersonal(ctx context.Context, q Querier, pers
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		personal.Titles,
 		personal.UserId,
 		personal.FirstName,
@@ -67,7 +67,7 @@ func (r *PersonalRepository) UpdatePersonal(ctx context.Context, q Querier, pers
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		personal.Titles,
 		personal.FirstName,
 		personal.LastName,

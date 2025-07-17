@@ -2,8 +2,8 @@ package store
 
 import (
 	"context"
-	"database/sql"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -21,7 +21,7 @@ func (r *RolesRepository) GetList(c context.Context, q Querier) ([]models.Role, 
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -45,8 +45,8 @@ func (r *RolesRepository) GetByName(c context.Context, q Querier, name string) (
 	defer cancel()
 
 	role := &models.Role{}
-	if err := q.QueryRowContext(ctx, query, name).Scan(&role.ID, &role.Name); err != nil {
-		if err == sql.ErrNoRows {
+	if err := q.QueryRow(ctx, query, name).Scan(&role.ID, &role.Name); err != nil {
+		if err == pgx.ErrNoRows {
 			return nil, ErrNotFound
 		}
 		return nil, err

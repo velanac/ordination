@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -25,37 +26,17 @@ func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Que
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	events := make([]*models.Event, 0)
-	for rows.Next() {
-		event := &models.Event{}
-		if err := rows.Scan(
-			&event.ID,
-			&event.Title,
-			&event.StartTime,
-			&event.EndTime,
-			&event.Type,
-			&event.OfficeID,
-			&event.UserID,
-			&event.PatientID); err != nil {
-			if err == sql.ErrNoRows {
-				return nil, ErrNotFound
-			}
-			return nil, err
-		}
-		events = append(events, event)
-	}
-	if err := rows.Err(); err != nil {
-		if err == sql.ErrNoRows {
-			return nil, ErrNotFound
-		}
+	var events []*models.Event
+	if err := pgxscan.ScanAll(&events, rows); err != nil {
 		return nil, err
 	}
+
 	return events, nil
 }
 
@@ -75,7 +56,7 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -145,23 +126,23 @@ func (r *EventsRepository) GetByID(ctx context.Context, q Querier, id string) (*
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	event := &models.Event{}
-	if err := q.QueryRowContext(ctx, query, id).Scan(
-		&event.ID,
-		&event.Title,
-		&event.StartTime,
-		&event.EndTime,
-		&event.Type,
-		&event.OfficeID,
-		&event.UserID,
-		&event.PatientID); err != nil {
-		if err == sql.ErrNoRows {
+	rows, err := q.Query(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	event := models.Event{}
+	err = pgxscan.ScanOne(&event, rows)
+
+	if err != nil {
+		if pgxscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 		return nil, err
 	}
 
-	return event, nil
+	return &event, nil
 }
 
 // Create inserts a new doctor event into the database.
@@ -172,7 +153,7 @@ func (r *EventsRepository) CreateDoctorEvent(ctx context.Context, q Querier, eve
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		event.UserID,
 		event.OfficeID,
 		event.Title,
@@ -180,15 +161,7 @@ func (r *EventsRepository) CreateDoctorEvent(ctx context.Context, q Querier, eve
 		event.EndTime,
 		event.Type)
 
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return ErrNotFound
-		}
-
-		return err
-	}
-
-	return nil
+	return err
 }
 
 // CreatePatientEvent inserts a new patient event into the database.
@@ -199,7 +172,7 @@ func (r *EventsRepository) CreatePatientEvent(ctx context.Context, q Querier, ev
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		event.PatientID,
 		event.OfficeID,
 		event.UserID,
@@ -207,12 +180,6 @@ func (r *EventsRepository) CreatePatientEvent(ctx context.Context, q Querier, ev
 		event.StartTime,
 		event.EndTime,
 		event.Type)
-
-	if err != nil {
-		if err == sql.ErrNoRows {
-			return ErrNotFound
-		}
-	}
 
 	return err
 }
@@ -226,7 +193,7 @@ func (r *EventsRepository) Update(ctx context.Context, q Querier, event *models.
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		event.UserID,
 		event.OfficeID,
 		event.Title,
@@ -244,12 +211,13 @@ func (r *EventsRepository) Delete(ctx context.Context, q Querier, id string) err
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, id)
+	commandTag, err := q.Exec(ctx, query, id)
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return ErrNotFound
-		}
 		return err
+	}
+
+	if commandTag.RowsAffected() == 0 {
+		return ErrNotFound
 	}
 
 	return nil
@@ -263,10 +231,7 @@ func (r *EventsRepository) IsExists(ctx context.Context, q Querier, id string) (
 	defer cancel()
 
 	var count int
-	if err := q.QueryRowContext(ctx, query, id).Scan(&count); err != nil {
-		if err == sql.ErrNoRows {
-			return false, ErrNotFound
-		}
+	if err := q.QueryRow(ctx, query, id).Scan(&count); err != nil {
 		return false, err
 	}
 

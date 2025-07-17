@@ -2,15 +2,14 @@ package db
 
 import (
 	"context"
-	"database/sql"
 	"log"
 	"time"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/velenac/ordiora/internal/migrations"
 )
 
-func New(addr string, catalog string, maxOpenConns, maxIdleConns int, maxIdleTime string, appEnv string) (*sql.DB, error) {
+func New(addr string, catalog string, maxOpenConns, maxIdleConns int, maxIdleTime string, appEnv string) (*pgxpool.Pool, error) {
 	if appEnv == "production" {
 		log.Println("Running in production mode")
 		migrator := migrations.New(
@@ -23,25 +22,33 @@ func New(addr string, catalog string, maxOpenConns, maxIdleConns int, maxIdleTim
 		}
 	}
 
-	db, err := sql.Open("pgx", addr+catalog+"?sslmode=disable")
+	// Kreiranje pgx konfiguracije
+	config, err := pgxpool.ParseConfig(addr + catalog + "?sslmode=disable")
 	if err != nil {
 		return nil, err
 	}
 
-	db.SetMaxOpenConns(maxOpenConns)
+	// Podešavanje connection pool-a
+	config.MaxConns = int32(maxOpenConns)
+	config.MinConns = int32(maxIdleConns)
 
 	idleTime, err := time.ParseDuration(maxIdleTime)
 	if err != nil {
 		return nil, err
 	}
+	config.MaxConnIdleTime = idleTime
 
-	db.SetConnMaxIdleTime(idleTime)
-	db.SetMaxIdleConns(maxIdleConns)
-
+	// Kreiranje connection pool-a
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	if err := db.PingContext(ctx); err != nil {
+	db, err := pgxpool.NewWithConfig(ctx, config)
+	if err != nil {
+		return nil, err
+	}
+
+	// Test konekcije
+	if err := db.Ping(ctx); err != nil {
 		return nil, err
 	}
 

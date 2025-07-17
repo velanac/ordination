@@ -16,5 +16,5 @@ func (s *UtilsRepository) Ping(c context.Context) error {
 	ctx, cancel := context.WithTimeout(c, QueryTimeoutDuration)
 	defer cancel()
 
-	return s.store.DB().PingContext(ctx)
+	return s.store.DB().Ping(ctx)
 }

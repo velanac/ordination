@@ -2,9 +2,8 @@ package store
 
 import (
 	"context"
-	"database/sql"
-	"errors"
 
+	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/velenac/ordiora/internal/models"
 )
 
@@ -22,7 +21,7 @@ func (r *PatientsRepository) GetList(ctx context.Context, q Querier) ([]*models.
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	rows, err := q.QueryContext(ctx, query)
+	rows, err := q.Query(ctx, query)
 	if err != nil {
 		return nil, err
 	}
@@ -69,23 +68,17 @@ func (r *PatientsRepository) GetByID(ctx context.Context, q Querier, id string) 
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	row := q.QueryRowContext(ctx, query, id)
+	rows, err := q.Query(ctx, query, id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
 	patient := &models.Patient{}
-	if err := row.Scan(
-		&patient.ID,
-		&patient.FirstName,
-		&patient.ParentName,
-		&patient.LastName,
-		&patient.Gender,
-		&patient.DateOfBirth,
-		&patient.Email,
-		&patient.Phone,
-		&patient.Address,
-		&patient.City,
-		&patient.Country); err != nil {
 
-		if errors.Is(err, sql.ErrNoRows) {
+	err = pgxscan.ScanOne(patient, rows)
+	if err != nil {
+		if pgxscan.NotFound(err) {
 			return nil, ErrNotFound
 		}
 
@@ -102,7 +95,7 @@ func (r *PatientsRepository) Create(ctx context.Context, q Querier, patient *mod
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	err := q.QueryRowContext(ctx, query,
+	err := q.QueryRow(ctx, query,
 		patient.FirstName,
 		patient.ParentName,
 		patient.LastName,
@@ -130,7 +123,7 @@ func (r *PatientsRepository) Update(ctx context.Context, q Querier, patient *mod
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query,
+	_, err := q.Exec(ctx, query,
 		patient.FirstName,
 		patient.ParentName,
 		patient.LastName,
@@ -157,14 +150,13 @@ func (r *PatientsRepository) Delete(ctx context.Context, q Querier, id string) e
 	ctx, cancel := context.WithTimeout(ctx, QueryTimeoutDuration)
 	defer cancel()
 
-	_, err := q.ExecContext(ctx, query, id)
+	commandTag, err := q.Exec(ctx, query, id)
 	if err != nil {
-		switch {
-		case errors.Is(err, sql.ErrNoRows):
-			return ErrNotFound
-		default:
-			return err
-		}
+		return err
+	}
+
+	if commandTag.RowsAffected() == 0 {
+		return ErrNotFound
 	}
 
 	return nil
@@ -177,7 +169,7 @@ func (r *PatientsRepository) IsExists(ctx context.Context, q Querier, id string)
 	defer cancel()
 
 	var exist bool
-	err := q.QueryRowContext(ctx, query, id).Scan(&exist)
+	err := q.QueryRow(ctx, query, id).Scan(&exist)
 	if err != nil {
 		return false, err
 	}
