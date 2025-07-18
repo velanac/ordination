@@ -1,13 +1,12 @@
 import { localizer } from '@/lib/localizer';
 import { useEffect, useState } from 'react';
-import { Calendar, Navigate, View } from 'react-big-calendar';
+import { Calendar, Event, Navigate, View } from 'react-big-calendar';
 import { useTranslation } from 'react-i18next';
 import { Button } from '../ui/button';
 import { ArrowBigLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-import { OfficeEvent } from '@/types/events';
 
 type Props = {
-  events: OfficeEvent[];
+  events: Event[];
 };
 
 function AgendaCalendar({ events }: Props) {
@@ -55,12 +54,7 @@ function AgendaCalendar({ events }: Props) {
       //   scrollTo.setMinutes(scrollTo.getMinutes() - 30);
       //   setScrollTime(scrollTo);
       // }}
-      events={events.map((event) => ({
-        ...event,
-        start: new Date(event.startTime),
-        end: new Date(event.endTime),
-        title: event.title,
-      }))}
+      events={events}
       components={{
         toolbar: ({ onNavigate, label }) => (
           <div className='p-2 flex justify-between items-center'>

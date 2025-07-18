@@ -24,7 +24,15 @@ function EventsPage() {
             </Link>
             <div className='h-[300px] w-full overflow-auto'>
               <AgendaCalendar
-                events={office.events.filter((e) => e.type === 'doctor')}
+                events={office.events.map((event) => {
+                  console.log('Event:', event);
+                  return {
+                    id: event.id,
+                    title: event.title,
+                    start: new Date(event.startTime),
+                    end: new Date(event.endTime),
+                  };
+                })}
               />
             </div>
           </div>

@@ -92,8 +92,8 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 			event := models.OfficeEvent{
 				ID:        eventID.String,
 				Title:     eventTitle.String,
-				StartTime: eventStartTime.Time.String(),
-				EndTime:   eventEndTime.Time.String(),
+				StartTime: eventStartTime.Time,
+				EndTime:   eventEndTime.Time,
 				Type:      eventType.String,
 				OfficeID:  eventOfficeID.String,
 				UserID:    eventUserID.String,
