@@ -44,8 +44,8 @@ func (r *EventsRepository) GetRecentAndUpcomingEvents(ctx context.Context, q Que
 func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context, q Querier) ([]*models.OfficeWithEvents, error) {
 	query := `
 		SELECT 
-			o.id, o.name, o.description, o.created_at,
-			e.id, e.title, e.start_time, e.end_time, e.type, e.office_id, e.user_id, e.patient_id
+			o.id, o.name, o.description,
+			e.id AS event_id, e.title, e.start_time, e.end_time, e.type, e.office_id, e.user_id, e.patient_id
 		FROM offices o
 		LEFT JOIN events e 
 			ON o.id = e.office_id 
@@ -65,13 +65,13 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 	offices := make(map[string]*models.OfficeWithEvents)
 	for rows.Next() {
 		var (
-			officeID, officeName, officeDescription, officeCreatedAt                   sql.NullString
+			officeID, officeName, officeDescription                                    sql.NullString
 			eventID, eventTitle, eventType, eventOfficeID, eventUserID, eventPatientID sql.NullString
 			eventStartTime, eventEndTime                                               sql.NullTime
 		)
 
 		if err := rows.Scan(
-			&officeID, &officeName, &officeDescription, &officeCreatedAt,
+			&officeID, &officeName, &officeDescription,
 			&eventID, &eventTitle, &eventStartTime, &eventEndTime, &eventType, &eventOfficeID, &eventUserID, &eventPatientID,
 		); err != nil {
 			return nil, err
@@ -83,13 +83,13 @@ func (r *EventsRepository) GetRecentAndUpcomingOfficesEvents(ctx context.Context
 				ID:          officeID.String,
 				Name:        officeName.String,
 				Description: officeDescription.String,
-				Events:      []models.Event{},
+				Events:      []models.OfficeEvent{},
 			}
 		}
 
 		// Only add event if it exists (LEFT JOIN may return NULLs)
 		if eventID.Valid {
-			event := models.Event{
+			event := models.OfficeEvent{
 				ID:        eventID.String,
 				Title:     eventTitle.String,
 				StartTime: eventStartTime.Time.String(),

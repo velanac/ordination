@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"log"
 
 	"github.com/velenac/ordiora/internal/models"
 	"github.com/velenac/ordiora/internal/store"
@@ -39,6 +40,7 @@ func (s *EventsService) GetRecentAndUpcomingEvents(c context.Context) ([]*models
 func (s *EventsService) GetRecentAndUpcomingOfficesEvents(c context.Context) ([]*models.OfficeWithEvents, error) {
 	officesEvents, err := s.events.GetRecentAndUpcomingOfficesEvents(c, s.s.Q())
 	if err != nil {
+		log.Println("Error getting recent and upcoming offices events:", err)
 		return nil, err
 	}
 
